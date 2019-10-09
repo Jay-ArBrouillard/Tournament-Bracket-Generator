@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.852
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TBG.Core", "Tournament Bracker Generator\TBG.Core.csproj", "{59679B19-1B82-42D2-A981-EDCDEC8E9C26}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TBG.Core", "TBG.Core\TBG.Core.csproj", "{59679B19-1B82-42D2-A981-EDCDEC8E9C26}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TBG.UI", "TBG.UI\TBG.UI.csproj", "{F36E4FE2-DA39-4CBB-A078-79370B880F0D}"
 EndProject

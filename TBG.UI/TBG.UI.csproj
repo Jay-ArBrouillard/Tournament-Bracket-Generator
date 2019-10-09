@@ -95,7 +95,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Tournament Bracker Generator\TBG.Core.csproj">
+    <ProjectReference Include="..\TBG.Core\TBG.Core.csproj">
       <Project>{59679b19-1b82-42d2-a981-edcdec8e9c26}</Project>
       <Name>TBG.Core</Name>
     </ProjectReference>
