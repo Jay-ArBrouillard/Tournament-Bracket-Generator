@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.852
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TBG.Core", "Tournament Bracker Generator\TBG.Core.csproj", "{59679B19-1B82-42D2-A981-EDCDEC8E9C26}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TBG.UI", "TBG.UI\TBG.UI.csproj", "{F36E4FE2-DA39-4CBB-A078-79370B880F0D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TBG.Data", "TBG.Data\TBG.Data.csproj", "{756D3119-1BAA-4356-8706-CF8B6907F9EE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{59679B19-1B82-42D2-A981-EDCDEC8E9C26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{59679B19-1B82-42D2-A981-EDCDEC8E9C26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{59679B19-1B82-42D2-A981-EDCDEC8E9C26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{59679B19-1B82-42D2-A981-EDCDEC8E9C26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F36E4FE2-DA39-4CBB-A078-79370B880F0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F36E4FE2-DA39-4CBB-A078-79370B880F0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F36E4FE2-DA39-4CBB-A078-79370B880F0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F36E4FE2-DA39-4CBB-A078-79370B880F0D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{756D3119-1BAA-4356-8706-CF8B6907F9EE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{756D3119-1BAA-4356-8706-CF8B6907F9EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{756D3119-1BAA-4356-8706-CF8B6907F9EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{756D3119-1BAA-4356-8706-CF8B6907F9EE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {B8859E9A-6590-47AB-BC0E-00053D1BA08C}
+	EndGlobalSection
+EndGlobal
