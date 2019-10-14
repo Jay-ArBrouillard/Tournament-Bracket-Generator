@@ -99,6 +99,10 @@
       <Project>{59679b19-1b82-42d2-a981-edcdec8e9c26}</Project>
       <Name>TBG.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TBG.Driver\TBG.Driver.csproj">
+      <Project>{44220ec8-d52f-4021-881f-d5bd81d2c578}</Project>
+      <Name>TBG.Driver</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
