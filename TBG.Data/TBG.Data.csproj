@@ -51,5 +51,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <Content Include="SQL\Tables\People.sql" />
+    <Content Include="SQL\Tables\Teams.sql" />
+    <Content Include="SQL\Tables\Tournaments.sql" />
+    <Content Include="SQL\Tables\TournamentTeamPeople.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
