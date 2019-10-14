@@ -41,22 +41,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\Participants\Player.cs" />
-    <Compile Include="Classes\Participants\Team.cs" />
-    <Compile Include="Classes\Tournaments\DoubleElimination.cs" />
-    <Compile Include="Classes\Tournaments\SingleElimination.cs" />
+    <Compile Include="Interfaces\IPerson.cs" />
+    <Compile Include="Interfaces\IPrize.cs" />
+    <Compile Include="Interfaces\IProvider.cs" />
+    <Compile Include="Interfaces\ITeam.cs" />
     <Compile Include="Interfaces\ITournament.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TBG.Data\TBG.Data.csproj">
-      <Project>{756d3119-1baa-4356-8706-cf8b6907f9ee}</Project>
-      <Name>TBG.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\TBGLibrary\TBGLibrary.csproj">
-      <Project>{8b1598fb-7ffb-4f70-8491-27139744c476}</Project>
-      <Name>TBGLibrary</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

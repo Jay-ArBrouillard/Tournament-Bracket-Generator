@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TBG.Core.Interfaces;
 
 namespace TBGLibrary
 {
-    public class Prize
+    public class Prize : IPrize
     {
         /// <summary>
         /// Represents the place number for this prize ex: 1, 2, 3...
