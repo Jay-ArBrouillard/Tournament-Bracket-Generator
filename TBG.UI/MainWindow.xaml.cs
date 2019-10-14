@@ -22,13 +22,26 @@ namespace TBG.UI
     /// </summary>
     public partial class MainWindow : Window
     {
-        IProvider source;
-        IController business;
+        private readonly IProvider source;
+        private readonly IController business;
         public MainWindow()
         {
             InitializeComponent();
             source = ApplicationController.getProvider();
             business = ApplicationController.getController();
+        }
+
+        private void Login_Event_Handler(object sender, RoutedEventArgs e)
+        {
+            string user = userNameTextBox.Text;
+            string pass = passwordTextBox.Password;
+            //check if eligible to be logged in 
+            
+            if (Login.Validate(user, pass))
+            {
+                MessageBox.Show("You are logged in successfully");
+                //Do something
+            }
         }
     }
 }
