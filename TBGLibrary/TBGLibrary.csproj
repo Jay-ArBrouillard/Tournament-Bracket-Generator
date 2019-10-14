@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{756D3119-1BAA-4356-8706-CF8B6907F9EE}</ProjectGuid>
+    <ProjectGuid>{8B1598FB-7FFB-4F70-8491-27139744C476}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TBG.Data</RootNamespace>
-    <AssemblyName>TBG.Data</AssemblyName>
+    <RootNamespace>TBGLibrary</RootNamespace>
+    <AssemblyName>TBGLibrary</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -41,15 +41,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\DatabaseProvider.cs" />
-    <Compile Include="Interfaces\IProvider.cs" />
+    <Compile Include="Dashboard.cs" />
+    <Compile Include="Matchup.cs" />
+    <Compile Include="MatchupEntry.cs" />
+    <Compile Include="Person.cs" />
+    <Compile Include="Prize.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TBGLibrary\TBGLibrary.csproj">
-      <Project>{8b1598fb-7ffb-4f70-8491-27139744c476}</Project>
-      <Name>TBGLibrary</Name>
-    </ProjectReference>
+    <Compile Include="SingleEliminationTournament.cs" />
+    <Compile Include="Team.cs" />
+    <Compile Include="Tournament.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
