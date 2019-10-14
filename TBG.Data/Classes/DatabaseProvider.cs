@@ -2,7 +2,7 @@
 
 namespace TBG.Data.Classes
 {
-    class DatabaseProvider : IProvider
+    public class DatabaseProvider : IProvider
     {
         public bool createTournament(ITournament entry)
         {

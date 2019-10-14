@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TBGLibrary
+namespace TBG.Business
 {
     public class Matchup
     {

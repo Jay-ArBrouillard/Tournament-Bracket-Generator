@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TBG.Core.Interfaces;
 
-namespace TBGLibrary
+namespace TBG.Business
 {
     public class Person : IPerson
     {

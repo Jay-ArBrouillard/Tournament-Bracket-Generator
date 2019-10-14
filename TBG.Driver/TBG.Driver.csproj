@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{59679B19-1B82-42D2-A981-EDCDEC8E9C26}</ProjectGuid>
+    <ProjectGuid>{44220EC8-D52F-4021-881F-D5BD81D2C578}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TBG.Core</RootNamespace>
-    <AssemblyName>TBG.Core</AssemblyName>
+    <RootNamespace>TBG.Driver</RootNamespace>
+    <AssemblyName>TBG.Driver</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -41,13 +41,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Interfaces\IController.cs" />
-    <Compile Include="Interfaces\IPerson.cs" />
-    <Compile Include="Interfaces\IPrize.cs" />
-    <Compile Include="Interfaces\IProvider.cs" />
-    <Compile Include="Interfaces\ITeam.cs" />
-    <Compile Include="Interfaces\ITournament.cs" />
+    <Compile Include="ApplicationController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TBG.Business\TBG.Business.csproj">
+      <Project>{8b1598fb-7ffb-4f70-8491-27139744c476}</Project>
+      <Name>TBG.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TBG.Core\TBG.Core.csproj">
+      <Project>{59679b19-1b82-42d2-a981-edcdec8e9c26}</Project>
+      <Name>TBG.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\TBG.Data\TBG.Data.csproj">
+      <Project>{756d3119-1baa-4356-8706-cf8b6907f9ee}</Project>
+      <Name>TBG.Data</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
