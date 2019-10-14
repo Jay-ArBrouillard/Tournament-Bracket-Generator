@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TBG.Core.Interfaces;
 
-namespace TBGLibrary
+namespace TBG.Business
 {
     public class Dashboard
     {
@@ -12,16 +13,16 @@ namespace TBGLibrary
         /// <summary>
         /// Represents all existing tournaments.
         /// </summary>
-        public List<Tournament> Tournaments { get; set; } = new List<Tournament>();
+        public List<ITournament> Tournaments { get; set; } = new List<ITournament>();
 
         /// <summary>
         /// Represents only the tournaments fully completed.
         /// </summary>
-        public List<Tournament> TournamentsCompleted { get; set; } = new List<Tournament>();
+        public List<ITournament> TournamentsCompleted { get; set; } = new List<ITournament>();
 
         /// <summary>
         /// Represents only the tournaments not completed.
         /// </summary>
-        public List<Tournament> TournamentsPending { get; set; } = new List<Tournament>();
+        public List<ITournament> TournamentsPending { get; set; } = new List<ITournament>();
     }
 }

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TBG.Core.Classes.Participants
+namespace TBG.Core.Interfaces
 {
-    public class Player
+    public interface IController
     {
     }
 }

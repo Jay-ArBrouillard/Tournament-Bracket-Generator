@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TBG.Core.Interfaces;
 
-namespace TBGLibrary
+namespace TBG.Business
 {
-    public class Person
+    public class Person : IPerson
     {
         /// <summary>
         /// Represents this Person's first name.
@@ -26,6 +27,6 @@ namespace TBGLibrary
         /// <summary>
         /// Represents this Person's phone number in the form (###-###-####).
         /// </summary>
-        public string Number { get; set; }
+        public string Phone { get; set; }
     }
 }

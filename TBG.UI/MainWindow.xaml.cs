@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TBG.Core.Interfaces;
+using TBG.Driver;
 
 namespace TBG.UI
 {
@@ -20,9 +22,13 @@ namespace TBG.UI
     /// </summary>
     public partial class MainWindow : Window
     {
+        IProvider source;
+        IController business;
         public MainWindow()
         {
             InitializeComponent();
+            source = ApplicationController.getProvider();
+            business = ApplicationController.getController();
         }
     }
 }
