@@ -99,6 +99,10 @@
       <Project>{59679b19-1b82-42d2-a981-edcdec8e9c26}</Project>
       <Name>TBG.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\TBGLibrary\TBGLibrary.csproj">
+      <Project>{8b1598fb-7ffb-4f70-8491-27139744c476}</Project>
+      <Name>TBGLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
