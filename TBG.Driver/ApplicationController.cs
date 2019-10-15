@@ -15,5 +15,10 @@ namespace TBG.Driver
         {
             return new BusinessController();
         }
+
+        public static ILogin getLogin()
+        {
+            return (ILogin) new Login();
+        }
     }
 }

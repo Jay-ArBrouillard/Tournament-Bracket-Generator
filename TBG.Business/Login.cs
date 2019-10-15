@@ -1,13 +1,14 @@
 ﻿using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using TBG.Core.Interfaces;
 
-namespace TBG.UI
+namespace TBG.Business
 {
-    public static class Login
+    public class Login : ILogin
     {
         //method to check if eligible to be logged in 
         //Default username: "team4", password: "welcome1"
-        public static bool Validate(string user, string pass)
+        public bool Validate(string user, string pass)
         {
             //check user name empty 
             if (string.IsNullOrEmpty(user))
