@@ -1,44 +1,59 @@
-﻿using System.Text.RegularExpressions;
+﻿using MySql.Data.MySqlClient;
+using System;
+using System.Configuration;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using TBG.Core.Interfaces;
 
 namespace TBG.Business
 {
-    public class Login : ILogin
+    public class Login : ILogin, IDisposable
     {
-        //method to check if eligible to be logged in 
-        //Default username: "team4", password: "welcome1"
+        private static string connString = ConfigurationManager.ConnectionStrings["MySQLDB"].ConnectionString;
+        private static MySqlConnection dbConn;
+
+        public Login()
+        {
+            dbConn = new MySqlConnection(connString);
+            dbConn.Open();
+        }
+
         public bool Validate(string user, string pass)
         {
             //check user name empty 
             if (string.IsNullOrEmpty(user))
             {
-                MessageBox.Show("Enter a user name!");
                 return false;
             }
             //check password empty
             if (string.IsNullOrEmpty(pass))
             {
-                MessageBox.Show("Enter a password!");
                 return false;
             }
-
-            //Check username
-            if (!user.Equals("team4"))
+            string query = string.Format("SELECT * FROM `Users` WHERE `user_name` LIKE '{0}' AND `password` LIKE '{1}'", user, pass);
+            //Validate user exists and password is correct
+            using (MySqlCommand cmd = new MySqlCommand(query, dbConn))
             {
-                MessageBox.Show("Username is incorrect!");
-                return false;
+                cmd.ExecuteNonQuery();
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    if (reader.HasRows)
+                    {
+                        return true;
+                    }
+                }
             }
 
-            //Check password
-            if (!pass.Equals("welcome1"))
+            return false;
+
+        }
+
+        public void Dispose()
+        {
+            if (dbConn != null)
             {
-                MessageBox.Show("Password is correct!");
-                return false;
+                dbConn.Close();
             }
-
-            return true;
-
         }
     }
 
