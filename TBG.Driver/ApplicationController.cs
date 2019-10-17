@@ -18,7 +18,7 @@ namespace TBG.Driver
 
         public static ILogin getLogin()
         {
-            return (ILogin) new Login();
+            return new Login();
         }
     }
 }
