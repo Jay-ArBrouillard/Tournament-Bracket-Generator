@@ -6,8 +6,22 @@ using System.Threading.Tasks;
 
 namespace TBG.Core.Interfaces
 {
-    public interface ILogin
+    public interface IDatabaseLogin
     {
+        /// <summary>
+        /// Creates a new user in the database and returns true upon successful insert.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="pass"></param>
+        /// <returns></returns>
+        bool CreateUser(string user, string pass);
+
+        /// <summary>
+        /// Updates last login for the passed user;
+        /// </summary>
+        /// <param name="user"></param>
+        void UpdateLastLogin(string user);
+
         /// <summary>
         /// Returns true if the username AND password matches in the database.
         /// </summary>
@@ -22,19 +36,5 @@ namespace TBG.Core.Interfaces
         /// <param name="user"></param>
         /// <returns></returns>
         bool ValidateUserName(string user);
-
-        /// <summary>
-        /// Creates a new user in the database and returns true upon successful insert.
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="pass"></param>
-        /// <returns></returns>
-        bool CreateUser(string user, string pass);
-
-        /// <summary>
-        /// Updates last login for the passed user;
-        /// </summary>
-        /// <param name="user"></param>
-        void updateLastLogin(string user);
     }
 }

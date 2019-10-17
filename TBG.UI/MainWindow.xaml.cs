@@ -24,13 +24,13 @@ namespace TBG.UI
     {
         private IProvider source;
         private IController business;
-        private ILogin login;
+        private IDatabaseLogin dbLogin;
         public MainWindow()
         {
             InitializeComponent();
-            source = ApplicationController.getProvider();
-            business = ApplicationController.getController();
-            login = ApplicationController.getLogin();
+            source = ApplicationController.GetProvider();
+            business = ApplicationController.GetController();
+            dbLogin = ApplicationController.GetDatabaseLogin();
         }
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -50,16 +50,15 @@ namespace TBG.UI
             string user = userNameTextBox.Text;
             string pass = passwordTextBox.Password;
             //check if eligible to be logged in 
-            if (login.Validate(user, pass))
+            if (dbLogin.Validate(user, pass))
             {
                 displayMessage.Text = String.Empty;
                 SetDisplayColors(new SolidColorBrush(Colors.Green));
-                login.updateLastLogin(user);
+                dbLogin.UpdateLastLogin(user);
                 //Start Application 
                 Dashboard dB = new Dashboard(source, business);
                 dB.Show();
                 this.Close();
-
             }
             else
             {
@@ -77,7 +76,7 @@ namespace TBG.UI
         {
             string user = userNameTextBox.Text;
             string pass = passwordTextBox.Password;
-            if (!login.ValidateUserName(user))
+            if (!dbLogin.ValidateUserName(user))
             {
                 displayMessage.Text = "Username already exists";
                 SetDisplayColors(new SolidColorBrush(Colors.Red));
@@ -86,7 +85,7 @@ namespace TBG.UI
             {
                 SetDisplayColors(new SolidColorBrush(Colors.Green));
 
-                bool success = login.CreateUser(user, pass);
+                bool success = dbLogin.CreateUser(user, pass);
                 if (success)
                 {
                     displayMessage.Text = "Created new user " + user;
@@ -110,6 +109,14 @@ namespace TBG.UI
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+
+        private void GuestLogin_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            //Start Application but with read only permission
+            Dashboard dB = new Dashboard(source, business);
+            dB.Show();
+            this.Close();
         }
     }
 }
