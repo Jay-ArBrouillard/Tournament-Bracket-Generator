@@ -23,14 +23,11 @@ namespace TBG.Data.Classes
 
         public bool CreateUser(string user, string pass)
         {
-            string query = "INSERT INTO `team4`.`Users` (`user_id`, `user_name`, `password`) VALUES (NULL, '@USER', '@PASS')";
+            string query = "INSERT INTO `team4`.`Users` (`user_id`, `user_name`, `password`) VALUES (NULL, @USER, @PASS)";
             using (MySqlCommand cmd = new MySqlCommand(query, dbConn))
             {
-                cmd.Parameters.Add("@USER", MySqlDbType.VarChar);
-                cmd.Parameters["@USER"].Value = user;
-
-                cmd.Parameters.Add("@PASS", MySqlDbType.VarChar);
-                cmd.Parameters["@PASS"].Value = pass;
+                cmd.Parameters.AddWithValue("@USER", user);
+                cmd.Parameters.AddWithValue("@PASS", pass);
 
                 int rowsEffected = cmd.ExecuteNonQuery();
                 if (rowsEffected > 0) { return true; }
@@ -41,12 +38,11 @@ namespace TBG.Data.Classes
 
         public void UpdateLastLogin(string user)
         {
-            string query = "SELECT * FROM `Users` WHERE `user_name` LIKE '{@USER}'";
+            string query = "SELECT * FROM `Users` WHERE `user_name` LIKE @USER1";
             //Validate user exists
             using (MySqlCommand cmd = new MySqlCommand(query, dbConn))
             {
-                cmd.Parameters.Add("@USER", MySqlDbType.VarChar);
-                cmd.Parameters["@USER"].Value = user;
+                cmd.Parameters.AddWithValue("@USER1", user);
                 cmd.ExecuteNonQuery();
 
                 using (MySqlDataReader reader = cmd.ExecuteReader())
@@ -56,14 +52,11 @@ namespace TBG.Data.Classes
                         reader.Close();
                         DateTime myDateTime = DateTime.Now;
                         string sqlFormattedDate = myDateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                        string updateQuery = "UPDATE `team4`.`Users` SET `last_login` = '{@DATETIME}' WHERE `Users`.`user_name` = '{@USER}'";
+                        string updateQuery = "UPDATE `team4`.`Users` SET `last_login` = @DATETIME WHERE `Users`.`user_name` = @USER";
                         cmd.CommandText = updateQuery;
 
-                        cmd.Parameters.Add("@USER", MySqlDbType.VarChar);
-                        cmd.Parameters["@USER"].Value = user;
-
-                        cmd.Parameters.Add("@DATETIME", MySqlDbType.DateTime);
-                        cmd.Parameters["@DATETIME"].Value = sqlFormattedDate;
+                        cmd.Parameters.AddWithValue("@USER", user);
+                        cmd.Parameters.AddWithValue("@DATETIME", sqlFormattedDate);
                         cmd.ExecuteNonQuery();
                     }
                 }
@@ -77,15 +70,12 @@ namespace TBG.Data.Classes
             //check password empty
             if (string.IsNullOrEmpty(pass)) { return false; }
 
-            string query = "SELECT * FROM `Users` WHERE `user_name` LIKE '{@USER}' AND `password` LIKE '{@PASS}'";
+            string query = "SELECT * FROM `Users` WHERE `user_name` LIKE @USER AND `password` LIKE @PASS";
             //Validate user exists and password is correct
             using (MySqlCommand cmd = new MySqlCommand(query, dbConn))
             {
-                cmd.Parameters.Add("@USER", MySqlDbType.VarChar);
-                cmd.Parameters["@USER"].Value = user;
-
-                cmd.Parameters.Add("@PASS", MySqlDbType.VarChar);
-                cmd.Parameters["@PASS"].Value = pass;
+                cmd.Parameters.AddWithValue("@USER", user);
+                cmd.Parameters.AddWithValue("@PASS", pass);
 
                 cmd.ExecuteNonQuery();
                 using (MySqlDataReader reader = cmd.ExecuteReader())
@@ -99,13 +89,13 @@ namespace TBG.Data.Classes
 
         public bool ValidateUserName(string user)
         {
-            string query = "SELECT * FROM `Users` WHERE `user_name` LIKE '{@USER}'";
-            //Validate user exists
+            //check user name empty 
+            if (string.IsNullOrEmpty(user)) { return false; }
+
+            string query = "SELECT * FROM `Users` WHERE `user_name` LIKE @USER";
             using (MySqlCommand cmd = new MySqlCommand(query, dbConn))
             {
-                cmd.Parameters.Add("@USER", MySqlDbType.VarChar);
-                cmd.Parameters["@USER"].Value = user;
-
+                cmd.Parameters.AddWithValue("@USER", user);
                 cmd.ExecuteNonQuery();
                 using (MySqlDataReader reader = cmd.ExecuteReader())
                 {
