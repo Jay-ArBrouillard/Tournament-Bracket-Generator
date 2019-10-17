@@ -23,14 +23,17 @@ namespace TBG.Data.Classes
 
         public bool CreateUser(string user, string pass)
         {
-            string query = string.Format("INSERT INTO `team4`.`Users` (`user_id`, `user_name`, `password`, `active`, `admin`) VALUES (NULL, '{0}', '{1}', '1', '0')", user, pass);
+            string query = "INSERT INTO `team4`.`Users` (`user_id`, `user_name`, `password`) VALUES (NULL, '@USER', '@PASS')";
             using (MySqlCommand cmd = new MySqlCommand(query, dbConn))
             {
+                cmd.Parameters.Add("@USER", MySqlDbType.VarChar);
+                cmd.Parameters["@USER"].Value = user;
+
+                cmd.Parameters.Add("@PASS", MySqlDbType.VarChar);
+                cmd.Parameters["@PASS"].Value = pass;
+
                 int rowsEffected = cmd.ExecuteNonQuery();
-                if (rowsEffected > 0)
-                {
-                    return true;
-                }
+                if (rowsEffected > 0) { return true; }
             }
 
             return false;
@@ -38,11 +41,14 @@ namespace TBG.Data.Classes
 
         public void UpdateLastLogin(string user)
         {
-            string query = string.Format("SELECT * FROM `Users` WHERE `user_name` LIKE '{0}'", user);
+            string query = "SELECT * FROM `Users` WHERE `user_name` LIKE '{@USER}'";
             //Validate user exists
             using (MySqlCommand cmd = new MySqlCommand(query, dbConn))
             {
+                cmd.Parameters.Add("@USER", MySqlDbType.VarChar);
+                cmd.Parameters["@USER"].Value = user;
                 cmd.ExecuteNonQuery();
+
                 using (MySqlDataReader reader = cmd.ExecuteReader())
                 {
                     if (reader.HasRows)
@@ -50,8 +56,14 @@ namespace TBG.Data.Classes
                         reader.Close();
                         DateTime myDateTime = DateTime.Now;
                         string sqlFormattedDate = myDateTime.ToString("yyyy-MM-dd HH:mm:ss.fff");
-                        string updateQuery = string.Format("UPDATE `team4`.`Users` SET `last_login` = '{0}' WHERE `Users`.`user_name` = '{1}'", sqlFormattedDate, user);
+                        string updateQuery = "UPDATE `team4`.`Users` SET `last_login` = '{@DATETIME}' WHERE `Users`.`user_name` = '{@USER}'";
                         cmd.CommandText = updateQuery;
+
+                        cmd.Parameters.Add("@USER", MySqlDbType.VarChar);
+                        cmd.Parameters["@USER"].Value = user;
+
+                        cmd.Parameters.Add("@DATETIME", MySqlDbType.DateTime);
+                        cmd.Parameters["@DATETIME"].Value = sqlFormattedDate;
                         cmd.ExecuteNonQuery();
                     }
                 }
@@ -61,26 +73,24 @@ namespace TBG.Data.Classes
         public bool Validate(string user, string pass)
         {
             //check user name empty 
-            if (string.IsNullOrEmpty(user))
-            {
-                return false;
-            }
+            if (string.IsNullOrEmpty(user)) { return false; }
             //check password empty
-            if (string.IsNullOrEmpty(pass))
-            {
-                return false;
-            }
-            string query = string.Format("SELECT * FROM `Users` WHERE `user_name` LIKE '{0}' AND `password` LIKE '{1}'", user, pass);
+            if (string.IsNullOrEmpty(pass)) { return false; }
+
+            string query = "SELECT * FROM `Users` WHERE `user_name` LIKE '{@USER}' AND `password` LIKE '{@PASS}'";
             //Validate user exists and password is correct
             using (MySqlCommand cmd = new MySqlCommand(query, dbConn))
             {
+                cmd.Parameters.Add("@USER", MySqlDbType.VarChar);
+                cmd.Parameters["@USER"].Value = user;
+
+                cmd.Parameters.Add("@PASS", MySqlDbType.VarChar);
+                cmd.Parameters["@PASS"].Value = pass;
+
                 cmd.ExecuteNonQuery();
                 using (MySqlDataReader reader = cmd.ExecuteReader())
                 {
-                    if (reader.HasRows)
-                    {
-                        return true;
-                    }
+                    if (reader.HasRows) { return true; }
                 }
             }
 
@@ -89,17 +99,17 @@ namespace TBG.Data.Classes
 
         public bool ValidateUserName(string user)
         {
-            string query = string.Format("SELECT * FROM `Users` WHERE `user_name` LIKE '{0}'", user);
+            string query = "SELECT * FROM `Users` WHERE `user_name` LIKE '{@USER}'";
             //Validate user exists
             using (MySqlCommand cmd = new MySqlCommand(query, dbConn))
             {
+                cmd.Parameters.Add("@USER", MySqlDbType.VarChar);
+                cmd.Parameters["@USER"].Value = user;
+
                 cmd.ExecuteNonQuery();
                 using (MySqlDataReader reader = cmd.ExecuteReader())
                 {
-                    if (reader.HasRows)
-                    {
-                        return false;
-                    }
+                    if (reader.HasRows) { return false; }
                 }
             }
 
@@ -108,10 +118,7 @@ namespace TBG.Data.Classes
 
         public void Dispose()
         {
-            if (dbConn != null)
-            {
-                dbConn.Close();
-            }
+            if (dbConn != null) { dbConn.Close(); }
         }
     }
 }
