@@ -56,7 +56,10 @@ namespace TBG.UI
                 SetDisplayColors(new SolidColorBrush(Colors.Green));
                 login.updateLastLogin(user);
                 //Start Application 
-                //TODO////////////////////////////////////////////////////////
+                Dashboard dB = new Dashboard(source, business);
+                dB.Show();
+                this.Close();
+
             }
             else
             {
