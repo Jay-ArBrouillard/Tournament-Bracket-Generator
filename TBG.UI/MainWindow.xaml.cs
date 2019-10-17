@@ -59,7 +59,6 @@ namespace TBG.UI
                 Dashboard dB = new Dashboard(source, business);
                 dB.Show();
                 this.Close();
-
             }
             else
             {
@@ -110,6 +109,14 @@ namespace TBG.UI
         private void Exit_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+
+        private void GuestLogin_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            //Start Application but with read only permission
+            Dashboard dB = new Dashboard(source, business);
+            dB.Show();
+            this.Close();
         }
     }
 }
