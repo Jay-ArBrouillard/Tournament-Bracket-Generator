@@ -29,10 +29,5 @@ namespace TBG.UI
         {
 
         }
-
-        public void Close_Application(object sender, RoutedEventArgs e)
-        {
-            WindowHelper.Exit_App(this);
-        }
     }
 }
