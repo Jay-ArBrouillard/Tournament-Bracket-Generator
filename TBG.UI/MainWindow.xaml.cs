@@ -22,9 +22,9 @@ namespace TBG.UI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly IProvider source;
-        private readonly IController business;
-        private readonly ILogin login;
+        private IProvider source;
+        private IController business;
+        private ILogin login;
         public MainWindow()
         {
             InitializeComponent();
