@@ -6,7 +6,7 @@ using TBG.Data.Entities;
 
 namespace TBG.Data.Classes
 {
-    public class DatabaseProvider : IDatabaseProvider, IDisposable
+    public class DatabaseProvider : IProvider, IDisposable
     {
         private static string connString = ConfigurationManager.ConnectionStrings["MySQLDB"].ConnectionString;
         private static MySqlConnection dbConn;
@@ -51,7 +51,7 @@ namespace TBG.Data.Classes
             using (MySqlCommand cmd = new MySqlCommand(query, dbConn))
             {
                 cmd.Parameters.AddWithValue("@USER", userName);
-                cmd.Parameters.AddWithValue("@PASS", password);
+                cmd.Parameters.AddWithValue("@PASS", MD5.Encrypt(password, true));
 
                 int rowsEffected = cmd.ExecuteNonQuery();
                 if (rowsEffected > 0) { return true; }
@@ -74,7 +74,7 @@ namespace TBG.Data.Classes
                     reader.Read();
                     if (reader.HasRows)
                     {
-                        User found = new User(reader["user_name"].ToString(), reader["password"].ToString());
+                        User found = new User(reader["user_name"].ToString(), MD5.Decrypt(reader["password"].ToString(), true));
                         return found;
                     }
                 }

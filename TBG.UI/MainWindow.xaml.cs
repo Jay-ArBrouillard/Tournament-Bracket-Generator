@@ -23,7 +23,7 @@ namespace TBG.UI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private IDatabaseProvider source;
+        private IProvider source;
         private ILoginController business;
         public MainWindow()
         {

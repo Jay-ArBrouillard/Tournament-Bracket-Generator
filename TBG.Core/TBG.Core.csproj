@@ -45,7 +45,7 @@
     <Compile Include="Interfaces\ILoginController.cs" />
     <Compile Include="Interfaces\IPerson.cs" />
     <Compile Include="Interfaces\IPrize.cs" />
-    <Compile Include="Interfaces\IDatabaseProvider.cs" />
+    <Compile Include="Interfaces\IProvider.cs" />
     <Compile Include="Interfaces\ITeam.cs" />
     <Compile Include="Interfaces\ITournament.cs" />
     <Compile Include="Interfaces\IUser.cs" />

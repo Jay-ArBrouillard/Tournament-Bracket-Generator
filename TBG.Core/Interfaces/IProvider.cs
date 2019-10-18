@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TBG.Core.Interfaces
 {
-    public interface IDatabaseProvider
+    public interface IProvider
     {
         bool createTournament(ITournament entry);
         bool createTeam(ITeam entry);

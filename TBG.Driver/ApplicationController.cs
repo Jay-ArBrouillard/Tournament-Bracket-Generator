@@ -6,7 +6,7 @@ namespace TBG.Driver
 {
     public static class ApplicationController
     {
-        public static IDatabaseProvider getDatabaseProvider()
+        public static IProvider getDatabaseProvider()
         {
             return new DatabaseProvider();
         }

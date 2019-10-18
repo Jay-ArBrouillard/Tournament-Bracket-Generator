@@ -10,10 +10,10 @@ namespace TBG.UI
     /// </summary>
     public partial class Dashboard : Window
     {
-        private IDatabaseProvider source;
+        private IProvider source;
         private IController business;
 
-        public Dashboard(IDatabaseProvider source)
+        public Dashboard(IProvider source)
         {
             InitializeComponent();
             this.source = source;
