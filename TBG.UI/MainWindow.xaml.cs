@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TBG.Core.Interfaces;
 using TBG.Driver;
+using TBG.UI.Models;
 
 namespace TBG.UI
 {
@@ -22,15 +23,13 @@ namespace TBG.UI
     /// </summary>
     public partial class MainWindow : Window
     {
-        private IProvider source;
-        private IController business;
-        private IDatabaseLogin dbLogin;
+        private IDatabaseProvider source;
+        private ILoginController business;
         public MainWindow()
         {
             InitializeComponent();
-            source = ApplicationController.GetProvider();
-            business = ApplicationController.GetController();
-            dbLogin = ApplicationController.GetDatabaseLogin();
+            source = ApplicationController.getDatabaseProvider();
+            business = ApplicationController.getLoginController();
         }
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -49,14 +48,21 @@ namespace TBG.UI
         {
             string user = userNameTextBox.Text;
             string pass = passwordTextBox.Password;
-            //check if eligible to be logged in 
-            if (dbLogin.Validate(user, pass))
+            User thisUser = new User(user, pass);
+            var userExisting = source.getUser(user);
+            bool validate = business.validateLogin(thisUser, userExisting);
+
+            if (validate)
             {
+                //Update last login time them in
+                source.updateLoginTime(thisUser);
+
+                //Visuals
                 displayMessage.Text = String.Empty;
                 SetDisplayColors(new SolidColorBrush(Colors.Green));
-                dbLogin.UpdateLastLogin(user);
+                
                 //Start Application 
-                Dashboard dB = new Dashboard(source, business);
+                Dashboard dB = new Dashboard(source);
                 dB.Show();
                 this.Close();
             }
@@ -76,24 +82,29 @@ namespace TBG.UI
         {
             string user = userNameTextBox.Text;
             string pass = passwordTextBox.Password;
-            if (!dbLogin.ValidateUserName(user))
-            {
-                displayMessage.Text = "Username already exists";
-                SetDisplayColors(new SolidColorBrush(Colors.Red));
-            }
-            else
+            User thisUser = new User(user, pass);
+            var userExisting = source.getUser(user);
+            bool validate = business.validateRegister(thisUser, userExisting);
+
+            if (validate)
             {
                 SetDisplayColors(new SolidColorBrush(Colors.Green));
 
-                bool success = dbLogin.CreateUser(user, pass);
+                bool success = source.createUser(thisUser);
                 if (success)
                 {
                     displayMessage.Text = "Created new user " + user;
-                } 
+                }
                 else
                 {
                     displayMessage.Text = "Error creating new user";
                 }
+
+            }
+            else
+            {
+                displayMessage.Text = "Username already exists";
+                SetDisplayColors(new SolidColorBrush(Colors.Red));
             }
 
         }
@@ -114,7 +125,7 @@ namespace TBG.UI
         private void GuestLogin_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             //Start Application but with read only permission
-            Dashboard dB = new Dashboard(source, business);
+            Dashboard dB = new Dashboard(source);
             dB.Show();
             this.Close();
         }

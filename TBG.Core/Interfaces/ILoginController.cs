@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace TBG.Core.Interfaces
 {
-    public interface IProvider
+    public interface ILoginController
     {
-        bool createTournament(ITournament entry);
-        bool createTeam(ITeam entry);
-        bool createPerson(IPerson entry);
+        bool validateRegister(IUser thisUser, IUser thatUser);
+        bool validateLogin(IUser thisUser, IUser thatUser);
     }
 }

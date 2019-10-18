@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="BusinessController.cs" />
     <Compile Include="Dashboard.cs" />
+    <Compile Include="LoginController.cs" />
     <Compile Include="Matchup.cs" />
     <Compile Include="MatchupEntry.cs" />
     <Compile Include="Person.cs" />
