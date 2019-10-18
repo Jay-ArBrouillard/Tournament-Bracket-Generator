@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using TBG.Core.Interfaces;
+using TBG.Driver;
 using TBG.UI.Models;
 
 namespace TBG.UI
@@ -12,11 +13,11 @@ namespace TBG.UI
         private IProvider source;
         private IController business;
 
-        public Dashboard(IProvider source, IController business)
+        public Dashboard(IProvider source)
         {
             InitializeComponent();
             this.source = source;
-            this.business = business;
+            business = ApplicationController.getController();
 
             for (int i = 0; i < 10; i++)
             {
