@@ -70,6 +70,9 @@
     <Compile Include="TeamWindow.xaml.cs">
       <DependentUpon>TeamWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Tournament.xaml.cs">
+      <DependentUpon>Tournament.xaml</DependentUpon>
+    </Compile>
     <Page Include="Dashboard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -90,6 +93,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="TeamWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Tournament.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

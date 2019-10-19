@@ -45,5 +45,12 @@ namespace TBG.UI
         {
             //Look at selected item in tournamentList, pass that id to Tournament Form
         }
+
+        private void CreateTournament_Click(object sender, RoutedEventArgs e)
+        {
+            Tournament newTournament = new Tournament();
+            newTournament.Show();
+            this.Close();
+        }
     }
 }
