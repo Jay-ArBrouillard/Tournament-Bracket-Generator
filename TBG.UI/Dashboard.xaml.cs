@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using TBG.Core.Interfaces;
 using TBG.Driver;
 using TBG.UI.Models;
@@ -19,10 +20,24 @@ namespace TBG.UI
             this.source = source;
             business = ApplicationController.getController();
 
-            for (int i = 0; i < 10; i++)
+            var tournaments = source.GetAllTournaments();
+            var tournamentTypes = source.GetTournamentTypes();
+
+            foreach (var tournament in tournaments)
             {
-                this.tournamentList.Items.Add(new TournamentListBoxItem("Item " + i));
-                this.typeFilter.Items.Add("Item " + i);
+                var item = new TournamentListBoxItem(tournament.TournamentName);
+                this.tournamentList.Items.Add(new ListBoxItem {
+                    Content = item.Name
+                });
+            }
+
+            foreach (var tournamentType in tournamentTypes)
+            {
+                this.typeFilter.Items.Add(new ListBoxItem {
+                    Content = new Label {
+                        Content = tournamentType.TournamentTypeName
+                    }
+                });
             }
         }
 
