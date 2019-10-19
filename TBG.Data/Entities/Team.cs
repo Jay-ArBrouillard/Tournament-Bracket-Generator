@@ -20,5 +20,11 @@ namespace TBG.Data.Entities
             Wins = wins;
             Losses = losses;
         }
+
+        public string TeamName { get; set;}
+        public List<IPerson> TeamMembers { get; set; }
+        public int Wins { get; set; }
+        public int Losses { get; set; }
+
     }
 }

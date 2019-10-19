@@ -28,8 +28,8 @@ namespace TBG.UI
         public MainWindow()
         {
             InitializeComponent();
-            source = ApplicationController.getDatabaseProvider();
-            business = ApplicationController.getLoginController();
+            source = ApplicationController.GetProvider();
+            business = ApplicationController.GetLoginController();
         }
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -62,7 +62,7 @@ namespace TBG.UI
                 SetDisplayColors(new SolidColorBrush(Colors.Green));
                 
                 //Start Application 
-                Dashboard dB = new Dashboard(source);
+                Dashboard dB = new Dashboard();
                 dB.Show();
                 this.Close();
             }
@@ -125,7 +125,7 @@ namespace TBG.UI
         private void GuestLogin_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             //Start Application but with read only permission
-            Dashboard dB = new Dashboard(source);
+            Dashboard dB = new Dashboard();
             dB.Show();
             this.Close();
         }

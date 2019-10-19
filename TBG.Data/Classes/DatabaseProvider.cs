@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using TBG.Core.Interfaces;
 using TBG.Data.Entities;
+using TBG.Data.Tables;
 
 namespace TBG.Data.Classes
 {
@@ -232,5 +233,14 @@ namespace TBG.Data.Classes
 
         }
 
+        public List<ITournament> GetAllTournaments()
+        {
+            return TournamentTable.GetAll(); ;
+        }
+
+        public List<ITournamentType> GetTournamentTypes()
+        {
+            return TournamentTypeTable.GetAll();
+        }
     }
 }

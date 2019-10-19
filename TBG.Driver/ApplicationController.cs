@@ -6,17 +6,17 @@ namespace TBG.Driver
 {
     public static class ApplicationController
     {
-        public static IProvider getDatabaseProvider()
+        public static IProvider GetProvider()
         {
             return new DatabaseProvider();
         }
 
-        public static IController getController()
+        public static IController GetController()
         {
             return new BusinessController();
         }
 
-        public static ILoginController getLoginController()
+        public static ILoginController GetLoginController()
         {
             return new LoginController();
         }

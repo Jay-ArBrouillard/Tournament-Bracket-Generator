@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using TBG.Core.Interfaces;
 using TBG.Driver;
 using TBG.UI.Models;
@@ -13,22 +14,36 @@ namespace TBG.UI
         private IProvider source;
         private IController business;
 
-        public Dashboard(IProvider source)
+        public Dashboard()
         {
             InitializeComponent();
-            this.source = source;
-            business = ApplicationController.getController();
+            this.source = ApplicationController.GetProvider();
+            business = ApplicationController.GetController();
 
-            for (int i = 0; i < 10; i++)
+            var tournaments = source.GetAllTournaments();
+            var tournamentTypes = source.GetTournamentTypes();
+
+            foreach (var tournament in tournaments)
             {
-                this.tournamentList.Items.Add(new TournamentListBoxItem("Item " + i));
-                this.typeFilter.Items.Add("Item " + i);
+                var item = new TournamentListBoxItem(tournament.TournamentName);
+                this.tournamentList.Items.Add(new ListBoxItem {
+                    Content = item.Name
+                });
+            }
+
+            foreach (var tournamentType in tournamentTypes)
+            {
+                this.typeFilter.Items.Add(new ListBoxItem {
+                    Content = new Label {
+                        Content = tournamentType.TournamentTypeName
+                    }
+                });
             }
         }
 
         public void Load_Tournament(object sender, RoutedEventArgs e)
         {
-
+            //Look at selected item in tournamentList, pass that id to Tournament Form
         }
     }
 }
