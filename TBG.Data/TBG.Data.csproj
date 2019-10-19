@@ -44,6 +44,9 @@
       <HintPath>MySQLv4.5\MySql.Web.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Collections.NonGeneric, Version=4.0.2.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.NonGeneric.4.3.0\lib\net46\System.Collections.NonGeneric.dll</HintPath>
+    </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -56,6 +59,8 @@
   <ItemGroup>
     <Compile Include="Classes\DatabaseProvider.cs" />
     <Compile Include="Classes\MD5.cs" />
+    <Compile Include="Entities\Person.cs" />
+    <Compile Include="Entities\Team.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -70,6 +75,9 @@
     <Content Include="SQL\Tables\Teams.sql" />
     <Content Include="SQL\Tables\Tournaments.sql" />
     <Content Include="SQL\Tables\TournamentTeamPeople.sql" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
