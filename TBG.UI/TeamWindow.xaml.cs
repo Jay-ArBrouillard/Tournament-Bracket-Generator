@@ -162,7 +162,14 @@ namespace TBG.UI
                     //Message box for now. UI visuals will handle later
                     MessageBox.Show(this, "Error creating new team");
                 }
+
+
             }
+
+            //Go back to tournament screen after creating team
+            Tournament tournament = new Tournament();
+            tournament.Show();
+            this.Close();
         }
     }
 
