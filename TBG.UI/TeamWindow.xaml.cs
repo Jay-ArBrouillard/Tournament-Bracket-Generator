@@ -33,7 +33,7 @@ namespace TBG.UI
         public TeamWindow()
         {
             InitializeComponent();
-            source = ApplicationController.getDatabaseProvider();
+            source = ApplicationController.GetProvider();
             personController = ApplicationController.getPersonController();
             teamController = ApplicationController.getTeamController();
 
