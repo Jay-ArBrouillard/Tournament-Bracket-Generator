@@ -14,7 +14,7 @@ namespace TBG.Data.Tables
     {
         private static string connString = ConfigurationManager.ConnectionStrings["MySQLDB"].ConnectionString;
 
-        public static Tournament GetTournament(int Id)
+        public static Tournament Get(int Id)
         {
             MySqlConnection dbConn = new MySqlConnection(connString);
             dbConn.Open();
