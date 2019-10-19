@@ -14,11 +14,11 @@ namespace TBG.UI
         private IProvider source;
         private IController business;
 
-        public Dashboard(IProvider source)
+        public Dashboard()
         {
             InitializeComponent();
-            this.source = source;
-            business = ApplicationController.getController();
+            this.source = ApplicationController.GetProvider();
+            business = ApplicationController.GetController();
 
             var tournaments = source.GetAllTournaments();
             var tournamentTypes = source.GetTournamentTypes();
@@ -43,7 +43,7 @@ namespace TBG.UI
 
         public void Load_Tournament(object sender, RoutedEventArgs e)
         {
-
+            //Look at selected item in tournamentList, pass that id to Tournament Form
         }
     }
 }
