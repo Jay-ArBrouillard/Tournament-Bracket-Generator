@@ -22,7 +22,8 @@
                        FontWeight="Bold"
                        Grid.Column="1"
                        Grid.Row="0"
-                       FontSize="18"></TextBlock>
+                       FontSize="18">
+                </TextBlock>
             </Grid>
         </DataTemplate>
 
@@ -47,13 +48,15 @@
                 </ComboBox>
                 <TextBox x:Name="playerFilter" Background="#F3F3F3" HorizontalAlignment="Left" Width="200" Margin="30,25,0,0" FontFamily="Champagne &amp; Limousines" FontSize="18"/>
                 <TextBox x:Name="prizeFilter" Background="#F3F3F3" HorizontalAlignment="Left" Width="200" Margin="30,25,0,0" FontFamily="Champagne &amp; Limousines" FontSize="18"/>
+                <Button x:Name="createTournament" Width="150" Height="30" Margin="0,50,0,0" FontFamily="Champagne &amp; Limousines" Click="CreateTournament_Click">
+                    <TextBlock Text="Create New Tournament"/>
+                </Button>
             </StackPanel>
             <StackPanel Width="500" Margin="50,0,0,0">
                 <ListBox x:Name="tournamentList" Height="250" Width="400" Background="#FFFFFF" Margin="0,60,0,0" HorizontalAlignment="Center"/>
                 <Button Width="200" HorizontalAlignment="center" VerticalAlignment="Bottom" Margin="0,10,0,0" Content="Select Tournament" Click="Load_Tournament"/>
             </StackPanel>
         </StackPanel>
-
 
     </Grid>
 </Window>
