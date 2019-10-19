@@ -14,5 +14,7 @@ namespace TBG.Core.Interfaces
         bool createUser(IUser thisUser);
         IUser getUser(string userName);
         bool updateLoginTime(IUser thisUser);
+        List<ITournament> GetAllTournaments();
+        List<ITournamentType> GetTournamentTypes();
     }
 }

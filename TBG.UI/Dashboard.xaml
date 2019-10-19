@@ -43,15 +43,13 @@
                 <TextBox x:Name="nameSearch" Background="#F3F3F3" HorizontalAlignment="Left" Width="200" Margin="30,25,0,0" FontFamily="Champagne &amp; Limousines" FontSize="18"/>
                 <Label Content="Filter By Tournament Type" Margin="30,25,0,0" FontSize="18" FontFamily="Champagne &amp; Limousines"></Label>
                 <ComboBox x:Name="typeFilter" Width="200" HorizontalAlignment="left" Margin="30,0,0,0" Background="#D0D7DE" SelectedIndex="0">
-                    <ListBoxItem >Select One...</ListBoxItem>
+                    <ListBoxItem>Select One...</ListBoxItem>
                 </ComboBox>
                 <TextBox x:Name="playerFilter" Background="#F3F3F3" HorizontalAlignment="Left" Width="200" Margin="30,25,0,0" FontFamily="Champagne &amp; Limousines" FontSize="18"/>
                 <TextBox x:Name="prizeFilter" Background="#F3F3F3" HorizontalAlignment="Left" Width="200" Margin="30,25,0,0" FontFamily="Champagne &amp; Limousines" FontSize="18"/>
             </StackPanel>
             <StackPanel Width="500" Margin="50,0,0,0">
-                <ListBox x:Name="tournamentList" Height="250" Width="400" Background="#FFFFFF" Margin="0,60,0,0" HorizontalAlignment="Center"
-                         Style="{DynamicResource ResourceKey=styleListBox}">
-                </ListBox>
+                <ListBox x:Name="tournamentList" Height="250" Width="400" Background="#FFFFFF" Margin="0,60,0,0" HorizontalAlignment="Center"/>
                 <Button Width="200" HorizontalAlignment="center" VerticalAlignment="Bottom" Margin="0,10,0,0" Content="Select Tournament" Click="Load_Tournament"/>
             </StackPanel>
         </StackPanel>
