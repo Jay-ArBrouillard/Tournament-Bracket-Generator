@@ -21,5 +21,14 @@ namespace TBG.Driver
             return new LoginController();
         }
 
+        public static IPersonController getPersonController()
+        {
+            return new PersonController();
+        }
+
+        public static ITeamController getTeamController()
+        {
+            return new TeamController();
+        }
     }
 }

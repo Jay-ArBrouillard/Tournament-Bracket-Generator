@@ -9,6 +9,7 @@ namespace TBG.Business
 {
     public class Person : IPerson
     {
+        public int PersonId { get; set; }
         /// <summary>
         /// Represents this Person's first name.
         /// </summary>
@@ -28,5 +29,9 @@ namespace TBG.Business
         /// Represents this Person's phone number in the form (###-###-####).
         /// </summary>
         public string Phone { get; set; }
+
+        public int Wins { get; set; }
+
+        public int Losses { get; set; }
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TBG.Core.Interfaces;
 
-namespace TBG.Data.Entities
+namespace TBG.UI.Classes
 {
     public class Person : IPerson
     {
@@ -53,6 +53,13 @@ namespace TBG.Data.Entities
             {
                 Ratio = ((decimal)Wins / (decimal)Losses).ToString("0.##").Trim();
             }
+        }
+
+        public Person(string firstName, string lastName, string ratio)
+        {
+            FirstName = firstName;
+            LastName = lastName;
+            Ratio = ratio;
         }
     }
 }
