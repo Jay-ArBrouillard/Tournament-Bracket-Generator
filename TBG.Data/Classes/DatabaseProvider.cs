@@ -235,7 +235,7 @@ namespace TBG.Data.Classes
 
         public List<ITournament> GetAllTournaments()
         {
-            return TournamentTable.GetAll(); ;
+            return TournamentTable.GetAll(dbConn); ;
         }
 
         public List<ITournamentType> GetTournamentTypes()
