@@ -86,13 +86,21 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="SQL\Tables\People.sql" />
-    <Content Include="SQL\Tables\Teams.sql" />
-    <Content Include="SQL\Tables\Tournaments.sql" />
-    <Content Include="SQL\Tables\TournamentTeamPeople.sql" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <Content Include="SQL\Tables\MatchupEntries.sql" />
+    <Content Include="SQL\Tables\Matchups.sql" />
+    <Content Include="SQL\Tables\Persons.sql" />
+    <Content Include="SQL\Tables\Places.sql" />
+    <Content Include="SQL\Tables\Prizes.sql" />
+    <Content Include="SQL\Tables\RoundMatchups.sql" />
+    <Content Include="SQL\Tables\Rounds.sql" />
+    <Content Include="SQL\Tables\TeamMembers.sql" />
+    <Content Include="SQL\Tables\TournamentEntries.sql" />
+    <Content Include="SQL\Tables\TournamentPrizes.sql" />
+    <Content Include="SQL\Tables\TournamentTypes.sql" />
+    <Content Include="SQL\Tables\Users.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
