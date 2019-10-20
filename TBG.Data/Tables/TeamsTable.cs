@@ -42,11 +42,11 @@ namespace TBG.Data.Tables
             return null;
         }
 
-        public static ITeam Get(string TeamName, MySqlConnection dbConn)
+        public static ITeam Get(string value, MySqlConnection dbConn)
         {
             string query = "SELECT * FROM Teams WHERE team_name = @team";
             Dictionary<string, string> param = new Dictionary<string, string>();
-            param.Add("@team", TeamName);
+            param.Add("@team", value);
 
             using (var reader = DatabaseHelper.GetReader(query, dbConn, param))
             {
@@ -92,16 +92,16 @@ namespace TBG.Data.Tables
             return null;
         }
 
-        public static ITeam Delete(ITeam tournament, MySqlConnection dbConn)
+        public static ITeam Delete(ITeam entity, MySqlConnection dbConn)
         {
             string query = "DELETE FROM Users WHERE team_id = @id";
             Dictionary<string, string> param = new Dictionary<string, string>();
-            param.Add("@id", tournament.TeamId.ToString());
+            param.Add("@id", entity.TeamId.ToString());
 
             var result = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
             if (result != 0)
             {
-                return tournament;
+                return entity;
             }
 
             return null;

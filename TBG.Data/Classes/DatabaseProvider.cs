@@ -61,43 +61,14 @@ namespace TBG.Data.Classes
         #endregion
 
         #region PERSON METHODS
-        public bool createPerson(IPerson entry)
+        public IPerson createPerson(IPerson entry)
         {
-            string query = "INSERT INTO `team4`.`Persons` (`person_id`, `first_name`, `last_name`, `email`, `phone`, `wins`, `losses`) VALUES (NULL, @FIRST, @LAST, @EMAIL, @PHONE, '0', '0')";
-            using (MySqlCommand cmd = new MySqlCommand(query, dbConn))
-            {
-                cmd.Parameters.AddWithValue("@FIRST", entry.FirstName);
-                cmd.Parameters.AddWithValue("@LAST", entry.LastName);
-                cmd.Parameters.AddWithValue("@EMAIL", entry.Email);
-                cmd.Parameters.AddWithValue("@PHONE", entry.Phone);
-
-                int rowsEffected = cmd.ExecuteNonQuery();
-                if (rowsEffected > 0) { return true; }
-            }
-
-            return false;
+            return PersonsTable.Create(entry, dbConn);
         }
 
         public List<IPerson> getPeople()
         {
-            List<IPerson> personList = new List<IPerson>();
-
-            string query = "SELECT * FROM `Persons`";
-            using (MySqlCommand cmd = new MySqlCommand(query, dbConn))
-            {
-                cmd.ExecuteNonQuery();
-                using (MySqlDataReader reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        IPerson person = new Person(int.Parse(reader["person_id"].ToString()),reader["first_name"].ToString(), reader["last_name"].ToString(), 
-                            reader["email"].ToString(), reader["phone"].ToString(), int.Parse(reader["wins"].ToString()), int.Parse(reader["losses"].ToString()));
-                        personList.Add(person);
-                    }
-                }
-            }
-
-            return personList;
+            return PersonsTable.GetAll(dbConn);
         }
         #endregion
         

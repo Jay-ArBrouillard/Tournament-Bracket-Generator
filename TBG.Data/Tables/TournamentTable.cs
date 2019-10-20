@@ -9,18 +9,18 @@ namespace TBG.Data.Tables
 {
     public static class TournamentTable
     {
-        public static ITournament Create(ITournament tournament, MySqlConnection dbConn)
+        public static ITournament Create(ITournament entity, MySqlConnection dbConn)
         {
             string query = "INSERT INTO Tournament (user_id, tournament_name, entry_fee, total_prize_pool, tournament_type_id) VALUES (@user, @name, @fee, @pool, @type)";
             Dictionary<string, string> param = new Dictionary<string, string>();
-            param.Add("@user", tournament.UserId.ToString());
-            param.Add("@name", tournament.TournamentName);
-            param.Add("@fee", tournament.EntryFee.ToString());
-            param.Add("@pool", tournament.TotalPrizePool.ToString());
-            param.Add("@type", tournament.TournamentTypeId.ToString());
+            param.Add("@user", entity.UserId.ToString());
+            param.Add("@name", entity.TournamentName);
+            param.Add("@fee", entity.EntryFee.ToString());
+            param.Add("@pool", entity.TotalPrizePool.ToString());
+            param.Add("@type", entity.TournamentTypeId.ToString());
 
             var results = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
-            if (results > 0) { return tournament; }
+            if (results > 0) { return entity; }
             return null;
         }
 
@@ -55,36 +55,36 @@ namespace TBG.Data.Tables
             return result;
         }
 
-        public static ITournament Update(ITournament tournament, MySqlConnection dbConn)
+        public static ITournament Update(ITournament entity, MySqlConnection dbConn)
         {
             string query = "UPDATE Tournaments SET user_id = @user, tournament_name = @name, entry_fee = @fee, total_prize_pool = @pool, tournament_type_id = @type  WHERE tournament_id = @id";
             Dictionary<string, string> param = new Dictionary<string, string>();
-            param.Add("@user", tournament.UserId.ToString());
-            param.Add("@name", tournament.TournamentName.ToString());
-            param.Add("@fee", tournament.EntryFee.ToString());
-            param.Add("@pool", tournament.TotalPrizePool.ToString());
-            param.Add("@type", tournament.TournamentTypeId.ToString());
-            param.Add("@id", tournament.TournamentId.ToString());
+            param.Add("@user", entity.UserId.ToString());
+            param.Add("@name", entity.TournamentName.ToString());
+            param.Add("@fee", entity.EntryFee.ToString());
+            param.Add("@pool", entity.TotalPrizePool.ToString());
+            param.Add("@type", entity.TournamentTypeId.ToString());
+            param.Add("@id", entity.TournamentId.ToString());
 
             var result = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
             if (result != 0)
             {
-                return tournament;
+                return entity;
             }
 
             return null;
         }
 
-        public static ITournament Delete(ITournament tournament, MySqlConnection dbConn)
+        public static ITournament Delete(ITournament entity, MySqlConnection dbConn)
         {
             string query = "DELETE FROM Tournaments WHERE tournament_id = @id";
             Dictionary<string, string> param = new Dictionary<string, string>();
-            param.Add("@id", tournament.TournamentId.ToString());
+            param.Add("@id", entity.TournamentId.ToString());
 
             var result = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
             if (result != 0)
             {
-                return tournament;
+                return entity;
             }
 
             return null;

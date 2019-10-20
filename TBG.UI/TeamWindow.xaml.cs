@@ -107,10 +107,8 @@ namespace TBG.UI
             bool validate = personController.validatePerson(newPerson);
 
             if (validate)
-            {
-                bool success = source.createPerson(newPerson);
-
-                if (success)
+            { 
+                if (source.createPerson(newPerson) != null)
                 {
                     SetDisplayColors(new SolidColorBrush(Colors.Green));
 

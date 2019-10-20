@@ -12,18 +12,18 @@ namespace TBG.Data.Tables
 {
     public static class UsersTable
     {
-        public static IUser Create(IUser user, MySqlConnection dbConn)
+        public static IUser Create(IUser entity, MySqlConnection dbConn)
         {
             string query = "INSERT INTO Users (user_name, password, active, admin, last_login) VALUES (@username, @password, @active, @admin, @lastLogin)";
             Dictionary<string, string> param = new Dictionary<string, string>();
-            param.Add("@username", user.UserName);
-            param.Add("@password", user.Password);
-            param.Add("@active", DatabaseHelper.BoolToString(user.Active));
-            param.Add("@admin", DatabaseHelper.BoolToString(user.Admin));
-            param.Add("@lastLogin", DatabaseHelper.DateToString(user.LastLogin));
+            param.Add("@username", entity.UserName);
+            param.Add("@password", entity.Password);
+            param.Add("@active", DatabaseHelper.BoolToString(entity.Active));
+            param.Add("@admin", DatabaseHelper.BoolToString(entity.Admin));
+            param.Add("@lastLogin", DatabaseHelper.DateToString(entity.LastLogin));
 
             var results = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
-            if (results > 0) { return user; }
+            if (results > 0) { return entity; }
             return null;
         }
 
@@ -44,11 +44,11 @@ namespace TBG.Data.Tables
             return null;
         }
 
-        public static IUser Get(string Username, MySqlConnection dbConn)
+        public static IUser Get(string value, MySqlConnection dbConn)
         {
             string query = "SELECT * FROM Users WHERE user_name = @User";
             Dictionary<string, string> param = new Dictionary<string, string>();
-            param.Add("@User", Username);
+            param.Add("@User", value);
 
             using (var reader = DatabaseHelper.GetReader(query, dbConn, param))
             {
@@ -76,36 +76,36 @@ namespace TBG.Data.Tables
             return results;
         }
 
-        public static IUser Update(IUser user, MySqlConnection dbConn)
+        public static IUser Update(IUser entity, MySqlConnection dbConn)
         {
             string query = "UPDATE Users SET user_name = @user, password = @password, active = @active, admin = @admin, last_login = @lastLogin  WHERE user_id = @id";
             Dictionary<string, string> param = new Dictionary<string, string>();
-            param.Add("@user", user.UserName.ToString());
-            param.Add("@password", user.Password.ToString());
-            param.Add("@active", DatabaseHelper.BoolToString(user.Active));
-            param.Add("@admin", DatabaseHelper.BoolToString(user.Admin));
-            param.Add("@lastLogin", DatabaseHelper.DateToString(user.LastLogin));
-            param.Add("@id", user.UserId.ToString());
+            param.Add("@user", entity.UserName.ToString());
+            param.Add("@password", entity.Password.ToString());
+            param.Add("@active", DatabaseHelper.BoolToString(entity.Active));
+            param.Add("@admin", DatabaseHelper.BoolToString(entity.Admin));
+            param.Add("@lastLogin", DatabaseHelper.DateToString(entity.LastLogin));
+            param.Add("@id", entity.UserId.ToString());
 
             var result = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
             if (result != 0)
             {
-                return user;
+                return entity;
             }
 
             return null;
         }
 
-        public static IUser Delete(IUser tournament, MySqlConnection dbConn)
+        public static IUser Delete(IUser entity, MySqlConnection dbConn)
         {
             string query = "DELETE FROM Users WHERE user_id = @id";
             Dictionary<string, string> param = new Dictionary<string, string>();
-            param.Add("@id", tournament.UserId.ToString());
+            param.Add("@id", entity.UserId.ToString());
 
             var result = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
             if (result != 0)
             {
-                return tournament;
+                return entity;
             }
 
             return null;

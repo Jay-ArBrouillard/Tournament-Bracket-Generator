@@ -11,11 +11,11 @@ namespace TBG.Core.Interfaces
         bool createTournament(ITournament entry);
         ITeam createTeam(ITeam entry);
         ITeam getTeam(string teamName);
-        bool createPerson(IPerson entry);
+        IPerson createPerson(IPerson entry);
+        List<IPerson> getPeople();
         IUser createUser(IUser thisUser);
         IUser getUser(string userName);
         IUser updateLoginTime(IUser thisUser);
-        List<IPerson> getPeople();
         List<ITournament> GetAllTournaments();
         List<ITournamentType> GetTournamentTypes();
     }
