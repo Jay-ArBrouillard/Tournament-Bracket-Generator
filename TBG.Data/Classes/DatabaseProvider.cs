@@ -100,27 +100,17 @@ namespace TBG.Data.Classes
         {
             return TournamentTypeTable.GetAll();
         }
+        #endregion
 
-        public bool createPrize(IPrize prize)
+        #region PRIZE METHODS
+        public IPrize createPrize(IPrize prize)
         {
-            string query = "INSERT INTO `team4`.`Prizes` (`prize_id`, `prize_name`, `prize_amount`, `prize_percent`) VALUES (NULL, @PR_NAME, @PRAMT, @PRPERC)";
-
-            using (MySqlCommand cmd = new MySqlCommand(query, dbConn))
-            {
-                cmd.Parameters.AddWithValue("@PR_NAME", prize.PrizeName);
-                cmd.Parameters.AddWithValue("@PRAMT", prize.PrizeAmount);
-                cmd.Parameters.AddWithValue("@PRPERC", prize.PrizePercent);
-
-                int rowsEffected = cmd.ExecuteNonQuery();
-                if (rowsEffected > 0) { return true; }
-            }
-
-            return false;
+            return PrizesTable.Create(prize, dbConn);
         }
 
         public List<IPrize> GetAllPrizes()
         {
-            return PrizesTable.GetAll();
+            return PrizesTable.GetAll(dbConn);
         }
         #endregion
     }
