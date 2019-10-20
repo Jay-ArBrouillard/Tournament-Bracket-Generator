@@ -1,16 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+﻿using System.Windows;
 
 namespace TBG.UI
 {
@@ -29,6 +17,12 @@ namespace TBG.UI
             TeamWindow teamWindow = new TeamWindow();
             teamWindow.Show();
             this.Close();
+        }
+
+        private void Create_New_Prize_Click(object sender, RoutedEventArgs e)
+        {
+            PrizeUI prizes = new PrizeUI();
+            prizes.Show();
         }
 
     }
