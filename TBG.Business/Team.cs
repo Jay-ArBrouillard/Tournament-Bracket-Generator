@@ -9,6 +9,7 @@ namespace TBG.Business
 {
     public class Team : ITeam
     {
+        public int TeamId { get; set; }
         /// <summary>
         /// Represents this team's team name.
         /// </summary>
@@ -22,11 +23,11 @@ namespace TBG.Business
         /// <summary>
         /// Represents how many matchups this team has won.
         /// </summary>
-        public int Wins { get; }
+        public int Wins { get; set; }
 
         /// <summary>
         /// Represents how many matchups this team has lost.
         /// </summary>
-        public int Losses { get; }
+        public int Losses { get; set; }
     }
 }

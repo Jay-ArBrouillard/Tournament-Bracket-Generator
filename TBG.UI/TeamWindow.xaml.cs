@@ -151,8 +151,8 @@ namespace TBG.UI
             if (validate)
             {
                 //ITeam newTeam = new Team(teamName, selectedPersons);
-                bool success = source.createTeam(newTeam);
-                if (success)
+                source.createTeam(newTeam);
+                /*if (success)
                 {
                     //Message box for now. UI visuals will handle later
                     MessageBox.Show(this, "Successfully created new team: " + teamName);
@@ -161,9 +161,7 @@ namespace TBG.UI
                 {
                     //Message box for now. UI visuals will handle later
                     MessageBox.Show(this, "Error creating new team");
-                }
-
-
+                }*/
             }
 
             //Go back to tournament screen after creating team

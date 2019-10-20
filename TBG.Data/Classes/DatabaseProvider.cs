@@ -35,80 +35,28 @@ namespace TBG.Data.Classes
         }
 
         #region TEAM METHODS
-        public bool createTeam(ITeam entry)
+        public ITeam createTeam(ITeam entry)
         {
-            string query = "INSERT INTO `team4`.`Teams` (`team_id`, `team_name`, `wins`, `losses`) VALUES (NULL, @TEAMNAME, @WINS, @LOSSES)";
-            using (MySqlCommand cmd = new MySqlCommand(query, dbConn))
+            var team = TeamsTable.Create(entry, dbConn);
+            if (team == null) { return null; }
+
+            team = TeamsTable.Get(team.TeamName, dbConn);
+            if (team == null) { return null; }
+
+            foreach (var participant in entry.TeamMembers)
             {
-                cmd.Parameters.AddWithValue("@TEAMNAME", entry.TeamName);
-                cmd.Parameters.AddWithValue("@WINS", entry.Wins);
-                cmd.Parameters.AddWithValue("@LOSSES", entry.Losses);
-                cmd.ExecuteNonQuery();
-            }
-
-            query = "SELECT * FROM `Teams` WHERE `team_name` LIKE @TEAMNAME";
-
-            using (MySqlCommand cmd = new MySqlCommand(query, dbConn))
-            {
-                cmd.Parameters.AddWithValue("@TEAMNAME", entry.TeamName);
-                cmd.ExecuteNonQuery();
-
-                using (MySqlDataReader reader = cmd.ExecuteReader())
+                TeamMembersTable.Create(new TeamMember()
                 {
-                    reader.Read();
-                    int teamId = int.Parse(reader["team_id"].ToString());
-                    reader.Close();
-
-                    query = "INSERT INTO `team4`.`TeamMembers` (`person_team_id`, `team_id`, `person_id`) VALUES (NULL, @TEAMID, @PERSONID)";
-                    int rowsEffected = 0;
-                    //Create Row in TeamMembers for each person in the Team
-                    foreach (IPerson p in entry.TeamMembers)
-                    {
-                        using (MySqlCommand cmd2 = new MySqlCommand(query, dbConn))
-                        {
-                            cmd2.Parameters.AddWithValue("@TEAMID", teamId);
-                            cmd2.Parameters.AddWithValue("@PERSONID", p.PersonId);
-                            rowsEffected = cmd2.ExecuteNonQuery();
-                        }
-                        
-                    }
-
-                    if (rowsEffected > 0)
-                    {
-                        return true;
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
+                    PersonId = participant.PersonId,
+                    TeamId = team.TeamId
+                }, dbConn);
             }
-
+            return entry;
         }
 
         public ITeam getTeam(string teamName)
         {
-            if (string.IsNullOrEmpty(teamName)) { return null; }
-
-            string query = "SELECT * FROM `Teams` WHERE `team_name` LIKE @TEAMNAME";
-            using (MySqlCommand cmd = new MySqlCommand(query, dbConn))
-            {
-                cmd.Parameters.AddWithValue("@TEAMNAME", teamName);
-                cmd.ExecuteNonQuery();
-                using (MySqlDataReader reader = cmd.ExecuteReader())
-                {
-                    reader.Read();
-                    if (reader.HasRows)
-                    {
-                        ITeam found = new Team(reader["team_name"].ToString(),
-                                               int.Parse(reader["wins"].ToString()),
-                                               int.Parse(reader["losses"].ToString()));
-                        return found;
-                    }
-                }
-            }
-
-            return null;
+            return TeamsTable.Get(teamName, dbConn);
         }
         #endregion
 

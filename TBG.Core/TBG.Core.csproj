@@ -50,6 +50,7 @@
     <Compile Include="Interfaces\IProvider.cs" />
     <Compile Include="Interfaces\ITeam.cs" />
     <Compile Include="Interfaces\ITeamController.cs" />
+    <Compile Include="Interfaces\ITeamMember.cs" />
     <Compile Include="Interfaces\ITournament.cs" />
     <Compile Include="Interfaces\ITournamentPrize.cs" />
     <Compile Include="Interfaces\ITournamentType.cs" />
