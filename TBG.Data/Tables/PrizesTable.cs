@@ -47,7 +47,6 @@ namespace TBG.Data.Tables
         public static List<IPrize> GetAll(MySqlConnection dbConn)
         {
             List<IPrize> result = new List<IPrize>();
-            dbConn.Open();
 
             string query = "SELECT * FROM Prizes";
             using (var reader = DatabaseHelper.GetReader(query, dbConn))

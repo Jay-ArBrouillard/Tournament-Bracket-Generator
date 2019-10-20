@@ -62,6 +62,7 @@
                    FontSize="18">
                 </TextBlock>
                 <Button Content="Create New Team" Click="Create_New_Team_Click" Margin="10,0,0,0"></Button>
+                <Button Content="Create New Prize" Click="Create_New_Prize_Click" Margin="10,0,0,0"></Button>
             </StackPanel>
         </StackPanel>
 
