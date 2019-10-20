@@ -47,6 +47,7 @@
     <Compile Include="Interfaces\IPersonController.cs" />
     <Compile Include="Interfaces\IPlace.cs" />
     <Compile Include="Interfaces\IPrize.cs" />
+    <Compile Include="Interfaces\IPrizeController.cs" />
     <Compile Include="Interfaces\IProvider.cs" />
     <Compile Include="Interfaces\ITeam.cs" />
     <Compile Include="Interfaces\ITeamController.cs" />

@@ -30,5 +30,10 @@ namespace TBG.Driver
         {
             return new TeamController();
         }
+
+        public static IPrizeController GetPrizeController()
+        {
+            return new PrizeController();
+        }
     }
 }
