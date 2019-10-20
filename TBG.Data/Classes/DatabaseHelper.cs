@@ -53,6 +53,5 @@ namespace TBG.Data.Classes
             if(boolean) { return "1"; }
             return "0";
         }
-    
     }
 }
