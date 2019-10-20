@@ -9,10 +9,11 @@ namespace TBG.UI.Models
 {
     public class Team : ITeam
     {
+        public int TeamId { get; set; }
         public string TeamName { get; set; }
         public List<IPerson> TeamMembers { get; set; }
-        public int Wins { get; }
-        public int Losses { get; }
+        public int Wins { get; set; }
+        public int Losses { get; set; }
 
         public Team(string teamName, List<IPerson> teamMembers, int wins = 0, int losses = 0)
         {

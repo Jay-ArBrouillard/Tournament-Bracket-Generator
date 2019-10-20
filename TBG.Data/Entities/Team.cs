@@ -9,10 +9,16 @@ namespace TBG.Data.Entities
 {
     public class Team : ITeam
     {
+        public int TeamId { get; set; }
         public string TeamName { get; set; }
         public List<IPerson> TeamMembers { get; set; }
-        public int Wins { get; }
-        public int Losses { get; }
+        public int Wins { get; set; }
+        public int Losses { get; set; }
+
+        public Team()
+        {
+
+        }
 
         public Team(string teamName, int wins = 0, int losses = 0)
         {
