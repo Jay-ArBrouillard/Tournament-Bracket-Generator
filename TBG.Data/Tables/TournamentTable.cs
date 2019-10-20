@@ -9,6 +9,21 @@ namespace TBG.Data.Tables
 {
     public static class TournamentTable
     {
+        public static ITournament Create(ITournament tournament, MySqlConnection dbConn)
+        {
+            string query = "INSERT INTO Tournament (user_id, tournament_name, entry_fee, total_prize_pool, tournament_type_id) VALUES (@user, @name, @fee, @pool, @type)";
+            Dictionary<string, string> param = new Dictionary<string, string>();
+            param.Add("@user", tournament.UserId.ToString());
+            param.Add("@name", tournament.TournamentName);
+            param.Add("@fee", tournament.EntryFee.ToString());
+            param.Add("@pool", tournament.TotalPrizePool.ToString());
+            param.Add("@type", tournament.TournamentTypeId.ToString());
+
+            var results = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
+            if (results > 0) { return tournament; }
+            return null;
+        }
+
         public static ITournament Get(int Id, MySqlConnection dbConn)
         {
             string query = "SELECT * FROM `Tournaments` WHERE `tournament_id` = @Id";
@@ -19,19 +34,10 @@ namespace TBG.Data.Tables
             {
                 if (reader.HasRows)
                 {
-                    Tournament found = new Tournament()
-                    {
-                        TournamentId = Int32.Parse(reader["tournament_id"].ToString()),
-                        UserId = Int32.Parse(reader["tournament_id"].ToString()),
-                        TournamentName = reader["tournament_name"].ToString(),
-                        EntryFee = Decimal.Parse(reader["entry_fee"].ToString()),
-                        TotalPrizePool = Double.Parse(reader["total_prize_pool"].ToString()),
-                        TournamentTypeId = Int32.Parse(reader["tournament_type_id"].ToString())
-                    };
-                    return found;
+                    return ConvertReader(reader);
                 }
             }
-            return new Tournament();
+            return null;
         }
 
         public static List<ITournament> GetAll(MySqlConnection dbConn)
@@ -43,16 +49,7 @@ namespace TBG.Data.Tables
             {
                 while (reader.Read())
                 {
-                    Tournament found = new Tournament()
-                    {
-                        TournamentId = Int32.Parse(reader["tournament_id"].ToString()),
-                        UserId = Int32.Parse(reader["tournament_id"].ToString()),
-                        TournamentName = reader["tournament_name"].ToString(),
-                        EntryFee = Decimal.Parse(reader["entry_fee"].ToString()),
-                        TotalPrizePool = Double.Parse(reader["total_prize_pool"].ToString()),
-                        TournamentTypeId = Int32.Parse(reader["tournament_type_id"].ToString())
-                    };
-                    result.Add(found);
+                    result.Add(ConvertReader(reader));
                 }
             }
             return result;
@@ -91,6 +88,19 @@ namespace TBG.Data.Tables
             }
 
             return null;
+        }
+
+        public static ITournament ConvertReader(MySqlDataReader reader)
+        {
+            return new Tournament()
+            {
+                TournamentId = Int32.Parse(reader["tournament_id"].ToString()),
+                UserId = Int32.Parse(reader["tournament_id"].ToString()),
+                TournamentName = reader["tournament_name"].ToString(),
+                EntryFee = Decimal.Parse(reader["entry_fee"].ToString()),
+                TotalPrizePool = Double.Parse(reader["total_prize_pool"].ToString()),
+                TournamentTypeId = Int32.Parse(reader["tournament_type_id"].ToString())
+            };
         }
     }
 }

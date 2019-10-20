@@ -42,6 +42,17 @@ namespace TBG.Data.Classes
                 return cmd.ExecuteNonQuery();
             }
         }
+
+        public static string DateToString(DateTime dt)
+        {
+            return dt.ToString("yyyy-MM-dd HH:mm:ss.fff");
+        }
+
+        public static string BoolToString(Boolean boolean)
+        {
+            if(boolean) { return "1"; }
+            return "0";
+        }
     
     }
 }

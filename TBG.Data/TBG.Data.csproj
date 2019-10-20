@@ -75,6 +75,7 @@
     <Compile Include="Tables\TournamentPrizesTable.cs" />
     <Compile Include="Tables\TournamentTable.cs" />
     <Compile Include="Tables\TournamentTypeTable.cs" />
+    <Compile Include="Tables\UsersTable.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TBG.Core\TBG.Core.csproj">

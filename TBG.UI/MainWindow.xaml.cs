@@ -90,8 +90,7 @@ namespace TBG.UI
             {
                 SetDisplayColors(new SolidColorBrush(Colors.Green));
 
-                bool success = source.createUser(thisUser);
-                if (success)
+                if (source.createUser(thisUser) != null)
                 {
                     displayMessage.Text = "Created new user " + user;
                 }
