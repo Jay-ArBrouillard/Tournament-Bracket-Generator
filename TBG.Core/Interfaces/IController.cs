@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TBG.Data.Interfaces
+namespace TBG.Core.Interfaces
 {
-    interface IProvider
+    public interface IController
     {
     }
 }

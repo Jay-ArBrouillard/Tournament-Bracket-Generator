@@ -5,10 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using TBG.Core.Interfaces;
 
-namespace TBG.Core.Classes.Tournaments
+namespace TBG.Business
 {
-    public class DoubleElimination : ITournament
+    public class BusinessController : IController
     {
-        public string holder;
     }
 }

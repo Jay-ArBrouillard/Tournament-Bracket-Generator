@@ -6,7 +6,15 @@ using System.Threading.Tasks;
 
 namespace TBG.Core.Interfaces
 {
-    interface ITournament
+    public interface ITournament
     {
+        int TournamentId { get; set; }
+        int UserId { get; set; }
+        string TournamentName { get; set; }
+        decimal EntryFee { get; set; }
+        double TotalPrizePool { get; set; }
+        int TournamentTypeId { get; set; }
+        List<ITeam> Participants { get; set; }
+        List<ITournamentPrize> Prizes { get; set; }
     }
 }
