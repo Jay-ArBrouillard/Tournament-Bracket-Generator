@@ -9,13 +9,13 @@ namespace TBG.Core.Interfaces
     public interface IProvider
     {
         bool createTournament(ITournament entry);
-        bool createTeam(ITeam entry);
+        ITeam createTeam(ITeam entry);
         ITeam getTeam(string teamName);
-        bool createPerson(IPerson entry);
-        bool createUser(IUser thisUser);
-        IUser getUser(string userName);
-        bool updateLoginTime(IUser thisUser);
+        IPerson createPerson(IPerson entry);
         List<IPerson> getPeople();
+        IUser createUser(IUser thisUser);
+        IUser getUser(string userName);
+        IUser updateLoginTime(IUser thisUser);
         List<ITournament> GetAllTournaments();
         List<ITournamentType> GetTournamentTypes();
         bool createPrize(IPrize prize);
