@@ -68,7 +68,7 @@ namespace TBG.Data.Classes
                             cmd2.Parameters.AddWithValue("@PERSONID", p.PersonId);
                             rowsEffected = cmd2.ExecuteNonQuery();
                         }
-                        
+
                     }
 
                     if (rowsEffected > 0)
@@ -141,7 +141,7 @@ namespace TBG.Data.Classes
                 {
                     while (reader.Read())
                     {
-                        IPerson person = new Person(int.Parse(reader["person_id"].ToString()),reader["first_name"].ToString(), reader["last_name"].ToString(), 
+                        IPerson person = new Person(int.Parse(reader["person_id"].ToString()), reader["first_name"].ToString(), reader["last_name"].ToString(),
                             reader["email"].ToString(), reader["phone"].ToString(), int.Parse(reader["wins"].ToString()), int.Parse(reader["losses"].ToString()));
                         personList.Add(person);
                     }
@@ -159,7 +159,7 @@ namespace TBG.Data.Classes
         public bool createUser(IUser thisUser)
         {
             string userName = thisUser.UserName;
-            string password = thisUser.Password; 
+            string password = thisUser.Password;
 
             string query = "INSERT INTO `team4`.`Users` (`user_id`, `user_name`, `password`) VALUES (NULL, @USER, @PASS)";
             using (MySqlCommand cmd = new MySqlCommand(query, dbConn))
@@ -241,6 +241,32 @@ namespace TBG.Data.Classes
         public List<ITournamentType> GetTournamentTypes()
         {
             return TournamentTypeTable.GetAll();
+        }
+
+        ////////////////////////////END USER METHODS////////////////////////////////////////
+
+        ////////////////////////////PRIZE METHODS////////////////////////////////////////
+
+        public bool createPrize(IPrize prize)
+        {
+            string query = "INSERT INTO `team4`.`Prizes` (`prize_id`, `prize_name`, `prize_amount`, `prize_percent`) VALUES (NULL, @PR_NAME, @PRAMT, @PRPERC)";
+
+            using (MySqlCommand cmd = new MySqlCommand(query, dbConn))
+            {
+                cmd.Parameters.AddWithValue("@PR_NAME", prize.PrizeName);
+                cmd.Parameters.AddWithValue("@PRAMT", prize.PrizeAmount);
+                cmd.Parameters.AddWithValue("@PRPERC", prize.PrizePercent);
+
+                int rowsEffected = cmd.ExecuteNonQuery();
+                if (rowsEffected > 0) { return true; }
+            }
+
+            return false;
+        }
+
+        public List<IPrize> GetAllPrizes()
+        {
+            return PrizesTable.GetAll();
         }
     }
 }
