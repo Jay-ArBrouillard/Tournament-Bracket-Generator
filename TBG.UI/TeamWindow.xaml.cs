@@ -38,31 +38,39 @@ namespace TBG.UI
             teamController = ApplicationController.getTeamController();
 
             personList = source.getPeople();
+            personList.Sort((x,y) =>x.FirstName.CompareTo(y.FirstName));
             selectedPersons = new List<IPerson>();
             selectionListBox.ItemsSource = personList;
         }
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
+            selectedPersons.Clear();
             if (string.IsNullOrEmpty(searchBox.Text) == false)
             {
+                //Maintain already selected items
+
+                foreach (IPerson p in selectionListBox.SelectedItems)
+                {
+                    selectedPersons.Add(p);
+                }
+
                 foreach (IPerson p in personList)
                 {
-                    if (p.FirstName.Contains(searchBox.Text))
+                    if (p.FirstName.Contains(searchBox.Text) && !selectionListBox.SelectedItems.Contains(p))
                     {
                         selectedPersons.Add(p);
                     }
-                    else
-                    {
-                        selectedPersons.Remove(p);
-                    }
                 }
 
+                selectedPersons.Sort();
                 selectionListBox.ItemsSource = selectedPersons;
             }
             else if (searchBox.Text == "")
             {
                 selectionListBox.ItemsSource = personList;
             }
+
+            selectionListBox.Items.Refresh();
 
         }
 
@@ -107,7 +115,7 @@ namespace TBG.UI
             bool validate = personController.validatePerson(newPerson);
 
             if (validate)
-            { 
+            {
                 if (source.createPerson(newPerson) != null)
                 {
                     SetDisplayColors(new SolidColorBrush(Colors.Green));
@@ -144,7 +152,7 @@ namespace TBG.UI
 
             ITeam newTeam = new Team(teamName, selectedPersons);
             ITeam existingTeam = source.getTeam(teamName);
-            bool validate =  teamController.validateTeam(newTeam, existingTeam);
+            bool validate = teamController.validateTeam(newTeam, existingTeam);
 
             if (validate)
             {

@@ -19,6 +19,7 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="20" />
         </Grid.RowDefinitions>
@@ -29,7 +30,7 @@
                    Text="Create Tournament" 
                    FontSize="22">
         </TextBlock>
-        
+
         <!-- Tournament Name -->
         <StackPanel Grid.Row="2" Grid.Column="1"  Orientation="Vertical">
             <TextBlock Text="Tournament Name" 
@@ -62,8 +63,16 @@
                    FontSize="18">
                 </TextBlock>
                 <Button Content="Create New Team" Click="Create_New_Team_Click" Margin="10,0,0,0"></Button>
-                <Button Content="Create New Prize" Click="Create_New_Prize_Click" Margin="10,0,0,0"></Button>
+
             </StackPanel>
+        </StackPanel>
+        
+        <!-- Select Prizes -->
+        <StackPanel Grid.Row="5" Grid.Column="1"  Height="20" Orientation="Horizontal" Margin="0,20,0,0" VerticalAlignment="Top">
+            <TextBlock Text="Select Prizes" 
+                   FontSize="18">
+            </TextBlock>
+            <Button Content="Create New Prize" Click="Create_New_Prize_Click" Margin="10,0,0,0" Height="20"/>
         </StackPanel>
 
     </Grid>
