@@ -17,7 +17,7 @@ namespace TBG.Data.Tables
             string query = "INSERT INTO Users (user_name, password, active, admin, last_login) VALUES (@username, @password, @active, @admin, @lastLogin)";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@username", entity.UserName);
-            param.Add("@password", entity.Password);
+            param.Add("@password", MD5.Encrypt(entity.Password, true));
             param.Add("@active", DatabaseHelper.BoolToString(entity.Active));
             param.Add("@admin", DatabaseHelper.BoolToString(entity.Admin));
             param.Add("@lastLogin", DatabaseHelper.DateToString(entity.LastLogin));
@@ -113,14 +113,16 @@ namespace TBG.Data.Tables
 
         private static IUser ConvertReader(MySqlDataReader reader)
         {
+            var lastLogin = reader["last_login"].ToString();
+            if (String.IsNullOrEmpty(lastLogin)) { lastLogin = "1900-01-01 00:00:00.000"; }
             return new User()
             {
                 UserId = int.Parse(reader["user_id"].ToString()),
                 UserName = reader["user_name"].ToString(),
-                Password = reader["password"].ToString(),
+                Password = MD5.Decrypt(reader["password"].ToString(), true),
                 Active = bool.Parse(reader["active"].ToString()),
                 Admin = bool.Parse(reader["admin"].ToString()),
-                LastLogin = DateTime.Parse(reader["last_login"].ToString())
+                LastLogin = DateTime.Parse(lastLogin)
             };
         }
     }
