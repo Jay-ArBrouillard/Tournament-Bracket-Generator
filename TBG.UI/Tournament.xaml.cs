@@ -56,7 +56,7 @@ namespace TBG.UI
             participantsTreeView.ItemsSource = teams;
         }
 
-        /*private List<Team> convertToTeam(List<ITeam> list)
+        private List<Team> convertToTeam(List<ITeam> list)
         {
             List<Team> result = new List<Team>();
 
@@ -76,7 +76,7 @@ namespace TBG.UI
             }
 
             return result;
-        }*/
+        }
 
         private void Create_New_Team_Click(object sender, RoutedEventArgs e)
         {
