@@ -41,6 +41,23 @@ namespace TBG.Data.Tables
             return null;
         }
 
+        public static List<ITeamMember> GetTeamMembersByTeamId(int Id, MySqlConnection dbConn)
+        {
+            List<ITeamMember> results = new List<ITeamMember>();
+            string query = "SELECT * FROM TeamMembers WHERE team_id = @Id";
+            Dictionary<string, string> param = new Dictionary<string, string>();
+            param.Add("@Id", Id.ToString());
+
+            using (var reader = DatabaseHelper.GetReader(query, dbConn, param))
+            {
+                while (reader.Read())
+                {
+                    results.Add(ConvertReader(reader));
+                }
+            }
+            return results;
+        }
+
         public static List<ITeamMember> GetAll(MySqlConnection dbConn)
         {
             List<ITeamMember> results = new List<ITeamMember>();

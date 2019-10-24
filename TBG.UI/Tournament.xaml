@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TBG.UI"
-        xmlns:self="clr-namespace:TBG.UI.Models"
         mc:Ignorable="d"
         Title="Tournament" Height="450" Width="800">
     <Grid>
@@ -46,15 +45,15 @@
             <TextBlock Text="Teams / Players" FontSize="18"/>
             <TreeView Name="participantsTreeView" Width="200" Height="200">
                 <TreeView.Resources>
-                    <HierarchicalDataTemplate DataType="{x:Type self:Team}">
+                    <HierarchicalDataTemplate DataType="{x:Type local:TeamTreeView}" ItemsSource="{Binding Members}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding TeamName}" />
+                            <TextBlock Text="{Binding Name}" />
                             <TextBlock Text=" [" Foreground="Blue" />
                             <TextBlock Text="{Binding Members.Count}" Foreground="Blue" />
                             <TextBlock Text="]" Foreground="Blue" />
                         </StackPanel>
                     </HierarchicalDataTemplate>
-                    <DataTemplate DataType="{x:Type self:TeamMember}">
+                    <DataTemplate DataType="{x:Type local:TeamMemberTreeview}">
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding Name}" />
                             <TextBlock Text=" (" Foreground="Green" />

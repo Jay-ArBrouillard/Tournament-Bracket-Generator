@@ -13,6 +13,7 @@ namespace TBG.Core.Interfaces
         ITeam getTeam(string teamName);
         List<ITeam> getAllTeams();
         IPerson createPerson(IPerson entry);
+        IPerson getPerson(int personId);
         List<IPerson> getPeople();
         IUser createUser(IUser thisUser);
         IUser getUser(string userName);
@@ -20,6 +21,7 @@ namespace TBG.Core.Interfaces
         List<ITournament> GetAllTournaments();
         List<ITournamentType> GetTournamentTypes();
         IPrize createPrize(IPrize prize);
+        List<ITeamMember> getTeamMembersByTeamId(int teamId);
         List<IPrize> GetAllPrizes();
     }
 }

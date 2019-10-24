@@ -65,10 +65,23 @@ namespace TBG.Data.Classes
         }
         #endregion
 
+        #region TEAMMEMBER METHODS
+
+        public List<ITeamMember> getTeamMembersByTeamId(int teamId)
+        {
+            return TeamMembersTable.GetTeamMembersByTeamId(teamId, dbConn);
+        }
+
+        #endregion
+
         #region PERSON METHODS
         public IPerson createPerson(IPerson entry)
         {
             return PersonsTable.Create(entry, dbConn);
+        }
+        public IPerson getPerson(int personId)
+        {
+            return PersonsTable.Get(personId, dbConn);
         }
 
         public List<IPerson> getPeople()

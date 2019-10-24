@@ -68,6 +68,7 @@
     <Compile Include="Models\Person.cs" />
     <Compile Include="Models\Prize.cs" />
     <Compile Include="Models\Team.cs" />
+    <Compile Include="Models\TeamTree.cs" />
     <Compile Include="PrizeUI.xaml.cs">
       <DependentUpon>PrizeUI.xaml</DependentUpon>
     </Compile>
