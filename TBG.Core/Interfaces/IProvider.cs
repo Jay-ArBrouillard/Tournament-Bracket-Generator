@@ -11,6 +11,7 @@ namespace TBG.Core.Interfaces
         bool createTournament(ITournament entry);
         ITeam createTeam(ITeam entry);
         ITeam getTeam(string teamName);
+        List<ITeam> getAllTeams();
         IPerson createPerson(IPerson entry);
         List<IPerson> getPeople();
         IUser createUser(IUser thisUser);

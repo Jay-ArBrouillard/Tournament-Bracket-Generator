@@ -58,6 +58,11 @@ namespace TBG.Data.Classes
         {
             return TeamsTable.Get(teamName, dbConn);
         }
+
+        public List<ITeam> getAllTeams()
+        {
+            return TeamsTable.GetAll(dbConn);
+        }
         #endregion
 
         #region PERSON METHODS
