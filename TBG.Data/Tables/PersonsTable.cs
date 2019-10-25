@@ -22,7 +22,6 @@ namespace TBG.Data.Tables
             param.Add("@phone", entity.Phone.ToString());
             param.Add("@wins", entity.Wins.ToString());
             param.Add("@losses", entity.Losses.ToString());
-            param.Add("@id", entity.PersonId.ToString());
 
             var results = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
             if (results > 0) { return entity; }
@@ -46,7 +45,26 @@ namespace TBG.Data.Tables
             return null;
         }
 
-         public static List<IPerson> GetAll(MySqlConnection dbConn)
+        public static IPerson getPersonByUniqueIdentifiers(string firstName, string lastName, string email, MySqlConnection dbConn)
+        {
+            string query = "SELECT * FROM Persons WHERE first_name = @First AND  last_name = @Last AND email = @Email";
+            Dictionary<string, string> param = new Dictionary<string, string>();
+            param.Add("@First", firstName.ToString());
+            param.Add("@Last", lastName.ToString());
+            param.Add("@Email", email.ToString());
+
+            using (var reader = DatabaseHelper.GetReader(query, dbConn, param))
+            {
+                if (reader.HasRows)
+                {
+                    reader.Read();
+                    return ConvertReader(reader);
+                }
+            }
+            return null;
+        }
+
+        public static List<IPerson> GetAll(MySqlConnection dbConn)
         {
             List<IPerson> results = new List<IPerson>();
 

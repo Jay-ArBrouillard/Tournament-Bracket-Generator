@@ -15,8 +15,8 @@ namespace TBG.UI
     public partial class Tournament : Window
     {
         private IProvider source;
-        private List<ITeam> teams;
-        private List<TeamTreeView> teamsInTournament;
+        public List<ITeam> teams;
+        public List<TeamTreeView> teamsInTournament;
         public List<IPrize> prizes;
         public List<IPrize> prizesInTournament;
 
@@ -36,7 +36,7 @@ namespace TBG.UI
             prizeComboBox.ItemsSource = prizes;
         }
 
-        private List<TeamTreeView> convertToTeam(List<ITeam> list)
+        public List<TeamTreeView> convertToTeam(List<ITeam> list)
         {
             List<TeamTreeView> result = new List<TeamTreeView>();
 
@@ -44,8 +44,7 @@ namespace TBG.UI
             {
                 ObservableCollection<TeamMemberTreeview> teamMembers = new ObservableCollection<TeamMemberTreeview>();
                 int teamId = team.TeamId;
-                List<ITeamMember> iTeamMembers = source.getTeamMembersByTeamId(teamId);
-                foreach (ITeamMember teamMember in iTeamMembers)
+                foreach (ITeamMember teamMember in source.getTeamMembersByTeamId(teamId))
                 {
                     IPerson person = source.getPerson(teamMember.PersonId);
                     teamMembers.Add(new TeamMemberTreeview()
@@ -97,9 +96,8 @@ namespace TBG.UI
 
         private void Create_New_Team_Click(object sender, RoutedEventArgs e)
         {
-            TeamWindow teamWindow = new TeamWindow();
+            TeamWindow teamWindow = new TeamWindow(this);
             teamWindow.Show();
-            this.Close();
         }
 
         private void Create_New_Prize_Click(object sender, RoutedEventArgs e)

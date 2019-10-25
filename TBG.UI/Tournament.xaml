@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:TBG.UI"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
-        Title="Tournament" Height="600" Width="800">
+        Title="Tournament" Height="550" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20" />
@@ -149,7 +149,7 @@
             <TextBlock Text="Select Prizes" 
                    FontSize="18">
             </TextBlock>
-            <Button Content="Create New Prize" Click="Create_New_Prize_Click" Margin="10,0,0,0" Height="20"/>
+            <Button Content="Create New Prize" Click="Create_New_Prize_Click" Margin="10,0,0,0" Height="20" Width="100"/>
         </StackPanel>
         
         <!-- Prizes ComboBox -->

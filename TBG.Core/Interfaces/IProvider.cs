@@ -14,6 +14,7 @@ namespace TBG.Core.Interfaces
         List<ITeam> getAllTeams();
         IPerson createPerson(IPerson entry);
         IPerson getPerson(int personId);
+        IPerson getPersonByUniqueIdentifiers(string firstName, string lastName, string email);
         List<IPerson> getPeople();
         IUser createUser(IUser thisUser);
         IUser getUser(string userName);

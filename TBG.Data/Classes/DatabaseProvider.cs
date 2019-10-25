@@ -37,14 +37,22 @@ namespace TBG.Data.Classes
         #region TEAM METHODS
         public ITeam createTeam(ITeam entry)
         {
-            var team = TeamsTable.Create(entry, dbConn);
+            ITeam team = TeamsTable.Create(entry, dbConn);
             if (team == null) { return null; }
 
             team = TeamsTable.Get(team.TeamName, dbConn);
             if (team == null) { return null; }
 
+            entry.TeamId = team.TeamId;  //Quickfix for TeamsTable.Create() not setting the TeamId Correctly
+            
             foreach (var participant in entry.TeamMembers)
             {
+                //QuickFix for participants PersonId not being set
+                if (participant.PersonId == 0)
+                {
+                    //got in here
+                }
+
                 TeamMembersTable.Create(new TeamMember()
                 {
                     PersonId = participant.PersonId,
@@ -77,11 +85,24 @@ namespace TBG.Data.Classes
         #region PERSON METHODS
         public IPerson createPerson(IPerson entry)
         {
-            return PersonsTable.Create(entry, dbConn);
+            IPerson person = PersonsTable.Create(entry, dbConn);
+            if (person == null) { return null; }
+
+            person = PersonsTable.getPersonByUniqueIdentifiers(entry.FirstName, entry.LastName, entry.Email, dbConn);
+            if (person == null) { return null; }
+
+            entry.PersonId = person.PersonId;
+
+            return entry;
         }
         public IPerson getPerson(int personId)
         {
             return PersonsTable.Get(personId, dbConn);
+        }
+
+        public IPerson getPersonByUniqueIdentifiers(string firstName, string lastName, string email)
+        {
+            return PersonsTable.getPersonByUniqueIdentifiers(firstName, lastName, email, dbConn);
         }
 
         public List<IPerson> getPeople()

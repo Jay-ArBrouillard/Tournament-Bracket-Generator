@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TBG.UI"
         mc:Ignorable="d"
+        Loaded="Window_Loaded"
         Title="Team" Height="650" Width="800">
     <Window.Resources>
         <Style x:Key="gridViewStyle" TargetType="{x:Type GridViewColumnHeader}">

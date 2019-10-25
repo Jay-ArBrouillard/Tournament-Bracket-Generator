@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -29,19 +30,26 @@ namespace TBG.UI
         private ITeamController teamController;
         private List<IPerson> personList;   //List of people in database
         private List<IPerson> selectedPersons; //List of people to create a new team with
+        private Tournament tournament;
 
-        public TeamWindow()
+        public TeamWindow(Tournament tournament)
         {
             InitializeComponent();
             source = ApplicationController.GetProvider();
             personController = ApplicationController.getPersonController();
             teamController = ApplicationController.getTeamController();
-
+            this.tournament = tournament;
             personList = source.getPeople();
             personList.Sort((x,y) =>x.FirstName.CompareTo(y.FirstName));
             selectedPersons = new List<IPerson>();
             selectionListBox.ItemsSource = personList;
         }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            //Currently empty
+        }
+
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             selectedPersons.Clear();
@@ -120,6 +128,7 @@ namespace TBG.UI
                 {
                     SetDisplayColors(new SolidColorBrush(Colors.Green));
 
+                    //Update views on TeamWindow
                     personList.Add(newPerson);
                     displayListBox.Items.Add(newPerson);
                     selectedPersons.Add(newPerson);
@@ -156,25 +165,40 @@ namespace TBG.UI
 
             if (validate)
             {
-                //ITeam newTeam = new Team(teamName, selectedPersons);
-                source.createTeam(newTeam);
-                /*if (success)
+                ITeam createdTeam = source.createTeam(newTeam);
+
+                //Update Teams/Players on tournament Screen
+                List<TeamTreeView> teams = tournament.teamsInTournament;
+                TeamTreeView convertedTeam = tournament.convertToTeam(new List<ITeam>() { createdTeam })[0];
+                ObservableCollection<TeamMemberTreeview> teamMembers = new ObservableCollection<TeamMemberTreeview>();
+                foreach (ITeamMember teamMember in source.getTeamMembersByTeamId(createdTeam.TeamId))
                 {
-                    //Message box for now. UI visuals will handle later
-                    MessageBox.Show(this, "Successfully created new team: " + teamName);
+                    IPerson person = source.getPerson(teamMember.PersonId);
+                    teamMembers.Add(new TeamMemberTreeview()
+                    {
+                        PersonId = person.PersonId,
+                        TeamName = newTeam.TeamName,
+                        FirstName = person.FirstName,
+                        LastName = person.LastName
+                    });
                 }
-                else
-                {
-                    //Message box for now. UI visuals will handle later
-                    MessageBox.Show(this, "Error creating new team");
-                }*/
+
+                teams.Add(convertedTeam);
+                teams[teams.Count - 1].Members = teamMembers;
+                
+                tournament.participantsTreeView.ItemsSource = teams;
+                tournament.participantsTreeView.Items.Refresh();
+
+                //Update Select Teams
+                List<ITeam> allTeams = tournament.teams;
+                allTeams.Add(createdTeam);
+                tournament.selectionListBox.ItemsSource = allTeams;
+                tournament.selectionListBox.Items.Refresh();
             }
 
-            //Go back to tournament screen after creating team
-            Tournament tournament = new Tournament();
-            tournament.Show();
-            this.Close();
         }
+
+
     }
 
 }
