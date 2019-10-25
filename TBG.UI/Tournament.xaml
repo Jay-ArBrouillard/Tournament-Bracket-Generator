@@ -5,10 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TBG.UI"
         mc:Ignorable="d"
+        Loaded="Window_Loaded"
         Title="Tournament" Height="600" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20" />
+            <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="*" />
@@ -44,21 +46,11 @@
             </TextBox>
         </StackPanel>
 
-        <!-- Entry Fee -->
-        <StackPanel Grid.Row="3" Grid.Column="1"  Orientation="Vertical">
-            <TextBlock Text="Entry Fee" 
-                   FontSize="18">
-            </TextBlock>
-            <TextBox x:Name="entryFee" Text="" 
-                     BorderThickness="2">
-            </TextBox>
-        </StackPanel>
-
-        <!-- Tree View -->
+        <!-- Tree View Display Teams / Players-->
         <StackPanel Orientation="Vertical" Grid.Row="2" Grid.Column="2"  Margin="20,0,0,0" Grid.RowSpan="4" VerticalAlignment="Top">
             <TextBlock Text="Teams / Players" FontSize="18"/>
             <StackPanel Orientation="Horizontal">
-                <TreeView Name="participantsTreeView" Width="200" Height="200" SelectedItemChanged="ParticipantsTreeView_SelectedItemChanged">
+                <TreeView Name="participantsTreeView" Width="200" Height="200">
                     <TreeView.Resources>
                         <HierarchicalDataTemplate DataType="{x:Type local:TeamTreeView}" ItemsSource="{Binding Members}">
                             <StackPanel Orientation="Horizontal">
@@ -81,7 +73,35 @@
                 </TreeView>
             </StackPanel>
             <!-- Delete Team / Player Button -->
-            <Button Content="Delete Selected Team / Player" Click="Delete_Click"></Button>
+            <Button Content="Delete Selected Team / Player" Click="Delete_Click" Margin="0,0,0,10"></Button>
+        </StackPanel>
+
+        <!-- Display Prizes-->
+        <StackPanel Grid.Row="2" Grid.Column="3" Margin="20,0,0,0" Grid.RowSpan="4">
+            <TextBlock Text="Prizes" FontSize="18"/>
+            <ListBox x:Name="prizesListBox" SelectionMode="Multiple" Width="200" Height="200">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock>
+                            <Run Text="{Binding PrizeName}"/>
+                            <Run Text="{Binding PrizeAmount}"/>
+                            <Run Text="{Binding PrizePercent}"/>
+                        </TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Button x:Name="deletePrizeButton" Click="DeletePrizeButton_Click" Content="Delete Selected Prize"/>
+        </StackPanel>
+
+
+        <!-- Entry Fee -->
+        <StackPanel Grid.Row="3" Grid.Column="1"  Orientation="Vertical" Margin="0,10,0,0">
+            <TextBlock Text="Entry Fee" 
+                   FontSize="18">
+            </TextBlock>
+            <TextBox x:Name="entryFee" Text="" 
+                     BorderThickness="2">
+            </TextBox>
         </StackPanel>
 
         <!-- Tournament Type -->
@@ -99,7 +119,7 @@
         </StackPanel>
 
         <!-- Select Team -->
-        <StackPanel Grid.Row="5" Grid.Column="1"  Orientation="Vertical" Margin="0,20,0,0">
+        <StackPanel Grid.Row="5" Grid.Column="1"  Orientation="Vertical" Margin="0,10,0,0">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Select Teams" 
                    FontSize="18">
@@ -123,7 +143,7 @@
                 <TextBlock Text="Add Selected Teams"/>
             </Button>
         </StackPanel>
-        
+
         <!-- Select Prizes -->
         <StackPanel Grid.Row="6" Grid.Column="1"  Height="20" Orientation="Horizontal" Margin="0,20,0,0" VerticalAlignment="Top">
             <TextBlock Text="Select Prizes" 
@@ -131,11 +151,26 @@
             </TextBlock>
             <Button Content="Create New Prize" Click="Create_New_Prize_Click" Margin="10,0,0,0" Height="20"/>
         </StackPanel>
-
-        <!-- Prizes ComboBox -->
-        <ComboBox Grid.Row="7" Grid.Column="1" Margin="0,5,0,0">
-             //ToDo
-        </ComboBox>
         
+        <!-- Prizes ComboBox -->
+        <ComboBox x:Name="prizeComboBox" Grid.Row="7" Grid.Column="1" Margin="0,5,0,0" SelectionChanged="PrizeComboBox_Selected">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding PrizeName}"/>
+                        <TextBlock Text=": " />
+                        <TextBlock Text="{Binding PrizeAmount}" Foreground="Green"/>
+                        <TextBlock Text="$" Foreground="Green" />
+                        <TextBlock Text=" [" Foreground="Red" />
+                        <TextBlock Text="{Binding PrizePercent}" Foreground="Red"/>
+                        <TextBlock Text="] " Foreground="Red"  />
+                    </StackPanel>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+
+        <!-- Create Tournament Button -->
+        <Button x:Name="createTournamentButton" Grid.Row="7" Grid.Column="2" Content="Create Tournment" Grid.ColumnSpan="2" HorizontalAlignment="Center" Width="150" Click="Create_Tournament_Click"/>
+
     </Grid>
 </Window>

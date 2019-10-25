@@ -17,6 +17,8 @@ namespace TBG.UI
         private IProvider source;
         private List<ITeam> teams;
         private List<TeamTreeView> teamsInTournament;
+        public List<IPrize> prizes;
+        public List<IPrize> prizesInTournament;
 
         public Tournament()
         {
@@ -25,6 +27,13 @@ namespace TBG.UI
             teams = source.getAllTeams();
             teamsInTournament = new List<TeamTreeView>();
             selectionListBox.ItemsSource = teams;
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            prizesInTournament = new List<IPrize>();
+            prizes = source.GetAllPrizes();
+            prizeComboBox.ItemsSource = prizes;
         }
 
         private List<TeamTreeView> convertToTeam(List<ITeam> list)
@@ -95,7 +104,7 @@ namespace TBG.UI
 
         private void Create_New_Prize_Click(object sender, RoutedEventArgs e)
         {
-            PrizeUI prizes = new PrizeUI();
+            PrizeUI prizes = new PrizeUI(this);
             prizes.Show();
         }
 
@@ -130,10 +139,34 @@ namespace TBG.UI
 
         }
 
-        private void ParticipantsTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        private void DeletePrizeButton_Click(object sender, RoutedEventArgs e)
         {
-            //Not sure what I want to do here yet
+            List<IPrize> remove = new List<IPrize>();
+            foreach (var prize in prizesListBox.SelectedItems)
+            {
+                remove.Add((IPrize)prize);
+            }
 
+            foreach (IPrize p in remove)
+            {
+                prizesInTournament.Remove(p);
+            }
+
+            prizesListBox.Items.Refresh();
+        }
+
+        private void PrizeComboBox_Selected(object sender, RoutedEventArgs e)
+        {
+            object selectedItem = ((ComboBox)sender).SelectedItem;
+            IPrize selectedPrize = (IPrize)selectedItem;
+            prizesInTournament.Add(selectedPrize);
+            prizesListBox.ItemsSource = prizesInTournament;
+            prizesListBox.Items.Refresh();
+        }
+
+        private void Create_Tournament_Click(object sender, RoutedEventArgs e)
+        {
+            //TODO
         }
     }
 
