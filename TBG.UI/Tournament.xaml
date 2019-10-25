@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TBG.UI"
         mc:Ignorable="d"
-        Title="Tournament" Height="450" Width="800">
+        Title="Tournament" Height="600" Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20" />
@@ -16,6 +16,9 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="20" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
@@ -41,31 +44,48 @@
             </TextBox>
         </StackPanel>
 
+        <!-- Entry Fee -->
+        <StackPanel Grid.Row="3" Grid.Column="1"  Orientation="Vertical">
+            <TextBlock Text="Entry Fee" 
+                   FontSize="18">
+            </TextBlock>
+            <TextBox x:Name="entryFee" Text="" 
+                     BorderThickness="2">
+            </TextBox>
+        </StackPanel>
+
+        <!-- Tree View -->
         <StackPanel Orientation="Vertical" Grid.Row="2" Grid.Column="2"  Margin="20,0,0,0" Grid.RowSpan="4" VerticalAlignment="Top">
             <TextBlock Text="Teams / Players" FontSize="18"/>
-            <TreeView Name="participantsTreeView" Width="200" Height="200">
-                <TreeView.Resources>
-                    <HierarchicalDataTemplate DataType="{x:Type local:TeamTreeView}" ItemsSource="{Binding Members}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding TeamName}" />
-                            <TextBlock Text=" [" Foreground="Blue" />
-                            <TextBlock Text="{Binding Members.Count}" Foreground="Blue" />
-                            <TextBlock Text="]" Foreground="Blue" />
-                        </StackPanel>
-                    </HierarchicalDataTemplate>
-                    <DataTemplate DataType="{x:Type local:TeamMemberTreeview}">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding FirstName}" />
-                            <TextBlock Text=" " />
-                            <TextBlock Text="{Binding LastName}"/>
-                        </StackPanel>
-                    </DataTemplate>
-                </TreeView.Resources>
-            </TreeView>
+            <StackPanel Orientation="Horizontal">
+                <TreeView Name="participantsTreeView" Width="200" Height="200" SelectedItemChanged="ParticipantsTreeView_SelectedItemChanged">
+                    <TreeView.Resources>
+                        <HierarchicalDataTemplate DataType="{x:Type local:TeamTreeView}" ItemsSource="{Binding Members}">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="Assets/group.png" Width="15" Height="15" Margin="3"/>
+                                <TextBlock x:Name="teamName" Text="{Binding TeamName}" VerticalAlignment="Center"/>
+                                <TextBlock Text=" [" Foreground="Blue" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding Members.Count}" Foreground="Blue" VerticalAlignment="Center"/>
+                                <TextBlock Text="]" Foreground="Blue" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </HierarchicalDataTemplate>
+                        <DataTemplate DataType="{x:Type local:TeamMemberTreeview}">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="Assets/person.png" Width="15" Height="15" Margin="3"/>
+                                <TextBlock Text="{Binding FirstName}" Foreground="Green" VerticalAlignment="Center"/>
+                                <TextBlock Text=" " />
+                                <TextBlock Text="{Binding LastName}" Foreground="Green" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </TreeView.Resources>
+                </TreeView>
+            </StackPanel>
+            <!-- Delete Team / Player Button -->
+            <Button Content="Delete Selected Team / Player" Click="Delete_Click"></Button>
         </StackPanel>
 
         <!-- Tournament Type -->
-        <StackPanel Grid.Row="3" Grid.Column="1"  Orientation="Vertical" Margin="0,20,0,0">
+        <StackPanel Grid.Row="4" Grid.Column="1"  Orientation="Vertical" Margin="0,10,0,0">
             <TextBlock Text="Tournament Type" 
                    FontSize="18">
             </TextBlock>
@@ -79,23 +99,43 @@
         </StackPanel>
 
         <!-- Select Team -->
-        <StackPanel Grid.Row="4" Grid.Column="1"  Orientation="Vertical" Margin="0,20,0,0">
+        <StackPanel Grid.Row="5" Grid.Column="1"  Orientation="Vertical" Margin="0,20,0,0">
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Select Teams" 
                    FontSize="18">
                 </TextBlock>
                 <Button Content="Create New Team" Click="Create_New_Team_Click" Margin="10,0,0,0"></Button>
-
             </StackPanel>
+
+            <!-- Select From Existing Teams-->
+            <ListView x:Name="selectionListBox" SelectionMode="Multiple" Grid.Row="6" Grid.Column="1" Grid.RowSpan="2" Margin="0,5,0,0" Height="150">
+                <ListView.View>
+                    <GridView AllowsColumnReorder="True">
+                        <GridViewColumn Header="Name" Width="80" DisplayMemberBinding="{Binding TeamName}" />
+                        <GridViewColumn Header="Wins" Width="50" DisplayMemberBinding="{Binding Wins}" />
+                        <GridViewColumn Header="Losses" Width="50" DisplayMemberBinding="{Binding Losses}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+            <!-- Confirm selection button -->
+            <Button x:Name="confirmSelection" VerticalAlignment="Top" Click="ConfirmSelection_Click">
+                <TextBlock Text="Add Selected Teams"/>
+            </Button>
         </StackPanel>
         
         <!-- Select Prizes -->
-        <StackPanel Grid.Row="5" Grid.Column="1"  Height="20" Orientation="Horizontal" Margin="0,20,0,0" VerticalAlignment="Top">
+        <StackPanel Grid.Row="6" Grid.Column="1"  Height="20" Orientation="Horizontal" Margin="0,20,0,0" VerticalAlignment="Top">
             <TextBlock Text="Select Prizes" 
                    FontSize="18">
             </TextBlock>
             <Button Content="Create New Prize" Click="Create_New_Prize_Click" Margin="10,0,0,0" Height="20"/>
         </StackPanel>
 
+        <!-- Prizes ComboBox -->
+        <ComboBox Grid.Row="7" Grid.Column="1" Margin="0,5,0,0">
+             //ToDo
+        </ComboBox>
+        
     </Grid>
 </Window>

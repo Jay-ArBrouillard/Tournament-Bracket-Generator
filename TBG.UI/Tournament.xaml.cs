@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
+using System.Windows.Controls;
 using TBG.Core.Interfaces;
 using TBG.Driver;
 using TBG.UI.Models;
@@ -14,47 +15,16 @@ namespace TBG.UI
     public partial class Tournament : Window
     {
         private IProvider source;
+        private List<ITeam> teams;
+        private List<TeamTreeView> teamsInTournament;
 
         public Tournament()
         {
             InitializeComponent();
             source = ApplicationController.GetProvider();
-            List<TeamTreeView> teams = convertToTeam(source.getAllTeams());
-            /*List<TeamTreeView> teams = new List<TeamTreeView>();
-            
-            TeamTreeView team1 = new TeamTreeView()
-            {
-                TeamName = "TankTop Team"
-            };
-            team1.Members.Add(new TeamMemberTreeview()
-            {
-                FirstName = "Johnny Smith",
-                LastName = 21
-            });
-            team1.Members.Add(new TeamMemberTreeview()
-            {
-                FirstName = "Gerald Smith",
-                LastName = 31
-            });
-            teams.Add(team1);
-            TeamTreeView team2 = new TeamTreeView()
-            {
-                TeamName = "Team4"
-            };
-            team2.Members.Add(new TeamMemberTreeview()
-            {
-                FirstName = "Jayar",
-                LastName = 50
-            });
-            team2.Members.Add(new TeamMemberTreeview()
-            {
-                FirstName = "Drew",
-                LastName = 20
-            });
-            teams.Add(team2);
-            */
-
-            participantsTreeView.ItemsSource = teams;
+            teams = source.getAllTeams();
+            teamsInTournament = new List<TeamTreeView>();
+            selectionListBox.ItemsSource = teams;
         }
 
         private List<TeamTreeView> convertToTeam(List<ITeam> list)
@@ -71,18 +41,49 @@ namespace TBG.UI
                     IPerson person = source.getPerson(teamMember.PersonId);
                     teamMembers.Add(new TeamMemberTreeview()
                     {
+                        PersonId = person.PersonId,
+                        TeamName = team.TeamName,
                         FirstName = person.FirstName,
                         LastName = person.LastName
-                    });
+                    }); 
                 }
 
-                result.Add(new TeamTreeView(){
+                result.Add(new TeamTreeView() {
+                    TeamId = teamId,
                     TeamName = team.TeamName,
                     Members = teamMembers
                 });
             }
 
             return result;
+        }
+
+        private void ConfirmSelection_Click(object sender, RoutedEventArgs e)
+        {
+            List<ITeam> selectedTeams = new List<ITeam>();
+            foreach (ITeam team in selectionListBox.SelectedItems)
+            {
+                bool duplicateTeam = false;
+                string teamName = team.TeamName;
+                foreach (TeamTreeView view in teamsInTournament)
+                {
+                    if (view.TeamName.Equals(teamName))
+                    {
+                        duplicateTeam = true;
+                        break;
+                    }
+                }
+
+                if (duplicateTeam == false)
+                {
+                    selectedTeams.Add(team);
+                }
+            }
+
+            teamsInTournament.AddRange(convertToTeam(selectedTeams));
+            participantsTreeView.ItemsSource = teamsInTournament;
+            participantsTreeView.Items.Refresh();
+
         }
 
         private void Create_New_Team_Click(object sender, RoutedEventArgs e)
@@ -98,22 +99,70 @@ namespace TBG.UI
             prizes.Show();
         }
 
+        private void Delete_Click(object sender, RoutedEventArgs e)
+        {
+            if (participantsTreeView.SelectedItem is TeamTreeView selectedTeamItem)
+            {
+                teamsInTournament.Remove(selectedTeamItem);
+                participantsTreeView.Items.Refresh();
+            }
+            else if (participantsTreeView.SelectedItem is TeamMemberTreeview selectedMemberItem)
+            {
+                //Iterate each team in the tournament
+                foreach (TeamTreeView view in teamsInTournament)
+                {
+                    if (!selectedMemberItem.TeamName.Equals(view.TeamName))
+                    {
+                        continue;   //Saves unnecessary iterations
+                    }
+
+                    //Iterate each teamMember and check if their Id matches
+                    foreach (TeamMemberTreeview member in view.Members)
+                    {
+                        if (member.PersonId == selectedMemberItem.PersonId)
+                        {
+                            view.Members.Remove(member);
+                            break;
+                        }
+                    }
+                }
+            }
+
+        }
+
+        private void ParticipantsTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            //Not sure what I want to do here yet
+
+        }
     }
 
     public class TeamTreeView
     {
+        public int TeamId { get; set; }
+        public string TeamName { get; set; }
+        public ObservableCollection<TeamMemberTreeview> Members { get; set; }
         public TeamTreeView()
         {
             this.Members = new ObservableCollection<TeamMemberTreeview>();
         }
 
-        public string TeamName { get; set; }
+        public override bool Equals(object obj)
+        {
+            return obj is TeamTreeView view &&
+                   TeamId == view.TeamId;
+        }
 
-        public ObservableCollection<TeamMemberTreeview> Members { get; set; }
+        public override int GetHashCode()
+        {
+            return -1532736471 + TeamId.GetHashCode();
+        }
     }
 
     public class TeamMemberTreeview
     {
+        public int PersonId { get; set; }
+        public string TeamName { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
     }
