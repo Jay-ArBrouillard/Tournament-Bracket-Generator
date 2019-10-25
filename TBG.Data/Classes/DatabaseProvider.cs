@@ -47,12 +47,6 @@ namespace TBG.Data.Classes
             
             foreach (var participant in entry.TeamMembers)
             {
-                //QuickFix for participants PersonId not being set
-                if (participant.PersonId == 0)
-                {
-                    //got in here
-                }
-
                 TeamMembersTable.Create(new TeamMember()
                 {
                     PersonId = participant.PersonId,

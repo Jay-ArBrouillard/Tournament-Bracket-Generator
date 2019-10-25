@@ -55,11 +55,5 @@ namespace TBG.UI.Classes
             }
         }
 
-        public Person(string firstName, string lastName, string ratio)
-        {
-            FirstName = firstName;
-            LastName = lastName;
-            Ratio = ratio;
-        }
     }
 }

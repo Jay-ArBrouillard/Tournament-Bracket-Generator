@@ -29,9 +29,7 @@ namespace TBG.Business
         /// Represents this Person's phone number in the form (###-###-####).
         /// </summary>
         public string Phone { get; set; }
-
         public int Wins { get; set; }
-
         public int Losses { get; set; }
     }
 }

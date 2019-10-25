@@ -118,23 +118,31 @@ namespace TBG.UI
             string lastName = lastNameText.Text;
             string email = emailText.Text;
             string phone = phoneNumberText.Text;
+            bool valid = personController.validateWinLoss(winsText.Text, lossesText.Text);
 
-            IPerson newPerson = new Person(firstName, lastName, email, phone);
-            bool validate = personController.validatePerson(newPerson);
-
-            if (validate)
+            if (valid)
             {
-                if (source.createPerson(newPerson) != null)
-                {
-                    SetDisplayColors(new SolidColorBrush(Colors.Green));
+                IPerson newPerson = new Person(firstName, lastName, email, phone, int.Parse(winsText.Text), int.Parse(lossesText.Text));
+                bool validate = personController.validatePerson(newPerson);
 
-                    //Update views on TeamWindow
-                    personList.Add(newPerson);
-                    displayListBox.Items.Add(newPerson);
-                    selectedPersons.Add(newPerson);
-                    selectionListBox.ItemsSource = personList;
-                    selectionListBox.Items.Refresh();
-                    displayListBox.Items.Refresh();
+                if (validate)
+                {
+                    if (source.createPerson(newPerson) != null)
+                    {
+                        SetDisplayColors(new SolidColorBrush(Colors.Green));
+
+                        //Update views on TeamWindow
+                        personList.Add(newPerson);
+                        displayListBox.Items.Add(newPerson);
+                        selectedPersons.Add(newPerson);
+                        selectionListBox.ItemsSource = personList;
+                        selectionListBox.Items.Refresh();
+                        displayListBox.Items.Refresh();
+                    }
+                    else
+                    {
+                        SetDisplayColors(new SolidColorBrush(Colors.Red));
+                    }
                 }
                 else
                 {
@@ -146,6 +154,7 @@ namespace TBG.UI
                 SetDisplayColors(new SolidColorBrush(Colors.Red));
             }
 
+
         }
         private void SetDisplayColors(SolidColorBrush pColor)
         {
@@ -153,6 +162,8 @@ namespace TBG.UI
             lastNameText.BorderBrush = pColor;
             emailText.BorderBrush = pColor;
             phoneNumberText.BorderBrush = pColor;
+            winsText.BorderBrush = pColor;
+            lossesText.BorderBrush = pColor;
         }
 
         private void CreateTeam_Click(object sender, RoutedEventArgs e)
