@@ -4,11 +4,12 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using TBG.Core.Interfaces;
 
 namespace TBG.UI.Models
 {
-    public class TournamentEntryView : ITournamentEntry
+    public class TournamentEntryView : DependencyObject, ITournamentEntry
     {
         public int TournamentEntryId { get; set; }
         public int TournamentId { get; set; }
@@ -21,15 +22,5 @@ namespace TBG.UI.Models
             this.Members = new ObservableCollection<TeamMember>();
         }
 
-        public override bool Equals(object obj)
-        {
-            return obj is TournamentEntryView view &&
-                   TeamId == view.TeamId;
-        }
-
-        public override int GetHashCode()
-        {
-            return -1532736471 + TeamId.GetHashCode();
-        }
     }
 }

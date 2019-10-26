@@ -20,7 +20,6 @@ namespace TBG.UI
         public List<IPrize> prizes; //All existing prizes
         public List<IPrize> prizesInTournament;  //Selected prizes
         public int prizePool;
-        private Point startPoint;
 
         public CreateTournament()
         {
@@ -81,8 +80,7 @@ namespace TBG.UI
                 result.Add(new TournamentEntryView() {
                     TeamId = teamId,
                     TeamName = team.TeamName,
-                    Members = teamMembers,
-                    Seed = result.Count
+                    Members = teamMembers
                 });
             }
 
@@ -185,7 +183,6 @@ namespace TBG.UI
         {
             object selectedItem = ((ComboBox)sender).SelectedItem;
             IPrize selectedPrize = (IPrize)selectedItem;
-
             prizesInTournament.Add(selectedPrize);
             prizesListBox.ItemsSource = prizesInTournament;
             prizesListBox.Items.Refresh();
@@ -198,5 +195,22 @@ namespace TBG.UI
             //business.createTournament(object);
         }
 
+        private void SeedToggle_Checked(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < teamsInTournament.Count; i++)
+            {
+                teamsInTournament[i].Seed = i + 1;
+            }
+            participantsTreeView.Items.Refresh();
+        }
+
+        private void SeedToggle_Unchecked(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < teamsInTournament.Count; i++)
+            {
+                teamsInTournament[i].Seed = 0;
+            }
+            participantsTreeView.Items.Refresh();
+        }
     }
 }
