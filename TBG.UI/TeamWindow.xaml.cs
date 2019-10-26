@@ -30,12 +30,12 @@ namespace TBG.UI
         private ITeamController teamController;
         private List<IPerson> personList;   //List of people in database
         private List<IPerson> selectedPersons; //List of people to create a new team with
-        private Tournament tournament;
+        private CreateTournament tournament;
 
-        public TeamWindow(Tournament tournament)
+        public TeamWindow(CreateTournament tournament)
         {
             InitializeComponent();
-            source = ApplicationController.GetProvider();
+            source = ApplicationController.getProvider();
             personController = ApplicationController.getPersonController();
             teamController = ApplicationController.getTeamController();
             this.tournament = tournament;
@@ -179,13 +179,13 @@ namespace TBG.UI
                 ITeam createdTeam = source.createTeam(newTeam);
 
                 //Update Teams/Players on tournament Screen
-                List<TeamTreeView> teams = tournament.teamsInTournament;
-                TeamTreeView convertedTeam = tournament.convertToTeam(new List<ITeam>() { createdTeam })[0];
-                ObservableCollection<TeamMemberTreeview> teamMembers = new ObservableCollection<TeamMemberTreeview>();
+                List<TournamentEntryView> teams = tournament.teamsInTournament;
+                TournamentEntryView convertedTeam = tournament.convertToTeam(new List<ITeam>() { createdTeam })[0];
+                ObservableCollection<TeamMember> teamMembers = new ObservableCollection<TeamMember>();
                 foreach (ITeamMember teamMember in source.getTeamMembersByTeamId(createdTeam.TeamId))
                 {
                     IPerson person = source.getPerson(teamMember.PersonId);
-                    teamMembers.Add(new TeamMemberTreeview()
+                    teamMembers.Add(new TeamMember()
                     {
                         PersonId = person.PersonId,
                         TeamName = newTeam.TeamName,

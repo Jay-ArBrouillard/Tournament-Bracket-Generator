@@ -55,6 +55,7 @@
     <Compile Include="SingleEliminationTournament.cs" />
     <Compile Include="Team.cs" />
     <Compile Include="TeamController.cs" />
+    <Compile Include="TournamentController.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TBG.Core\TBG.Core.csproj">

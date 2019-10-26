@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TBG.Core.Interfaces;
 
-namespace TBG.Data.Entities
+namespace TBG.UI.Models
 {
     public class Tournament : ITournament
     {
@@ -15,8 +15,7 @@ namespace TBG.Data.Entities
         public decimal EntryFee { get; set; }
         public double TotalPrizePool { get; set; }
         public int TournamentTypeId { get; set; }
-        public List<ITeam> Participants { get; set; }
+        public List<ITournamentEntry> Participants { get; set; }
         public List<ITournamentPrize> Prizes { get; set; }
-        List<ITournamentEntry> ITournament.Participants { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
 }

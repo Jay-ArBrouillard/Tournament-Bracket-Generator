@@ -14,7 +14,7 @@ namespace TBG.Core.Interfaces
         decimal EntryFee { get; set; }
         double TotalPrizePool { get; set; }
         int TournamentTypeId { get; set; }
-        List<ITeam> Participants { get; set; }
+        List<ITournamentEntry> Participants { get; set; }
         List<ITournamentPrize> Prizes { get; set; }
     }
 }

@@ -3,51 +3,73 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
 using TBG.Core.Interfaces;
 using TBG.Driver;
 using TBG.UI.Models;
 
 namespace TBG.UI
 {
-    /// <summary>
-    /// Interaction logic for Tournament.xaml
-    /// </summary>
-    public partial class Tournament : Window
+    public partial class CreateTournament : Window
     {
         private IProvider source;
-        public List<ITeam> teams;
-        public List<TeamTreeView> teamsInTournament;
-        public List<IPrize> prizes;
-        public List<IPrize> prizesInTournament;
+        private ITournamentController business;
+        public List<ITeam> teams;   //All existing teams
+        public List<TournamentEntryView> teamsInTournament;    //Selected teams. Implements ITournamentEntry
+        public List<IPrize> prizes; //All existing prizes
+        public List<IPrize> prizesInTournament;  //Selected prizes
+        public int prizePool;
+        private Point startPoint;
 
-        public Tournament()
+        public CreateTournament()
         {
             InitializeComponent();
-            source = ApplicationController.GetProvider();
+            business = ApplicationController.getTournamentController();
+            source = ApplicationController.getProvider();
+            tournamentTypesComboBox.ItemsSource = source.getTournamentTypes();
             teams = source.getAllTeams();
-            teamsInTournament = new List<TeamTreeView>();
+            teamsInTournament = new List<TournamentEntryView>();
             selectionListBox.ItemsSource = teams;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             prizesInTournament = new List<IPrize>();
-            prizes = source.GetAllPrizes();
+            prizes = source.getAllPrizes();
             prizeComboBox.ItemsSource = prizes;
+            prizePool = 0;
         }
 
-        public List<TeamTreeView> convertToTeam(List<ITeam> list)
+        private void SetEntryFee_Click(object sender, RoutedEventArgs e)
         {
-            List<TeamTreeView> result = new List<TeamTreeView>();
+            string entryFeeInput = entryFeeTextBox.Text;
+            bool validate = business.validateEntryFee(entryFeeInput);
+
+            if (validate)
+            {
+                prizePool = teamsInTournament.Count * int.Parse(entryFeeInput);
+                totalPrizePool.Text = prizePool.ToString();
+                entryFeeTextBox.BorderBrush = new SolidColorBrush(Colors.Green);
+            }
+            else
+            {
+                entryFeeTextBox.BorderBrush = new SolidColorBrush(Colors.Red);
+            }
+        }
+
+        public List<TournamentEntryView> convertToTeam(List<ITeam> list)
+        {
+            List<TournamentEntryView> result = new List<TournamentEntryView>();
 
             foreach(ITeam team in list)
             {
-                ObservableCollection<TeamMemberTreeview> teamMembers = new ObservableCollection<TeamMemberTreeview>();
+                ObservableCollection<TeamMember> teamMembers = new ObservableCollection<TeamMember>();
                 int teamId = team.TeamId;
                 foreach (ITeamMember teamMember in source.getTeamMembersByTeamId(teamId))
                 {
                     IPerson person = source.getPerson(teamMember.PersonId);
-                    teamMembers.Add(new TeamMemberTreeview()
+                    teamMembers.Add(new TeamMember()
                     {
                         PersonId = person.PersonId,
                         TeamName = team.TeamName,
@@ -56,24 +78,25 @@ namespace TBG.UI
                     }); 
                 }
 
-                result.Add(new TeamTreeView() {
+                result.Add(new TournamentEntryView() {
                     TeamId = teamId,
                     TeamName = team.TeamName,
-                    Members = teamMembers
+                    Members = teamMembers,
+                    Seed = result.Count
                 });
             }
 
             return result;
         }
 
-        private void ConfirmSelection_Click(object sender, RoutedEventArgs e)
+        private void AddSelectedTeam_Click(object sender, RoutedEventArgs e)
         {
             List<ITeam> selectedTeams = new List<ITeam>();
             foreach (ITeam team in selectionListBox.SelectedItems)
             {
                 bool duplicateTeam = false;
                 string teamName = team.TeamName;
-                foreach (TeamTreeView view in teamsInTournament)
+                foreach (TournamentEntryView view in teamsInTournament)
                 {
                     if (view.TeamName.Equals(teamName))
                     {
@@ -87,11 +110,13 @@ namespace TBG.UI
                     selectedTeams.Add(team);
                 }
             }
-
+            //Add selected teams to TreeView and Tournaments list
             teamsInTournament.AddRange(convertToTeam(selectedTeams));
             participantsTreeView.ItemsSource = teamsInTournament;
             participantsTreeView.Items.Refresh();
 
+            //Update PrizePool
+            SetEntryFee_Click(sender, e);
         }
 
         private void Create_New_Team_Click(object sender, RoutedEventArgs e)
@@ -106,17 +131,20 @@ namespace TBG.UI
             prizes.Show();
         }
 
-        private void Delete_Click(object sender, RoutedEventArgs e)
+        private void DeleteTeamButton_Click(object sender, RoutedEventArgs e)
         {
-            if (participantsTreeView.SelectedItem is TeamTreeView selectedTeamItem)
+            if (participantsTreeView.SelectedItem is TournamentEntryView selectedTeamItem)
             {
                 teamsInTournament.Remove(selectedTeamItem);
                 participantsTreeView.Items.Refresh();
+
+                //Update PrizePool
+                SetEntryFee_Click(sender, e);
             }
-            else if (participantsTreeView.SelectedItem is TeamMemberTreeview selectedMemberItem)
+            else if (participantsTreeView.SelectedItem is TeamMember selectedMemberItem)
             {
                 //Iterate each team in the tournament
-                foreach (TeamTreeView view in teamsInTournament)
+                foreach (TournamentEntryView view in teamsInTournament)
                 {
                     if (!selectedMemberItem.TeamName.Equals(view.TeamName))
                     {
@@ -124,7 +152,7 @@ namespace TBG.UI
                     }
 
                     //Iterate each teamMember and check if their Id matches
-                    foreach (TeamMemberTreeview member in view.Members)
+                    foreach (TeamMember member in view.Members)
                     {
                         if (member.PersonId == selectedMemberItem.PersonId)
                         {
@@ -157,6 +185,7 @@ namespace TBG.UI
         {
             object selectedItem = ((ComboBox)sender).SelectedItem;
             IPrize selectedPrize = (IPrize)selectedItem;
+
             prizesInTournament.Add(selectedPrize);
             prizesListBox.ItemsSource = prizesInTournament;
             prizesListBox.Items.Refresh();
@@ -165,36 +194,9 @@ namespace TBG.UI
         private void Create_Tournament_Click(object sender, RoutedEventArgs e)
         {
             //TODO
-        }
-    }
-
-    public class TeamTreeView
-    {
-        public int TeamId { get; set; }
-        public string TeamName { get; set; }
-        public ObservableCollection<TeamMemberTreeview> Members { get; set; }
-        public TeamTreeView()
-        {
-            this.Members = new ObservableCollection<TeamMemberTreeview>();
+            //business.validate(something);
+            //business.createTournament(object);
         }
 
-        public override bool Equals(object obj)
-        {
-            return obj is TeamTreeView view &&
-                   TeamId == view.TeamId;
-        }
-
-        public override int GetHashCode()
-        {
-            return -1532736471 + TeamId.GetHashCode();
-        }
-    }
-
-    public class TeamMemberTreeview
-    {
-        public int PersonId { get; set; }
-        public string TeamName { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
     }
 }

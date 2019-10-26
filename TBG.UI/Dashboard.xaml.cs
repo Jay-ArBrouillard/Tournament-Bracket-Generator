@@ -13,15 +13,17 @@ namespace TBG.UI
     {
         private IProvider source;
         private IController business;
+        private IUser user;
 
-        public Dashboard()
+        public Dashboard(User thisUser)
         {
             InitializeComponent();
-            this.source = ApplicationController.GetProvider();
-            business = ApplicationController.GetController();
+            user = thisUser;
+            this.source = ApplicationController.getProvider();
+            business = ApplicationController.getController();
 
-            var tournaments = source.GetAllTournaments();
-            var tournamentTypes = source.GetTournamentTypes();
+            var tournaments = source.getAllTournaments();
+            var tournamentTypes = source.getTournamentTypes();
 
             foreach (var tournament in tournaments)
             {
@@ -39,6 +41,12 @@ namespace TBG.UI
                     }
                 });
             }
+
+            //Logged in as guest -> don't allow them to create a tournament
+            if (thisUser == null)   
+            {
+                createTournamentButton.Visibility = Visibility.Hidden;
+            }
         }
 
         public void Load_Tournament(object sender, RoutedEventArgs e)
@@ -48,7 +56,7 @@ namespace TBG.UI
 
         private void CreateTournament_Click(object sender, RoutedEventArgs e)
         {
-            Tournament newTournament = new Tournament();
+            CreateTournament newTournament = new CreateTournament();
             newTournament.Show();
             this.Close();
         }

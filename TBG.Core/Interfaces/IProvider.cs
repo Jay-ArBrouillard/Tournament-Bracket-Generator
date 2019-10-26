@@ -19,10 +19,10 @@ namespace TBG.Core.Interfaces
         IUser createUser(IUser thisUser);
         IUser getUser(string userName);
         IUser updateLoginTime(IUser thisUser);
-        List<ITournament> GetAllTournaments();
-        List<ITournamentType> GetTournamentTypes();
+        List<ITournament> getAllTournaments();
+        List<ITournamentType> getTournamentTypes();
         IPrize createPrize(IPrize prize);
         List<ITeamMember> getTeamMembersByTeamId(int teamId);
-        List<IPrize> GetAllPrizes();
+        List<IPrize> getAllPrizes();
     }
 }

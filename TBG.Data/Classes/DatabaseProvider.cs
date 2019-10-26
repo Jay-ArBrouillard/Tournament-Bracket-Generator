@@ -27,12 +27,15 @@ namespace TBG.Data.Classes
         }
         #endregion
 
+
+        #region TOURNAMENT METHODS
         public bool createTournament(ITournament entry)
         {
             //Create Tournament Record
             //Create Cross Reference Records For Tournament/Team/Player
             return true;
         }
+        #endregion
 
         #region TEAM METHODS
         public ITeam createTeam(ITeam entry)
@@ -104,11 +107,22 @@ namespace TBG.Data.Classes
             return PersonsTable.GetAll(dbConn);
         }
         #endregion
-        
-        #region LOGIN METHODS
-        public IUser createUser(IUser thisUser)
+
+        #region LOGIN(USER) METHODS 
+        public IUser createUser(IUser entry)
         {
-            return UsersTable.Create(thisUser, dbConn);
+            IUser user = UsersTable.Create(entry, dbConn);
+            if (user == null) { return null; }
+
+            user = UsersTable.Get(user.UserName, dbConn);
+            if (user == null) { return null; }
+
+            if (user.UserId == 0)
+            {
+                Console.WriteLine("Error userid == 0");
+            }
+
+            return user;
         }
 
         public IUser getUser(string userName)
@@ -124,12 +138,12 @@ namespace TBG.Data.Classes
         #endregion
 
         #region DASHBOARD METHODS
-        public List<ITournament> GetAllTournaments()
+        public List<ITournament> getAllTournaments()
         {
             return TournamentTable.GetAll(dbConn); ;
         }
 
-        public List<ITournamentType> GetTournamentTypes()
+        public List<ITournamentType> getTournamentTypes()
         {
             return TournamentTypeTable.GetAll();
         }
@@ -141,7 +155,7 @@ namespace TBG.Data.Classes
             return PrizesTable.Create(prize, dbConn);
         }
 
-        public List<IPrize> GetAllPrizes()
+        public List<IPrize> getAllPrizes()
         {
             return PrizesTable.GetAll(dbConn);
         }

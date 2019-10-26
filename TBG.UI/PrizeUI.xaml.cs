@@ -19,13 +19,13 @@ namespace TBG.UI
         private IPrizeController controller;
         private IProvider source;
         private List<IPrize> allPrizes;
-        private Tournament tournament;
+        private CreateTournament tournament;
 
-        public PrizeUI(Tournament tournament)
+        public PrizeUI(CreateTournament tournament)
         {
             InitializeComponent();
-            controller = ApplicationController.GetPrizeController();
-            source = ApplicationController.GetProvider();
+            controller = ApplicationController.getPrizeController();
+            source = ApplicationController.getProvider();
             allPrizes = new List<IPrize>();
             readPrizes();
             this.tournament = tournament;
@@ -58,7 +58,7 @@ namespace TBG.UI
 
         private void readPrizes()
         {
-            allPrizes = source.GetAllPrizes();
+            allPrizes = source.getAllPrizes();
             prizeDisplayListBox.ItemsSource = allPrizes;
         }
 
