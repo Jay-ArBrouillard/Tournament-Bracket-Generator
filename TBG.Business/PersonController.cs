@@ -53,5 +53,14 @@ namespace TBG.Business
                 return false;
             }
         }
+
+        public bool validateWinLoss(string wins, string losses)
+        {
+            if (!Int32.TryParse(wins, out int x)) { return false; }
+
+            if (!Int32.TryParse(losses, out int y)) { return false; }
+
+            return true;
+        }
     }
 }

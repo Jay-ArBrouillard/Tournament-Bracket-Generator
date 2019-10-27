@@ -68,14 +68,17 @@
     <Compile Include="Models\Person.cs" />
     <Compile Include="Models\Prize.cs" />
     <Compile Include="Models\Team.cs" />
+    <Compile Include="Models\TeamMember.cs" />
+    <Compile Include="Models\Tournament.cs" />
+    <Compile Include="Models\TournamentEntryView.cs" />
     <Compile Include="PrizeUI.xaml.cs">
       <DependentUpon>PrizeUI.xaml</DependentUpon>
     </Compile>
     <Compile Include="TeamWindow.xaml.cs">
       <DependentUpon>TeamWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Tournament.xaml.cs">
-      <DependentUpon>Tournament.xaml</DependentUpon>
+    <Compile Include="CreateTournament.xaml.cs">
+      <DependentUpon>CreateTournament.xaml</DependentUpon>
     </Compile>
     <Page Include="Dashboard.xaml">
       <SubType>Designer</SubType>
@@ -104,7 +107,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Tournament.xaml">
+    <Page Include="CreateTournament.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -153,6 +156,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\search.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\group.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\person.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\trophy.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

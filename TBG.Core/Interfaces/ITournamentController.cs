@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace TBG.Core.Interfaces
 {
-    public interface IPersonController
+    public interface ITournamentController
     {
-        bool validatePerson(IPerson person);
-        bool validateWinLoss(string wins, string losses);
+        bool validateEntryFee(string entryFee);
     }
 }

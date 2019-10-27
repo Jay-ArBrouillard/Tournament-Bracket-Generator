@@ -11,7 +11,7 @@ namespace TBG.Data.Tables
     {
         public static ITournament Create(ITournament entity, MySqlConnection dbConn)
         {
-            string query = "INSERT INTO Tournament (user_id, tournament_name, entry_fee, total_prize_pool, tournament_type_id) VALUES (@user, @name, @fee, @pool, @type)";
+            string query = "INSERT INTO Tournaments (user_id, tournament_name, entry_fee, total_prize_pool, tournament_type_id) VALUES (@user, @name, @fee, @pool, @type)";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@user", entity.UserId.ToString());
             param.Add("@name", entity.TournamentName);

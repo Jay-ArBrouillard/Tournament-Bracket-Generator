@@ -48,7 +48,7 @@
                 </ComboBox>
                 <TextBox x:Name="playerFilter" Background="#F3F3F3" HorizontalAlignment="Left" Width="200" Margin="30,25,0,0" FontFamily="Champagne &amp; Limousines" FontSize="18"/>
                 <TextBox x:Name="prizeFilter" Background="#F3F3F3" HorizontalAlignment="Left" Width="200" Margin="30,25,0,0" FontFamily="Champagne &amp; Limousines" FontSize="18"/>
-                <Button x:Name="createTournament" Width="150" Height="30" Margin="0,50,0,0" FontFamily="Champagne &amp; Limousines" Click="CreateTournament_Click">
+                <Button x:Name="createTournamentButton" Width="150" Height="30" Margin="0,50,0,0" FontFamily="Champagne &amp; Limousines" Click="CreateTournament_Click">
                     <TextBlock Text="Create New Tournament"/>
                 </Button>
             </StackPanel>

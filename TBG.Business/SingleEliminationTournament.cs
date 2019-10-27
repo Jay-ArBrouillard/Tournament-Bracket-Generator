@@ -17,5 +17,6 @@ namespace TBG.Business
         public int TournamentTypeId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public List<ITeam> Participants { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
         public List<ITournamentPrize> Prizes { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        List<ITournamentEntry> ITournament.Participants { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
     }
 }
