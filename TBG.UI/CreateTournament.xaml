@@ -54,7 +54,19 @@
                 <TreeView Name="participantsTreeView" Width="220" Height="200">
                     <TreeView.Resources>
                         <HierarchicalDataTemplate DataType="{x:Type self:TournamentEntryView}" ItemsSource="{Binding Members}">
-                            <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal" >
+                                <StackPanel.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="Edit Seed" >
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="Seed: " VerticalAlignment="Center"/>
+                                                <TextBox x:Name="menuItem_Seed" Text="{Binding Seed, RelativeSource={RelativeSource AncestorType=self:TournamentEntryView}}" Width="60" 
+                                                         Height="30" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" KeyDown="menuItem_Seed_KeyDown"/>
+                                            </StackPanel>
+                                        </MenuItem>
+                                    </ContextMenu>
+                                </StackPanel.ContextMenu>
+                                
                                 <Image Source="Assets/group.png" Width="15" Height="15" Margin="3"/>
                                 <TextBlock x:Name="teamName" Text="{Binding TeamName}" VerticalAlignment="Center"/>
                                 <TextBlock Text=" [Count: " Foreground="Blue" VerticalAlignment="Center"/>
@@ -185,7 +197,7 @@
         </ComboBox>
 
         <!-- Create Tournament Button -->
-        <Button x:Name="createTournamentButton" Grid.Row="7" Grid.Column="2" Content="Create Tournment" Grid.ColumnSpan="2" HorizontalAlignment="Center" Width="150" Click="Create_Tournament_Click"/>
+        <Button x:Name="createTournamentButton" Grid.Row="7" Grid.Column="2" Content="Create Tournment" Grid.ColumnSpan="2" HorizontalAlignment="Center" Width="150" Click="Create_Tournament_Click" />
 
     </Grid>
 </Window>
