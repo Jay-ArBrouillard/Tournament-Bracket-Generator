@@ -212,5 +212,24 @@ namespace TBG.UI
             }
             participantsTreeView.Items.Refresh();
         }
+        private void menuItem_Seed_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                object obj = sender;
+                TextBox box = (TextBox)sender;
+                var data = box.DataContext;
+
+                if (int.TryParse(box.Text, out int value))
+                {
+                    ((TournamentEntryView)data).Seed = value;
+
+                    teamsInTournament.Sort((x, y) => x.Seed.CompareTo(y.Seed));
+                    participantsTreeView.Items.Refresh();
+                }
+            }
+
+
+        }
     }
 }

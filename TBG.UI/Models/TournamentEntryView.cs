@@ -9,7 +9,7 @@ using TBG.Core.Interfaces;
 
 namespace TBG.UI.Models
 {
-    public class TournamentEntryView : DependencyObject, ITournamentEntry
+    public class TournamentEntryView : ITournamentEntry
     {
         public int TournamentEntryId { get; set; }
         public int TournamentId { get; set; }
@@ -21,6 +21,5 @@ namespace TBG.UI.Models
         {
             this.Members = new ObservableCollection<TeamMember>();
         }
-
     }
 }
