@@ -17,5 +17,11 @@ namespace TBG.UI.Models
         public int TournamentTypeId { get; set; }
         public List<ITournamentEntry> Participants { get; set; }
         public List<ITournamentPrize> Prizes { get; set; }
+        public List<IRound> Rounds { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+        public bool BuildTournament()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

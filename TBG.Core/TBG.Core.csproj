@@ -43,12 +43,14 @@
   <ItemGroup>
     <Compile Include="Interfaces\IController.cs" />
     <Compile Include="Interfaces\ILoginController.cs" />
+    <Compile Include="Interfaces\IMatchup.cs" />
     <Compile Include="Interfaces\IPerson.cs" />
     <Compile Include="Interfaces\IPersonController.cs" />
     <Compile Include="Interfaces\IPlace.cs" />
     <Compile Include="Interfaces\IPrize.cs" />
     <Compile Include="Interfaces\IPrizeController.cs" />
     <Compile Include="Interfaces\IProvider.cs" />
+    <Compile Include="Interfaces\IRound.cs" />
     <Compile Include="Interfaces\ITeam.cs" />
     <Compile Include="Interfaces\ITeamController.cs" />
     <Compile Include="Interfaces\ITeamMember.cs" />
@@ -58,6 +60,7 @@
     <Compile Include="Interfaces\ITournamentPrize.cs" />
     <Compile Include="Interfaces\ITournamentType.cs" />
     <Compile Include="Interfaces\IUser.cs" />
+    <Compile Include="Interfaces\IMatchupEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

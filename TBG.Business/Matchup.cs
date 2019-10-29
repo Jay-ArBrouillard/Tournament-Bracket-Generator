@@ -1,26 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using TBG.Core.Interfaces;
 
 namespace TBG.Business
 {
-    public class Matchup
+    public class Matchup : IMatchup
     {
-        /// <summary>
-        /// Represents two teams playing against each other in a particular tournament.
-        /// </summary>
-        public List<MatchupEntry> Entries { get; set; } = new List<MatchupEntry>();
+        public int MatchupId { get; set; }
+        public List<IMatchupEntry> Teams { get; set; }
+        public IMatchup NextRound { get; set; }
 
-        /// <summary>
-        /// The winner out of the two teams playing.
-        /// </summary>
-        public Team Winner { get; set; }
-
-        /// <summary>
-        /// The round number in the bracket.
-        /// </summary>
-        public int MatchupRound { get; set; }
+        public Matchup()
+        {
+            Teams = new List<IMatchupEntry>();
+        }
     }
 }

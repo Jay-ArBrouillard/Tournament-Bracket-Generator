@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace TBG.Core.Interfaces
 {
-    public interface IController
+    public interface IMatchupEntry
     {
-        void TestTournament();
+        ITournamentEntry TheTeam { get; set; }
+        double Score { get; set; }
     }
 }

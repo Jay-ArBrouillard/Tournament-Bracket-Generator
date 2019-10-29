@@ -9,14 +9,124 @@ namespace TBG.Business
 {
     public class SingleEliminationTournament : ITournament
     {
-        public int TournamentId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public int UserId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public string TournamentName { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public decimal EntryFee { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public double TotalPrizePool { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public int TournamentTypeId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public List<ITeam> Participants { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public List<ITournamentPrize> Prizes { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        List<ITournamentEntry> ITournament.Participants { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public int TournamentId { get; set; }
+        public int UserId { get; set; }
+        public string TournamentName { get; set; }
+        public decimal EntryFee { get; set; }
+        public double TotalPrizePool { get; set; }
+        public int TournamentTypeId { get; set; }
+        public List<ITournamentEntry> Participants { get; set; }
+        public List<ITournamentPrize> Prizes { get; set; }
+        public List<IRound> Rounds { get; set; }
+
+        public SingleEliminationTournament()
+        {
+            Participants = new List<ITournamentEntry>();
+            Prizes = new List<ITournamentPrize>();
+            Rounds = new List<IRound>();
+        }
+
+        public bool BuildTournament()
+        {
+            Queue<ITournamentEntry> teamQueue = new Queue<ITournamentEntry>();
+            foreach (var team in Participants)
+            {
+                teamQueue.Enqueue(team);
+            }
+
+            for (int i = 1; i <= CalculateRoundTotal(Participants.Count); i++)
+            {
+                Rounds.Add(new Round()
+                {
+                    RoundNum = i,
+                    TournamentId = TournamentId
+                });
+            }
+
+            foreach (var round in Rounds)
+            {
+                Matchup nextRoundMatchup = new Matchup();
+
+                if (round.RoundNum == 1)
+                {
+                    for (int i = 0; i < Participants.Count / 2; i++)
+                    {
+                        round.Pairings.Add(new Matchup()
+                        {
+                            MatchupId = i,
+                            Teams = new List<IMatchupEntry>()
+                        });
+                    }
+
+                    foreach (var matchup in round.Pairings)
+                    {
+                        matchup.Teams.Add(new MatchupEntry()
+                        {
+                            TheTeam = teamQueue.Dequeue(),
+                            Score = 0
+                        });
+
+                        matchup.Teams.Add(new MatchupEntry()
+                        {
+                            TheTeam = teamQueue.Dequeue(),
+                            Score = 0
+                        });
+                    }
+                }
+
+                if (round.Pairings.Count > 1)
+                {
+                    int count = 1;
+                    foreach (var matchup in round.Pairings)
+                    {
+                        if (IsOdd(count))
+                        {
+                            nextRoundMatchup = new Matchup();
+                            var nextRound = Rounds.Find(x => x.RoundNum == round.RoundNum + 1);
+                            if (nextRound != null) { nextRound.Pairings.Add(nextRoundMatchup); } //Safety, but there should be a next round if Pairings.count > 1.
+                        }
+                        matchup.NextRound = nextRoundMatchup;
+
+                        count++;
+                    }
+                }
+            }
+            return true;
+        }
+
+        public bool RecordResult(IMatchup matchup)
+        {
+            var winner = CreateWinnerMatchupEntry(matchup.Teams.OrderByDescending(x => x.Score).First());
+            matchup.NextRound.Teams.Add(winner);
+            return true;
+        }
+
+        private IMatchupEntry CreateWinnerMatchupEntry(IMatchupEntry winner)
+        {
+            var nextRound = new MatchupEntry()
+            {
+                TheTeam = winner.TheTeam,
+                Score = 0
+            };
+
+            return nextRound;
+        }
+
+        private int CalculateRoundTotal(int FieldSize)
+        {
+            int result = 1;
+
+            while (FieldSize != 2)
+            {
+                result++;
+                FieldSize = FieldSize / 2;
+            }
+            return result;
+        }
+
+        public static bool IsOdd(int value)
+        {
+            return value % 2 != 0;
+        }
     }
 }

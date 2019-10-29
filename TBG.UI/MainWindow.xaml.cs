@@ -25,12 +25,19 @@ namespace TBG.UI
     {
         private IProvider source;
         private ILoginController business;
+        private IController app;
         public MainWindow()
         {
             InitializeComponent();
             source = ApplicationController.getProvider();
             business = ApplicationController.getLoginController();
+            app = ApplicationController.getController();
         }
+        private void Test_Click(object sender, RoutedEventArgs e)
+        {
+            app.TestTournament();
+        }
+
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)

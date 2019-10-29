@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace TBG.Core.Interfaces
 {
@@ -16,5 +12,7 @@ namespace TBG.Core.Interfaces
         int TournamentTypeId { get; set; }
         List<ITournamentEntry> Participants { get; set; }
         List<ITournamentPrize> Prizes { get; set; }
+        List<IRound> Rounds { get; set; }
+        bool BuildTournament();
     }
 }
