@@ -49,6 +49,8 @@ namespace TBG.Data.Tables
         {
             string query = "SELECT * FROM Persons WHERE first_name = @First AND  last_name = @Last AND email = @Email";
             Dictionary<string, string> param = new Dictionary<string, string>();
+            if (firstName == null || lastName == null || email == null) { return null; }
+
             param.Add("@First", firstName.ToString());
             param.Add("@Last", lastName.ToString());
             param.Add("@Email", email.ToString());

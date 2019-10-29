@@ -11,19 +11,31 @@ namespace TBG.Business
 {
     public class PersonController : IPersonController
     {
-        public bool validatePerson(IPerson person)
+        public bool validatePerson(IPerson thisPerson, IPerson thatPerson)
         {
-            if (string.IsNullOrEmpty(person.FirstName)) { return false; }
+            if (thisPerson == null) { return false; }
 
-            if (string.IsNullOrEmpty(person.LastName)) { return false; }
+            if (string.IsNullOrEmpty(thisPerson.FirstName)) { return false; }
 
-            if (string.IsNullOrEmpty(person.Email)) { return false; }
+            if (string.IsNullOrEmpty(thisPerson.LastName)) { return false; }
 
-            if (string.IsNullOrEmpty(person.Phone)) { return false; }
+            if (string.IsNullOrEmpty(thisPerson.Email)) { return false; }
 
-            if (!isValidEmail(person.Email)) { return false; }
+            if (string.IsNullOrEmpty(thisPerson.Phone)) { return false; }
 
-            if (!isValidPhoneNumber(person.Phone)) { return false; }
+            if (!isValidEmail(thisPerson.Email)) { return false; }
+
+            if (!isValidPhoneNumber(thisPerson.Phone)) { return false; }
+
+            if (thatPerson == null) { return true; }
+
+            if (thatPerson.FirstName != null && thatPerson.LastName != null && thatPerson.Email != null)
+            {
+                bool firstNamesEqual = thisPerson.FirstName.Equals(thatPerson.FirstName) ? true : false;
+                bool lastNamesEqual = thisPerson.LastName.Equals(thatPerson.LastName) ? true : false;
+                bool emailsEqual = thisPerson.Email.Equals(thatPerson.Email) ? true : false;
+                if (firstNamesEqual && lastNamesEqual && emailsEqual) { return false; }
+            }
 
             return true;
         }
@@ -32,10 +44,10 @@ namespace TBG.Business
         {
             try
             {
-                MailAddress m = new MailAddress(email);
-                return true;
+                var addr = new MailAddress(email);
+                return addr.Address == email;
             }
-            catch (FormatException)
+            catch
             {
                 return false;
             }
@@ -43,7 +55,7 @@ namespace TBG.Business
 
         public bool isValidPhoneNumber(string phone)
         {
-            Match match = Regex.Match(phone, @"^\d{3}-\d{3}-\d{4}$");
+            Match match = Regex.Match(phone, @"\(?\d{3}\)?-? *\d{3}-? *-?\d{4}");
             if (match.Success)
             {
                 return true;
