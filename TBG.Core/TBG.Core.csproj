@@ -59,6 +59,7 @@
     <Compile Include="Interfaces\ITournamentEntry.cs" />
     <Compile Include="Interfaces\ITournamentPrize.cs" />
     <Compile Include="Interfaces\ITournamentType.cs" />
+    <Compile Include="Interfaces\ITournamentViewer.cs" />
     <Compile Include="Interfaces\IUser.cs" />
     <Compile Include="Interfaces\IMatchupEntry.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

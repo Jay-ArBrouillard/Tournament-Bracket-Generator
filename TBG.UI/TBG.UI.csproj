@@ -80,6 +80,9 @@
     <Compile Include="CreateTournament.xaml.cs">
       <DependentUpon>CreateTournament.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TournamentViewUI.xaml.cs">
+      <DependentUpon>TournamentViewUI.xaml</DependentUpon>
+    </Compile>
     <Page Include="Dashboard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -108,6 +111,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CreateTournament.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TournamentViewUI.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -40,5 +40,10 @@ namespace TBG.Driver
         {
             return new TournamentController();
         }
+
+        public static ITournamentViewer getTournamentViewer()
+        {
+            return new TournamentViewerControl();
+        }
     }
 }
