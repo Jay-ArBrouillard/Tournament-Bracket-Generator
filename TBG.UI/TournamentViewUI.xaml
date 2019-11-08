@@ -68,7 +68,7 @@
         <Label Content="Score:" HorizontalAlignment="Left" Margin="150.955,76,0,0" Grid.Row="3" VerticalAlignment="Top" Width="64" FontSize="16" Grid.Column="1"/>
         <Label Content="Score:" HorizontalAlignment="Left" Margin="76,76,0,0" Grid.Row="3" VerticalAlignment="Top" Width="64" FontSize="16" Grid.Column="3"/>
         <TextBox x:Name="firstTeamScoreTxtBox" HorizontalAlignment="Left" Height="34" Margin="150.955,112,0,0" Grid.Row="3" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" FontSize="20" Text="0" TextAlignment="Center" Grid.Column="1"/>
-        <TextBox x:Name="firstTeamScoreTxtBox_Copy" HorizontalAlignment="Left" Height="34" Margin="76,107,0,0" Grid.Row="3" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" FontSize="20" Text="0" TextAlignment="Center" Grid.Column="3"/>
+        <TextBox x:Name="secondTeamScoreTxtBox" HorizontalAlignment="Left" Height="34" Margin="76,107,0,0" Grid.Row="3" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" FontSize="20" Text="0" TextAlignment="Center" Grid.Column="3"/>
         <Button x:Name="finalScoreBtn" Content="Record Score" HorizontalAlignment="Left" Margin="295.955,164,0,0" Grid.Row="3" VerticalAlignment="Top" Width="143" Height="39" Grid.ColumnSpan="3" FontSize="18" Grid.Column="1" Click="finalScoreBtn_Click"/>
 
 

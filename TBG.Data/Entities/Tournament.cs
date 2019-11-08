@@ -24,5 +24,9 @@ namespace TBG.Data.Entities
         {
             throw new NotImplementedException();
         }
+        public bool RecordResult(IMatchup matchup)
+        {
+            throw new NotImplementedException("This should probably change?");
+        }
     }
 }

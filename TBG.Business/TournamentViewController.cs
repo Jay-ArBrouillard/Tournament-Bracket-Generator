@@ -9,6 +9,9 @@ namespace TBG.Business
 {
     public class TournamentViewerControl : ITournamentViewer
     {
-
+        public bool addWinnerToNextRound(IRound round, IMatchupEntry winner)
+        {
+            return false;
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Windows;
 using TBG.Core.Interfaces;
 using TBG.Driver;
@@ -13,18 +14,24 @@ namespace TBG.UI
 
         ITournamentViewer controller;
         IProvider source;
+        List<string> matchupsList = new List<string>();
+        ITournament thisTournament;
 
         public TournamentViewUI(ITournament inTourney)
         {
+            thisTournament = inTourney;
             InitializeComponent();
             controller = ApplicationController.getTournamentViewer();
             source = ApplicationController.getProvider();
 
             tournamentNameLbl.Content = inTourney.TournamentName;
 
-
-            readMatchups(inTourney);
-            readRounds(inTourney);
+            for (int i = 0; i < inTourney.Rounds.Count; i++)
+            {
+                roundDropDown.Items.Add(inTourney.Rounds[i].RoundNum);
+            }
+            readMatchups(inTourney.Rounds[0]);
+            //readRounds(inTourney);
             roundDropDown.SelectedIndex = 0;
         }
 
@@ -36,26 +43,21 @@ namespace TBG.UI
         /// <summary>
         /// 
         /// </summary>
-        private void readMatchups(ITournament inTourney)
+        private void readMatchups(IRound round)
         {
-            List<IRound> roundList = inTourney.Rounds;
-            for (int i = 0; i < roundList.Count; i++)
-                roundDropDown.Items.Add(roundList[i].RoundNum);
+            //List<IRound> roundList = inTourney.Rounds;
             //roundDropDown.ItemsSource = roundList;
-            List<string> matchupsList = new List<string>();
-            for (int i = 0; i < roundList.Count / 2; i++)
+            for (int i = 0; i < round.Pairings.Count; i++)
             {
-                for (int j = 0; j < roundList[i].Pairings.Count; j++)
-                {
-                    //int teamID = roundList[i].Pairings[j].Teams[k].TheTeam.TeamId;
-                    int teamID = 58 + 2 * j;
-                    string teamName1 = source.getTeamName(teamID);
-                    string teamName2 = source.getTeamName(teamID + 1);
-                    matchupsList.Add(teamName1 + " VS " + teamName2);
-                }
+                //int teamID = roundList[i].Pairings[j].Teams[k].TheTeam.TeamId;
+                int teamID = 58 + 2 * i;
+                string teamName1 = source.getTeamName(teamID);
+                string teamName2 = source.getTeamName(teamID + 1);
+                matchupsListBox.Items.Add(teamName1 + " VS " + teamName2);
             }
 
-            matchupsListBox.ItemsSource = matchupsList;
+            //matchupsListBox.ItemsSource = matchupsList;
+            matchupsList.Clear();
         }
 
         /*
@@ -63,7 +65,19 @@ namespace TBG.UI
          */
         private void finalScoreBtn_Click(object sender, RoutedEventArgs e)
         {
-
+            int selectedRound = roundDropDown.SelectedIndex;
+            int selectedMatchup = matchupsListBox.SelectedIndex;
+            int team1Score = -1;
+            int team2Score = -1;
+            if (validateScore(firstTeamScoreTxtBox.Text) && validateScore(secondTeamScoreTxtBox.Text))
+            {
+                team1Score = int.Parse(firstTeamScoreTxtBox.Text);
+                team2Score = int.Parse(secondTeamScoreTxtBox.Text);
+            }
+            IRound thisRound = thisTournament.Rounds[roundDropDown.SelectedIndex];
+            thisRound.Pairings[selectedMatchup].Teams[0].Score = team1Score;
+            thisRound.Pairings[selectedMatchup].Teams[1].Score = team2Score;
+            thisTournament.RecordResult(thisRound.Pairings[matchupsListBox.SelectedIndex]);
         }
 
         /*
@@ -79,7 +93,13 @@ namespace TBG.UI
         private void roundDropDown_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             int index = roundDropDown.SelectedIndex;
+            matchupsListBox.Items.Clear();
+            readMatchups(thisTournament.Rounds[index]);
+        }
 
+        public bool validateScore(string score)
+        {
+            return Regex.Match(score, @"\d").Success;
         }
     }
 }
