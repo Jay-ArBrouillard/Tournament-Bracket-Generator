@@ -16,13 +16,21 @@ namespace TBG.UI
 
         public TournamentViewUI(ITournament inTourney)
         {
-            //InitializeComponent();
+            InitializeComponent();
             controller = ApplicationController.getTournamentViewer();
             source = ApplicationController.getProvider();
 
             tournamentNameLbl.Content = inTourney.TournamentName;
 
+
             readMatchups(inTourney);
+            readRounds(inTourney);
+            roundDropDown.SelectedIndex = 0;
+        }
+
+        private void readRounds(ITournament inTourney)
+        {
+            throw new NotImplementedException("");
         }
 
         /// <summary>
@@ -31,10 +39,21 @@ namespace TBG.UI
         private void readMatchups(ITournament inTourney)
         {
             List<IRound> roundList = inTourney.Rounds;
-            List<IMatchup> matchupsList = new List<IMatchup>();
             for (int i = 0; i < roundList.Count; i++)
+                roundDropDown.Items.Add(roundList[i].RoundNum);
+            //roundDropDown.ItemsSource = roundList;
+            List<string> matchupsList = new List<string>();
+            for (int i = 0; i < roundList.Count / 2; i++)
+            {
                 for (int j = 0; j < roundList[i].Pairings.Count; j++)
-                    matchupsList.Add(roundList[i].Pairings[j]);
+                {
+                    //int teamID = roundList[i].Pairings[j].Teams[k].TheTeam.TeamId;
+                    int teamID = 58 + 2 * j;
+                    string teamName1 = source.getTeamName(teamID);
+                    string teamName2 = source.getTeamName(teamID + 1);
+                    matchupsList.Add(teamName1 + " VS " + teamName2);
+                }
+            }
 
             matchupsListBox.ItemsSource = matchupsList;
         }
@@ -54,6 +73,12 @@ namespace TBG.UI
          */
         private void showMatchupDetails()
         {
+
+        }
+
+        private void roundDropDown_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            int index = roundDropDown.SelectedIndex;
 
         }
     }

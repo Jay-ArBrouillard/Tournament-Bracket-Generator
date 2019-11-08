@@ -50,10 +50,10 @@
                 <SolidColorBrush Color="#E5E4E9"></SolidColorBrush>
             </Rectangle.Fill>
         </Rectangle>
-        <Label x:Name="tournamentNameLbl" Content="Tournament:" Margin="221.955,10,244,0" VerticalAlignment="Top" Width="267" HorizontalContentAlignment="Center" HorizontalAlignment="Center" FontSize="24" Grid.ColumnSpan="3" Grid.Column="1"/>
+        <Label x:Name="tournamentNameLbl" Content="Tournament:" Margin="151,10,185,0" VerticalAlignment="Top" Width="397" HorizontalContentAlignment="Center" HorizontalAlignment="Center" FontSize="24" Grid.ColumnSpan="3" Grid.Column="1"/>
         <Label Content="Round: " HorizontalAlignment="Left" VerticalAlignment="Top" Width="81" FontSize="20" Margin="37,74,0,0" Grid.ColumnSpan="2"/>
         <Label x:Name="errorMsgLbl" Content="There was an error with your entries. Please check and try again." HorizontalAlignment="Left" Margin="37,131,0,0" VerticalAlignment="Top" Width="348" Foreground="#FFF70000" Height="32" Visibility="Hidden" Grid.ColumnSpan="3" Grid.Row="1"/>
-        <ComboBox x:Name="roundDropDown" HorizontalAlignment="Left" Margin="79.955,74,0,0" VerticalAlignment="Top" Width="156" Height="37" Grid.Column="1"/>
+        <ComboBox x:Name="roundDropDown" HorizontalAlignment="Left" Margin="79.955,74,0,0" VerticalAlignment="Top" Width="156" Height="37" Grid.Column="1" SelectionChanged="roundDropDown_SelectionChanged"/>
         <Label Content="Matchups:" HorizontalAlignment="Left" Margin="103,126,0,0" VerticalAlignment="Top" Width="133" FontSize="22" Grid.Column="1"/>
         <StackPanel HorizontalAlignment="Left" Height="200" Margin="37,170,0,0" VerticalAlignment="Top" Width="325" Grid.RowSpan="3" Grid.ColumnSpan="2">
             <ListBox x:Name="matchupsListBox" HorizontalAlignment="Left" Height="200" VerticalAlignment="Top" Width="326"/>

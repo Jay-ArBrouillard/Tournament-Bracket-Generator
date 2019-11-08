@@ -68,6 +68,11 @@ namespace TBG.Data.Classes
         {
             return TeamsTable.GetAll(dbConn);
         }
+
+        public string getTeamName(int teamID)
+        {
+            return TeamsTable.Get(teamID, dbConn).TeamName;
+        }
         #endregion
 
         #region TEAMMEMBER METHODS
@@ -159,6 +164,10 @@ namespace TBG.Data.Classes
         {
             return PrizesTable.GetAll(dbConn);
         }
+        #endregion
+
+        #region MATCHUP METHODS
+        
         #endregion
     }
 }

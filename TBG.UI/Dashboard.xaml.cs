@@ -51,7 +51,12 @@ namespace TBG.UI
 
         public void Load_Tournament(object sender, RoutedEventArgs e)
         {
-            //Look at selected item in tournamentList, pass that id to Tournament Form
+            //Look at selected item in tournamentList, pass that id to Tournament For
+            this.source = ApplicationController.getProvider();
+            var tournaments = source.getAllTournaments();
+            int selectedTounrey = tournamentList.SelectedIndex;
+            TournamentViewUI viewUI = new TournamentViewUI(tournaments[selectedTounrey]);
+            viewUI.Show();
         }
 
         private void CreateTournament_Click(object sender, RoutedEventArgs e)
