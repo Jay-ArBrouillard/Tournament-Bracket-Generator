@@ -26,18 +26,15 @@ namespace TBG.UI
 
             tournamentNameLbl.Content = inTourney.TournamentName;
 
+            //Adds each round in the tourney to the drop down
             for (int i = 0; i < inTourney.Rounds.Count; i++)
             {
                 roundDropDown.Items.Add(inTourney.Rounds[i].RoundNum);
             }
-            readMatchups(inTourney.Rounds[0]);
-            //readRounds(inTourney);
-            roundDropDown.SelectedIndex = 0;
-        }
 
-        private void readRounds(ITournament inTourney)
-        {
-            throw new NotImplementedException("");
+            //Loads the matchups found in the first round
+            readMatchups(inTourney.Rounds[0]);
+            roundDropDown.SelectedIndex = 0;
         }
 
         /// <summary>
@@ -45,18 +42,16 @@ namespace TBG.UI
         /// </summary>
         private void readMatchups(IRound round)
         {
-            //List<IRound> roundList = inTourney.Rounds;
-            //roundDropDown.ItemsSource = roundList;
+
+            //Displays each matchup to the user
             for (int i = 0; i < round.Pairings.Count; i++)
             {
-                //int teamID = roundList[i].Pairings[j].Teams[k].TheTeam.TeamId;
                 int teamID = 58 + 2 * i;
                 string teamName1 = source.getTeamName(teamID);
                 string teamName2 = source.getTeamName(teamID + 1);
                 matchupsListBox.Items.Add(teamName1 + " VS " + teamName2);
             }
 
-            //matchupsListBox.ItemsSource = matchupsList;
             matchupsList.Clear();
         }
 
@@ -69,15 +64,37 @@ namespace TBG.UI
             int selectedMatchup = matchupsListBox.SelectedIndex;
             int team1Score = -1;
             int team2Score = -1;
+
+            if(selectedMatchup < 0)
+            {
+                noMatchupSelectedLbl.Content = "No matchup is selected.";
+                return;
+            }
+
+            //Validates score before saving
             if (validateScore(firstTeamScoreTxtBox.Text) && validateScore(secondTeamScoreTxtBox.Text))
             {
                 team1Score = int.Parse(firstTeamScoreTxtBox.Text);
                 team2Score = int.Parse(secondTeamScoreTxtBox.Text);
+            } else
+            {
+                //Gives appropriate error message if one score isn't valid.
+                if (!validateScore(firstTeamScoreTxtBox.Text))
+                {
+                    teamOneInvalidScoreLbl.Content = "Score is not valid";
+                    return;
+                } else
+                {
+                    teamTwoInvalidScoreLbl.Content = "Score is not valid";
+                    return;
+                }
             }
+
             IRound thisRound = thisTournament.Rounds[roundDropDown.SelectedIndex];
             thisRound.Pairings[selectedMatchup].Teams[0].Score = team1Score;
             thisRound.Pairings[selectedMatchup].Teams[1].Score = team2Score;
             thisTournament.RecordResult(thisRound.Pairings[matchupsListBox.SelectedIndex]);
+            scoreRecordedLbl.Content = "Score recorded successfully";
         }
 
         /*
@@ -97,9 +114,14 @@ namespace TBG.UI
             readMatchups(thisTournament.Rounds[index]);
         }
 
-        public bool validateScore(string score)
+        private bool validateScore(string score)
         {
             return Regex.Match(score, @"\d").Success;
+        }
+
+        private void changeSelectedMatchDetails(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+
         }
     }
 }
