@@ -106,6 +106,11 @@ namespace TBG.Data.Classes
         {
             return PersonsTable.GetAll(dbConn);
         }
+
+        public IPerson deletePerson(IPerson entry)
+        {
+            return PersonsTable.Delete(entry, dbConn);
+        }
         #endregion
 
         #region LOGIN(USER) METHODS 
@@ -134,6 +139,11 @@ namespace TBG.Data.Classes
         {
             thisUser.LastLogin = DateTime.Now;
             return UsersTable.Update(thisUser, dbConn);
+        }
+
+        public IUser deleteUser(IUser entry)
+        {
+            return UsersTable.Delete(entry, dbConn);
         }
         #endregion
 

@@ -118,42 +118,41 @@ namespace TBG.UI
             string lastName = lastNameText.Text;
             string email = emailText.Text;
             string phone = phoneNumberText.Text;
-            bool valid = personController.validateWinLoss(winsText.Text, lossesText.Text);
+            bool validWinLoss = personController.validateWinLoss(winsText.Text, lossesText.Text);
 
-            if (valid)
+            if (!validWinLoss)
             {
-                IPerson newPerson = new Person(firstName, lastName, email, phone, int.Parse(winsText.Text), int.Parse(lossesText.Text));
-                bool validate = personController.validatePerson(newPerson);
+                SetDisplayColors(new SolidColorBrush(Colors.Red));
+                return;
+            }
 
-                if (validate)
-                {
-                    if (source.createPerson(newPerson) != null)
-                    {
-                        SetDisplayColors(new SolidColorBrush(Colors.Green));
+            IPerson newPerson = new Person(firstName, lastName, email, phone, int.Parse(winsText.Text), int.Parse(lossesText.Text));
+            IPerson existingPerson = source.getPersonByUniqueIdentifiers(firstName, lastName, email);
+            bool validatePerson = personController.validatePerson(newPerson, existingPerson);
 
-                        //Update views on TeamWindow
-                        personList.Add(newPerson);
-                        displayListBox.Items.Add(newPerson);
-                        selectedPersons.Add(newPerson);
-                        selectionListBox.ItemsSource = personList;
-                        selectionListBox.Items.Refresh();
-                        displayListBox.Items.Refresh();
-                    }
-                    else
-                    {
-                        SetDisplayColors(new SolidColorBrush(Colors.Red));
-                    }
-                }
-                else
-                {
-                    SetDisplayColors(new SolidColorBrush(Colors.Red));
-                }
+            if (!validatePerson)
+            {
+                SetDisplayColors(new SolidColorBrush(Colors.Red));
+                return;
+            }
+
+            if (source.createPerson(newPerson) == null)
+            {
+                SetDisplayColors(new SolidColorBrush(Colors.Red));
+                return;
             }
             else
             {
-                SetDisplayColors(new SolidColorBrush(Colors.Red));
-            }
+                SetDisplayColors(new SolidColorBrush(Colors.Green));
 
+                //Update views on TeamWindow
+                personList.Add(newPerson);
+                displayListBox.Items.Add(newPerson);
+                selectedPersons.Add(newPerson);
+                selectionListBox.ItemsSource = personList;
+                selectionListBox.Items.Refresh();
+                displayListBox.Items.Refresh();
+            }
 
         }
         private void SetDisplayColors(SolidColorBrush pColor)
