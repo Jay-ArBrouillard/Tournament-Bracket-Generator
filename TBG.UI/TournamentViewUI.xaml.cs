@@ -123,10 +123,11 @@ namespace TBG.UI
             int teamOneID = thisTournament.Rounds[roundDropDown.SelectedIndex].Pairings[currMatchup].Teams[0].TheTeam.TeamId;
             int teamTwoID = thisTournament.Rounds[roundDropDown.SelectedIndex].Pairings[currMatchup].Teams[1].TheTeam.TeamId;
 
-            string teamName = source.getTeamName(58 + 2 * currMatchup);
+            //Changes teamOneID/teamTwoID in lines 127 and 130 to 58 + 2 * currMatchup to test with the testTournament on the main screen.
+            string teamName = source.getTeamName(teamOneID);
             firstTeamLabel.Content = teamName;
             ITeam teamOne = source.getTeam(teamName);
-            teamName = source.getTeamName(58 + 2 * currMatchup + 1);
+            teamName = source.getTeamName(teamTwoID);
             secondTeamLabel.Content = teamName;
             ITeam teamTwo = source.getTeam(teamName);
 
