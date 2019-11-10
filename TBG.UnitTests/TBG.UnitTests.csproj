@@ -68,6 +68,7 @@
     <Compile Include="PrizeUnitTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TeamUnitTests.cs" />
+    <Compile Include="TournamentUnitTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
