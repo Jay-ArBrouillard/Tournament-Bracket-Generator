@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Text.RegularExpressions;
 using System.Windows;
 using TBG.Core.Interfaces;
@@ -16,6 +17,8 @@ namespace TBG.UI
         IProvider source;
         List<string> matchupsList = new List<string>();
         ITournament thisTournament;
+        DataTable dtOne = new DataTable();
+        DataTable dtTwo = new DataTable();
 
         public TournamentViewUI(ITournament inTourney)
         {
@@ -31,6 +34,9 @@ namespace TBG.UI
             {
                 roundDropDown.Items.Add(inTourney.Rounds[i].RoundNum);
             }
+
+            //Creates the columns needed in data table
+            prepareDatatable();
 
             //Loads the matchups found in the first round
             readMatchups(inTourney.Rounds[0]);
@@ -97,16 +103,6 @@ namespace TBG.UI
             scoreRecordedLbl.Content = "Score recorded successfully";
         }
 
-        /*
-         * This will show info in the listbox about the selected match. Things like wins, losses, team members, etc.
-         * 
-         * (May want more than one box?)
-         */
-        private void showMatchupDetails()
-        {
-
-        }
-
         private void roundDropDown_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             int index = roundDropDown.SelectedIndex;
@@ -121,7 +117,89 @@ namespace TBG.UI
 
         private void changeSelectedMatchDetails(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
+            dtOne.Clear();
+            dtTwo.Clear();
+            int currMatchup = matchupsListBox.SelectedIndex;
+            int teamOneID = thisTournament.Rounds[roundDropDown.SelectedIndex].Pairings[currMatchup].Teams[0].TheTeam.TeamId;
+            int teamTwoID = thisTournament.Rounds[roundDropDown.SelectedIndex].Pairings[currMatchup].Teams[1].TheTeam.TeamId;
 
+            string teamName = source.getTeamName(58 + 2 * currMatchup);
+            firstTeamLabel.Content = teamName;
+            ITeam teamOne = source.getTeam(teamName);
+            teamName = source.getTeamName(58 + 2 * currMatchup + 1);
+            secondTeamLabel.Content = teamName;
+            ITeam teamTwo = source.getTeam(teamName);
+
+            displayTeamOneInfo(teamOne);
+            teamOneDataGrid.DataContext = dtOne.DefaultView;
+
+            displayTeamTwoInfo(teamTwo);
+            teamTwoDataGrid.DataContext = dtTwo.DefaultView;
+        }
+        
+        /// <summary>
+        /// Prepares both datatables with the correct columns
+        /// </summary>
+        private void prepareDatatable()
+        {
+            dtOne.Columns.Add("Name", typeof(string));
+            dtOne.Columns.Add("Wins", typeof(int));
+            dtOne.Columns.Add("Losses", typeof(int));
+            dtOne.Columns.Add("W-L Ratio", typeof(double));
+
+            dtTwo.Columns.Add("Name", typeof(string));
+            dtTwo.Columns.Add("Wins", typeof(int));
+            dtTwo.Columns.Add("Losses", typeof(int));
+            dtTwo.Columns.Add("W-L Ratio", typeof(double));
+        }
+
+        private void displayTeamOneInfo(ITeam teamOne)
+        {
+            List<ITeamMember> team = source.getTeamMembersByTeamId(teamOne.TeamId);
+            displayTeamInfo(teamOne, dtOne);
+            displayTeammates(team, dtOne);
+        }
+
+        private void displayTeamTwoInfo(ITeam teamTwo)
+        {
+            List<ITeamMember> team = source.getTeamMembersByTeamId(teamTwo.TeamId);
+            displayTeamInfo(teamTwo, dtTwo);
+            displayTeammates(team, dtTwo);
+        }
+
+        private void displayTeammates(List<ITeamMember> inTeam, DataTable inDT)
+        {
+
+            DataRow row = inDT.NewRow();
+            
+            for (int i = 0; i < inTeam.Count; i++)
+            {
+                IPerson person = source.getPerson(inTeam[i].PersonId);
+                row = inDT.NewRow();
+                row["Name"] = person.FirstName + " " + person.LastName;
+                row["Wins"] = person.Wins;
+                row["Losses"] = person.Losses;
+                if (person.Losses == 0)
+                    row["W-L Ratio"] = person.Wins;
+                else
+                    row["W-L Ratio"] = ((double)person.Wins) / person.Losses;
+
+                inDT.Rows.Add(row);
+            }
+        }
+
+        private void displayTeamInfo(ITeam inTeam, DataTable inDT)
+        {
+
+            DataRow row = inDT.NewRow();
+            row["Name"] = inTeam.TeamName;
+            row["Wins"] = inTeam.Wins;
+            row["Losses"] = inTeam.Losses;
+            if (inTeam.Losses == 0)
+                row["W-L Ratio"] = 0;
+            else
+                row["W-L Ratio"] = ((double)inTeam.Wins) / inTeam.Losses;
+            inDT.Rows.Add(row);
         }
     }
 }
