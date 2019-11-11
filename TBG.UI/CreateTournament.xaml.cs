@@ -38,6 +38,22 @@ namespace TBG.UI
             prizes = source.getAllPrizes();
             prizeComboBox.ItemsSource = prizes;
             prizePool = 0;
+
+            //Create a row in Tournament Table
+            ITournament tournament = new SingleEliminationTournament()
+            {
+                UserId = 19, //To change. This id for User with username = "Username" and password = "Password"
+                TournamentName = "Test Tournament",
+                EntryFee = 100,
+                TotalPrizePool = 2000.00,
+                TournamentTypeId = 1,
+                Prizes = prizesInTournament
+            };
+
+            tournament = source.createTournament(tournament);
+            tournament = business.createSingleEliminationTournament(tournament);
+            this is where i was last
+                //Add a row to tournaments table then use the tournament id to set for each tournamentEntry
         }
 
         private void SetEntryFee_Click(object sender, RoutedEventArgs e)
@@ -193,36 +209,34 @@ namespace TBG.UI
             //TODO
             //business.validate(something);
 
-            //source.createTournament()
+
+
             List<ITournamentEntry> entries = new List<ITournamentEntry>();
             foreach (TournamentEntryView entry in teamsInTournament)
             {
-                entries.Add(new TournamentEntry()
+                TournamentEntry tournamentEntry = new TournamentEntry()
                 {
                     TournamentEntryId = entry.TournamentEntryId,
-                    TournamentId = entry.TournamentId,
+                    //TournamentId = entry.TournamentId,
+                    TournamentId = 2,
                     TeamId = entry.TeamId,
                     Seed = entry.Seed
-                });
+                };
+
+                entries.Add(entry);
+
+                //Add row TournmentEntries Table. LATER move this somewhere else
+                source.createTournamentEntry(tournamentEntry);
             }
 
-            ITournament tournament = new SingleEliminationTournament()
+            tournament.Participants = entries;
+
+
+            if (tournament != null)
             {
-                //TournamentId,
-                //UserId
-                TournamentName = "Test Tournament",
-                EntryFee = 100,
-                TotalPrizePool = 2000.00,
-                //TournamentTypeId,
-                Participants = entries,
-                Prizes = prizesInTournament
-            };
-
-            tournament = business.createSingleEliminationTournament(tournament);
-
-
-            TournamentViewUI viewUI = new TournamentViewUI(tournament);
-            viewUI.Show();
+                TournamentViewUI viewUI = new TournamentViewUI(tournament);
+                viewUI.Show();
+            }
         }
 
         private void SeedToggle_Checked(object sender, RoutedEventArgs e)

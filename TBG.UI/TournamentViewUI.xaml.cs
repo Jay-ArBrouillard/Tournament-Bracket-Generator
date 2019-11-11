@@ -20,7 +20,6 @@ namespace TBG.UI
         {
             InitializeComponent();
             source = ApplicationController.getProvider();
-            String test = null;
             tournament = inTourney;
 
             //Add all the rounds to the Rounds view
@@ -191,6 +190,17 @@ namespace TBG.UI
                     currItem.imageURL = "Assets/confirm.png";
                     matchupsListBox.Items.Refresh();
                 }
+            }
+            else //Last Matchup
+            {
+                tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[0].Score = score1;
+                tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[1].Score = score2;
+
+                TournamentViewListBoxItem currItem = (TournamentViewListBoxItem)matchupsListBox.Items[selectedPairing];
+                currItem.imageURL = "Assets/trophy.png";
+                matchupsListBox.Items.Refresh();
+
+
             }
 
         }

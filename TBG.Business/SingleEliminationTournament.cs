@@ -114,14 +114,7 @@ namespace TBG.Business
 
         private int CalculateRoundTotal(int FieldSize)
         {
-            int result = 1;
-
-            while (FieldSize != 2)
-            {
-                result++;
-                FieldSize = FieldSize / 2;
-            }
-            return result;
+            return (int) Math.Log(FieldSize, 2);
         }
 
         public static bool IsOdd(int value)

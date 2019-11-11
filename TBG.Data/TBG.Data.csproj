@@ -66,6 +66,7 @@
     <Compile Include="Entities\Team.cs" />
     <Compile Include="Entities\TeamMember.cs" />
     <Compile Include="Entities\Tournament.cs" />
+    <Compile Include="Entities\TournamentEntry.cs" />
     <Compile Include="Entities\TournamentPrize.cs" />
     <Compile Include="Entities\TournamentType.cs" />
     <Compile Include="Entities\User.cs" />
@@ -74,6 +75,7 @@
     <Compile Include="Tables\PrizesTable.cs" />
     <Compile Include="Tables\TeamMembersTable.cs" />
     <Compile Include="Tables\TeamsTable.cs" />
+    <Compile Include="Tables\TournamentEntriesTable.cs" />
     <Compile Include="Tables\TournamentPrizesTable.cs" />
     <Compile Include="Tables\TournamentTable.cs" />
     <Compile Include="Tables\TournamentTypeTable.cs" />

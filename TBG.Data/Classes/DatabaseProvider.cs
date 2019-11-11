@@ -29,11 +29,24 @@ namespace TBG.Data.Classes
 
 
         #region TOURNAMENT METHODS
-        public bool createTournament(ITournament entry)
+        public ITournament createTournament(ITournament entry)
         {
             //Create Tournament Record
             //Create Cross Reference Records For Tournament/Team/Player
-            return true;
+            ITournament tournament = TournamentTable.Create(entry, dbConn);
+            if (tournament == null) { return null; }
+
+            return tournament;
+        }
+        #endregion
+
+        #region TOURNAMENT ENTRY METHODS
+        public ITournamentEntry createTournamentEntry(ITournamentEntry entry)
+        {
+            ITournamentEntry tournament = TournamentEntryTable.Create(entry, dbConn);
+            if (tournament == null) { return null; }
+
+            return tournament;
         }
         #endregion
 

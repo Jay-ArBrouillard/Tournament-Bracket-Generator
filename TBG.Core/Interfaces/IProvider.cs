@@ -8,7 +8,8 @@ namespace TBG.Core.Interfaces
 {
     public interface IProvider
     {
-        bool createTournament(ITournament entry);
+        ITournament createTournament(ITournament entry);
+        ITournamentEntry createTournamentEntry(ITournamentEntry entry);
         ITeam createTeam(ITeam entry);
         ITeam getTeam(string teamName);
         ITeam getTeam(int teamId);
