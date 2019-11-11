@@ -53,16 +53,16 @@
         <Label x:Name="tournamentNameLbl" Content="Tournament:" Margin="151,10,185,0" VerticalAlignment="Top" Width="397" HorizontalContentAlignment="Center" HorizontalAlignment="Center" FontSize="24" Grid.ColumnSpan="3" Grid.Column="1"/>
         <Label Content="Round: " HorizontalAlignment="Left" VerticalAlignment="Top" Width="81" FontSize="20" Margin="37,74,0,0" Grid.ColumnSpan="2"/>
         <Label x:Name="errorMsgLbl" Content="There was an error with your entries. Please check and try again." HorizontalAlignment="Left" Margin="37,131,0,0" VerticalAlignment="Top" Width="348" Foreground="#FFF70000" Height="32" Visibility="Hidden" Grid.ColumnSpan="3" Grid.Row="1"/>
-        <ComboBox x:Name="roundDropDown" HorizontalAlignment="Left" Margin="79.955,74,0,0" VerticalAlignment="Top" Width="156" Height="37" Grid.Column="1" SelectionChanged="roundDropDown_SelectionChanged"/>
+        <ComboBox x:Name="roundDropDown" HorizontalAlignment="Left" Margin="79.955,74,0,0" VerticalAlignment="Top" Width="156" Height="37" Grid.Column="1" SelectionChanged="RoundDropDown_SelectionChanged"/>
         <Label Content="Matchups:" HorizontalAlignment="Left" Margin="103,126,0,0" VerticalAlignment="Top" Width="133" FontSize="22" Grid.Column="1"/>
         <StackPanel HorizontalAlignment="Left" Height="200" Margin="37,170,0,0" VerticalAlignment="Top" Width="325" Grid.RowSpan="3" Grid.ColumnSpan="2">
-            <ListBox x:Name="matchupsListBox" HorizontalAlignment="Left" Height="180" VerticalAlignment="Top" Width="326" SelectionChanged="changeSelectedMatchDetails" Margin="0,0,-1,0">
+            <ListBox x:Name="matchupsListBox" HorizontalAlignment="Left" Height="180" VerticalAlignment="Top" Width="326" Margin="0,0,-1,0" SelectionMode="Single" SelectionChanged="MatchupsListBox_SelectionChanged">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" Width="326">
-                            <TextBlock Text="{Binding TeamOneName}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Team1Name}" VerticalAlignment="Center"/>
                             <TextBlock Text=" vs. " VerticalAlignment="Center"/>
-                            <TextBlock Text="{Binding TeamTwoName}" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding Team2Name}" VerticalAlignment="Center"/>
                             <Image x:Name="matchupStatus" Source="{Binding imageURL}" HorizontalAlignment="Right" Width="20" Height="20"/>
                         </StackPanel>
                     </DataTemplate>
@@ -78,7 +78,7 @@
         <Label Content="Score:" HorizontalAlignment="Left" Margin="76,76,0,0" Grid.Row="3" VerticalAlignment="Top" Width="64" FontSize="16" Grid.Column="3"/>
         <TextBox x:Name="firstTeamScoreTxtBox" HorizontalAlignment="Left" Height="34" Margin="150.955,112,0,0" Grid.Row="3" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" FontSize="20" Text="0" TextAlignment="Center" Grid.Column="1"/>
         <TextBox x:Name="secondTeamScoreTxtBox" HorizontalAlignment="Left" Height="34" Margin="76,107,0,0" Grid.Row="3" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" FontSize="20" Text="0" TextAlignment="Center" Grid.Column="3"/>
-        <Button x:Name="finalScoreBtn" Content="Record Score" HorizontalAlignment="Left" Margin="295.955,164,0,0" Grid.Row="3" VerticalAlignment="Top" Width="143" Height="39" Grid.ColumnSpan="3" FontSize="18" Grid.Column="1" Click="finalScoreBtn_Click"/>
+        <Button x:Name="finalScoreBtn" Content="Record Score" HorizontalAlignment="Left" Margin="295.955,164,0,0" Grid.Row="3" VerticalAlignment="Top" Width="143" Height="39" Grid.ColumnSpan="3" FontSize="18" Grid.Column="1" Click="FinalScoreBtn_Click"/>
         <Label x:Name="noMatchupSelectedLbl" Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="135,173,0,0" Grid.Row="3" VerticalAlignment="Top" Width="156" Foreground="Red"/>
         <Label x:Name="teamOneInvalidScoreLbl" Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="204,81,0,0" Grid.Row="3" VerticalAlignment="Top" Width="143" Foreground="#FFFB0101" Grid.ColumnSpan="2"/>
         <Label x:Name="teamTwoInvalidScoreLbl" Content="" Grid.Column="3" HorizontalAlignment="Left" Margin="130,81,0,0" Grid.Row="3" VerticalAlignment="Top" Width="143" Foreground="#FFFB0101"/>
@@ -86,21 +86,17 @@
 
         <DataGrid x:Name="teamTwoDataGrid" ItemsSource="{Binding}" AutoGenerateColumns="False" HorizontalAlignment="Left" Height="123" VerticalAlignment="Top" Width="325" Grid.Column="3" Margin="0,103,0,0" Grid.Row="1" Grid.RowSpan="2">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Name" Width="182" Binding="{Binding Name}"/>
+                <DataGridTextColumn Header="Name" Width="182" Binding="{Binding PlayerName}"/>
                 <DataGridTextColumn Header="Wins" Binding="{Binding Wins}"/>
                 <DataGridTextColumn Header="Losses" Binding="{Binding Losses}"/>
-                <DataGridTextColumn Header="W/L Ratio" Binding="{Binding W-L Ratio}"/>
             </DataGrid.Columns>
         </DataGrid>
         <DataGrid x:Name="teamOneDataGrid" ItemsSource="{Binding}" AutoGenerateColumns="False" HorizontalAlignment="Left" Height="129" VerticalAlignment="Top" Width="325" Grid.Column="3" Margin="0,137,0,0" Grid.RowSpan="2">
             <DataGrid.Columns>
-                <DataGridTextColumn Header="Name" Width="182" Binding="{Binding Name}"/>
+                <DataGridTextColumn Header="Name" Width="182" Binding="{Binding PlayerName}"/>
                 <DataGridTextColumn Header="Wins" Binding="{Binding Wins}"/>
                 <DataGridTextColumn Header="Losses" Binding="{Binding Losses}"/>
-                <DataGridTextColumn Header="W/L Ratio" Binding="{Binding W-L Ratio}"/>
             </DataGrid.Columns>
         </DataGrid>
-
-
     </Grid>
 </Window>

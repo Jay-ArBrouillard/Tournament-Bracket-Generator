@@ -11,7 +11,7 @@ namespace TBG.Core.Interfaces
         double TotalPrizePool { get; set; }
         int TournamentTypeId { get; set; }
         List<ITournamentEntry> Participants { get; set; }
-        List<ITournamentPrize> Prizes { get; set; }
+        List<IPrize> Prizes { get; set; }
         List<IRound> Rounds { get; set; }
         bool BuildTournament();
         bool RecordResult(IMatchup matchup);

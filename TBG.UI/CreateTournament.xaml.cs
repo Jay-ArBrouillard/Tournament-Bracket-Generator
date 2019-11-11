@@ -192,7 +192,37 @@ namespace TBG.UI
         {
             //TODO
             //business.validate(something);
-            //business.createTournament(object);
+
+            //source.createTournament()
+            List<ITournamentEntry> entries = new List<ITournamentEntry>();
+            foreach (TournamentEntryView entry in teamsInTournament)
+            {
+                entries.Add(new TournamentEntry()
+                {
+                    TournamentEntryId = entry.TournamentEntryId,
+                    TournamentId = entry.TournamentId,
+                    TeamId = entry.TeamId,
+                    Seed = entry.Seed
+                });
+            }
+
+            ITournament tournament = new SingleEliminationTournament()
+            {
+                //TournamentId,
+                //UserId
+                TournamentName = "Test Tournament",
+                EntryFee = 100,
+                TotalPrizePool = 2000.00,
+                //TournamentTypeId,
+                Participants = entries,
+                Prizes = prizesInTournament
+            };
+
+            tournament = business.createSingleEliminationTournament(tournament);
+
+
+            TournamentViewUI viewUI = new TournamentViewUI(tournament);
+            viewUI.Show();
         }
 
         private void SeedToggle_Checked(object sender, RoutedEventArgs e)

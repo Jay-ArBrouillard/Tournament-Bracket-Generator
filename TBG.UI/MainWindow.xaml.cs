@@ -33,13 +33,6 @@ namespace TBG.UI
             business = ApplicationController.getLoginController();
             app = ApplicationController.getController();
         }
-        private void Test_Click(object sender, RoutedEventArgs e)
-        {
-            app.TestTournament();
-            ITournament tournament = app.AnotherTestTournament();
-            TournamentViewUI viewUI = new TournamentViewUI(tournament);
-            viewUI.Show();
-        }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {

@@ -71,13 +71,6 @@ namespace TBG.Business
             }
 
             tournament.BuildTournament();
-            /*
-            var matchup = tournament.Rounds.Find(x => x.RoundNum == 1).Pairings.Find(x => x.MatchupId == 1);
-            matchup.Teams.Find(x => x.TheTeam.TeamId == 3).Score = 10;
-            matchup.Teams.Find(x => x.TheTeam.TeamId == 4).Score = 11;
-            tournament.RecordResult(matchup);
-            */
-            //var stop = "Stop";
             return tournament;
         }
     }

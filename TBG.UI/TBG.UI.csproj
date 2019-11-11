@@ -65,13 +65,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Models\Matchup.cs" />
     <Compile Include="Models\Person.cs" />
     <Compile Include="Models\Prize.cs" />
     <Compile Include="Models\Team.cs" />
     <Compile Include="Models\TeamMember.cs" />
-    <Compile Include="Models\Tournament.cs" />
+    <Compile Include="Models\SingleEliminationTournament.cs" />
+    <Compile Include="Models\TournamentEntry.cs" />
     <Compile Include="Models\TournamentEntryView.cs" />
+    <Compile Include="Models\TournamentViewDataGridItem.cs" />
+    <Compile Include="Models\TournamentViewListBoxItem.cs" />
     <Compile Include="PrizeUI.xaml.cs">
       <DependentUpon>PrizeUI.xaml</DependentUpon>
     </Compile>

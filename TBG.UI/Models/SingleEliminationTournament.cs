@@ -16,12 +16,12 @@ namespace TBG.UI.Models
         public double TotalPrizePool { get; set; }
         public int TournamentTypeId { get; set; }
         public List<ITournamentEntry> Participants { get; set; }
-        public List<ITournamentPrize> Prizes { get; set; }
+        public List<IPrize> Prizes { get; set; }
         public List<IRound> Rounds { get; set; }
 
         public bool BuildTournament()
         {
-            throw new NotImplementedException("This might change?");
+            throw new NotImplementedException();
         }
 
         public bool RecordResult(IMatchup matchup)

@@ -63,7 +63,6 @@
             <!-- Title-->
             <StackPanel VerticalAlignment="Center">
                 <Image Source="Assets\bracket.png" Width="80"/>
-                <Button Click="Test_Click" Height="40" Width="80">Test</Button>
                 <TextBlock Text="Tournament Bracket Generator" FontWeight="Bold" FontFamily="helvetica" 
                            FontSize="22" Foreground="White" HorizontalAlignment="Center"/>
             </StackPanel>

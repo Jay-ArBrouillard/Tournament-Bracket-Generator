@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace TBG.UI.Models
 {
-    public class Matchup
+    public class TournamentViewListBoxItem
     {
-        public String TeamOneName { get; set; }
-        public String TeamTwoName { get; set; }
+        public String Team1Name { get; set; }
+        public String Team2Name { get; set; }
         public String imageURL { get; set; }
     }
 }

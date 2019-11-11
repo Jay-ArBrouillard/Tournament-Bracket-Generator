@@ -12,277 +12,187 @@ namespace TBG.UI
 
     public partial class TournamentViewUI : Window
     {
+        private IProvider source;
+        private ITournament tournament;
+        private Boolean initialization = true;
 
-        ITournamentViewer controller;
-        IProvider source;
-        ITournament thisTournament;
-        DataTable dtOne = new DataTable();
-        DataTable dtTwo = new DataTable();
         public TournamentViewUI(ITournament inTourney)
         {
-            thisTournament = inTourney;
-                /*new SingleEliminationTournament() {
-                TournamentId = inTourney.TournamentId,
-                UserId = inTourney.UserId,
-                TournamentName = inTourney.TournamentName,
-                EntryFee = inTourney.EntryFee,
-                TotalPrizePool = inTourney.TotalPrizePool,
-                TournamentTypeId = inTourney.TournamentTypeId,
-                Participants = inTourney.Participants,
-                Prizes = inTourney.Prizes,
-                Rounds = inTourney.Rounds
-            };*/
-
             InitializeComponent();
-            controller = ApplicationController.getTournamentViewer();
             source = ApplicationController.getProvider();
+            String test = null;
+            tournament = inTourney;
 
-            tournamentNameLbl.Content = inTourney.TournamentName;
-
-            //Adds each round in the tourney to the drop down
-            /*for (int i = 0; i < inTourney.Rounds.Count; i++)
+            //Add all the rounds to the Rounds view
+            for (int i = 1; i <= tournament.Rounds.Count; i++)
             {
-                roundDropDown.Items.Add(inTourney.Rounds[i].RoundNum);
-            }*/
-
-            roundDropDown.Items.Add(1);
-
-            //Creates the columns needed in data table
-            prepareDatatable();
-
-            //Loads the matchups found in the first round
-            readMatchups(inTourney.Rounds[0]);
-            roundDropDown.SelectedIndex = 0;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private void readMatchups(IRound round)
-        {
-
-            //Displays each matchup to the user
-            for (int i = 0; i < round.Pairings.Count; i++)
-            {
-                int teamID = 58 + 2 * i;
-                Matchup matchup = new Matchup() {
-                    TeamOneName = source.getTeamName(teamID),
-                    TeamTwoName = source.getTeamName(teamID + 1),
-                    imageURL = "Assets/x-button.png"
-                }; 
-
-                
-                //string teamName1 = source.getTeamName(teamID);
-                //string teamName2 = source.getTeamName(teamID + 1);
-                matchupsListBox.Items.Add(matchup);
-                
+                roundDropDown.Items.Add(i);
             }
+
+            roundDropDown.SelectedItem = null;
+            roundDropDown.SelectedIndex = 0;
+            displayRound1();
         }
 
-        /*
-         * Records the final score of the game. 
-         */
-        private void finalScoreBtn_Click(object sender, RoutedEventArgs e)
+        private void displayRound1()
         {
             int selectedRound = roundDropDown.SelectedIndex;
-            int selectedMatchup = matchupsListBox.SelectedIndex;
-            int team1Score = -1;
-            int team2Score = -1;
 
-            //TODO put inside business rules
-            if(selectedMatchup < 0)
+            foreach (IMatchup matchup in tournament.Rounds[selectedRound].Pairings)
             {
-                noMatchupSelectedLbl.Content = "No matchup is selected.";
-                return;
+                IMatchupEntry team1 = matchup.Teams[0];
+                IMatchupEntry team2 = matchup.Teams[1];
+
+                //IMatchupEntry has a ITournamentEntry which has a teamId
+                //Will call database to get their teamName
+                String team1Name = source.getTeam(team1.TheTeam.TeamId).TeamName;
+                String team2Name = source.getTeam(team2.TheTeam.TeamId).TeamName;
+
+                TournamentViewListBoxItem matchupsItem = new TournamentViewListBoxItem()
+                {
+                    Team1Name = team1Name,
+                    Team2Name = team2Name,
+                    imageURL = "Assets/x-button.png"
+                };
+
+                matchupsListBox.Items.Add(matchupsItem);
             }
 
-            //Validates score before saving
-            if (validateScore(firstTeamScoreTxtBox.Text) && validateScore(secondTeamScoreTxtBox.Text))
-            {
-                team1Score = int.Parse(firstTeamScoreTxtBox.Text);
-                team2Score = int.Parse(secondTeamScoreTxtBox.Text);
-            } else
-            {
-                //Gives appropriate error message if one score isn't valid.
-                if (!validateScore(firstTeamScoreTxtBox.Text))
-                {
-                    teamOneInvalidScoreLbl.Content = "Score is not valid";
-                    return;
-                } else
-                {
-                    teamTwoInvalidScoreLbl.Content = "Score is not valid";
-                    return;
-                }
-            }
-
-            IRound thisRound = thisTournament.Rounds[roundDropDown.SelectedIndex];
-            thisRound.Pairings[selectedMatchup].Teams[0].Score = team1Score;
-            thisRound.Pairings[selectedMatchup].Teams[1].Score = team2Score;
-            bool valid = thisTournament.RecordResult(thisRound.Pairings[matchupsListBox.SelectedIndex]);
-
-            if (valid)
-            {
-                scoreRecordedLbl.Content = "Score recorded successfully";
-                Matchup thisMatchup = (Matchup)(matchupsListBox.SelectedItem);
-                thisMatchup.imageURL = "Assets/confirm.png";
-                matchupsListBox.Items.Refresh();
-                bool roundComplete = true;
-
-                foreach (Matchup matchup in matchupsListBox.Items)
-                {
-                    if (matchup.imageURL.Equals("Assets/x-button.png"))
-                    {
-                        roundComplete = false;
-                        break;
-                    }
-                }
-
-                //Add the current matchups winner to the next round
-                /*
-                IMatchup iMatchup = thisRound.Pairings[selectedMatchup];
-                IRound nextRound = null;
-
-                IMatchupEntry team1 = iMatchup.Teams[0];
-                IMatchupEntry team2 = iMatchup.Teams[1];
-                IMatchupEntry winner = null;
-
-
-                if (team1.Score > team2.Score)
-                {
-                    winner = team1;
-                }
-                else
-                {
-                    winner = team2;
-                }
-
-                iMatchup.NextRound.Teams.Add(winner);*/
-
-                //Check all matchups complete in the round
-                if (roundComplete)
-                {
-                    int lastRound = roundDropDown.Items.Count;
-                    lastRound++;
-
-                    if (lastRound < thisTournament.Rounds.Count)
-                    {
-                        roundDropDown.Items.Add(lastRound);
-                    }
-                }
-
-            }
-            else
-            {
-                scoreRecordedLbl.Content = "Score recorded error";
-            }
+            initialization = false;
         }
 
-        private void roundDropDown_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void MatchupsListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            int selected = roundDropDown.SelectedIndex;
-            int index = selected;
+            int selectedRound = roundDropDown.SelectedIndex;
+            int selectedPairing = matchupsListBox.SelectedIndex;
+
+            if (selectedPairing == -1 || selectedRound == -1) return;   //For some reason this method is getting called when changing the round so we need this check
+
+            List<IMatchupEntry> teams = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams;
+
+            IMatchupEntry team1 = teams[0];
+            IMatchupEntry team2 = teams[1];
+
+            ITeam theTeam1 = source.getTeam(team1.TheTeam.TeamId);
+            ITeam theTeam2 = source.getTeam(team2.TheTeam.TeamId);
+
+            List<ITeamMember> team1Ids = source.getTeamMembersByTeamId(team1.TheTeam.TeamId);
+            List<ITeamMember> team2Ids = source.getTeamMembersByTeamId(team2.TheTeam.TeamId);
+
+            List<IPerson> team1TeamMembers = new List<IPerson>();
+            List<IPerson> team2TeamMembers = new List<IPerson>();
+
+            foreach (ITeamMember m in team1Ids)
+            {
+                team1TeamMembers.Add(source.getPerson(m.PersonId));
+            }
+
+            foreach (ITeamMember m in team2Ids)
+            {
+                team2TeamMembers.Add(source.getPerson(m.PersonId));
+            }
+
+            theTeam1.TeamMembers = team1TeamMembers;
+            theTeam2.TeamMembers = team2TeamMembers;
+
+            teamOneDataGrid.Items.Clear();
+            foreach (IPerson p in theTeam1.TeamMembers)
+            {
+                TournamentViewDataGridItem dataGridItem = new TournamentViewDataGridItem()
+                {
+                    PlayerName = p.FirstName + " " + p.LastName,
+                    Wins = p.Wins,
+                    Losses = p.Losses,
+                    TeamId = team1.TheTeam.TeamId
+                };
+
+                teamOneDataGrid.Items.Add(dataGridItem);
+            }
+
+            teamTwoDataGrid.Items.Clear();
+            foreach (IPerson p in theTeam2.TeamMembers)
+            {
+                TournamentViewDataGridItem dataGridItem = new TournamentViewDataGridItem()
+                {
+                    PlayerName = p.FirstName + " " + p.LastName,
+                    Wins = p.Wins,
+                    Losses = p.Losses,
+                    TeamId = team2.TheTeam.TeamId
+                };
+
+                teamTwoDataGrid.Items.Add(dataGridItem);
+            }
+
+            firstTeamLabel.Content = theTeam1.TeamName;
+            secondTeamLabel.Content = theTeam2.TeamName;
+        }
+
+        private void RoundDropDown_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (initialization == true) return; //Don't do anything
+
+            int selectedRound = roundDropDown.SelectedIndex;
+            matchupsListBox.SelectedItem = null;
             matchupsListBox.Items.Clear();
-            readMatchups(thisTournament.Rounds[index]);
+            teamTwoDataGrid.Items.Clear();
+            teamOneDataGrid.Items.Clear();
+
+            populateMatchupListBox(selectedRound);
         }
 
-        private bool validateScore(string score)
+        private void populateMatchupListBox(int selectedRound)
         {
-            return Regex.Match(score, @"^\d+$").Success;
-        }
+            IRound thisRound = tournament.Rounds[selectedRound];
 
-        private void changeSelectedMatchDetails(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-            dtOne.Clear();
-            dtTwo.Clear();
-            int currMatchup = matchupsListBox.SelectedIndex;
-            /*
-            System.Console.WriteLine("currMatchup: " + currMatchup);
-
-            if (currMatchup == -1 || currMatchup == 0) currMatchup = 0;
-            if (roundDropDown.SelectedIndex == -1 || roundDropDown.SelectedIndex == 0) currMatchup = 0;*/
-            ITournament test = thisTournament;
-
-            int teamOneID = thisTournament.Rounds[roundDropDown.SelectedIndex].Pairings[currMatchup].Teams[0].TheTeam.TeamId;
-            int teamTwoID = thisTournament.Rounds[roundDropDown.SelectedIndex].Pairings[currMatchup].Teams[1].TheTeam.TeamId;
-
-            //Changes teamOneID/teamTwoID in lines 127 and 130 to 58 + 2 * currMatchup to test with the testTournament on the main screen.
-            string teamName = source.getTeamName(58 + 2 * currMatchup);
-            firstTeamLabel.Content = teamName;
-            ITeam teamOne = source.getTeam(teamName);
-            teamName = source.getTeamName(59 + 2 * currMatchup);
-            secondTeamLabel.Content = teamName;
-            ITeam teamTwo = source.getTeam(teamName);
-
-            displayTeamOneInfo(teamOne);
-            teamOneDataGrid.DataContext = dtOne.DefaultView;
-
-            displayTeamTwoInfo(teamTwo);
-            teamTwoDataGrid.DataContext = dtTwo.DefaultView;
-        }
-        
-        /// <summary>
-        /// Prepares both datatables with the correct columns
-        /// </summary>
-        private void prepareDatatable()
-        {
-            dtOne.Columns.Add("Name", typeof(string));
-            dtOne.Columns.Add("Wins", typeof(int));
-            dtOne.Columns.Add("Losses", typeof(int));
-            dtOne.Columns.Add("W-L Ratio", typeof(double));
-
-            dtTwo.Columns.Add("Name", typeof(string));
-            dtTwo.Columns.Add("Wins", typeof(int));
-            dtTwo.Columns.Add("Losses", typeof(int));
-            dtTwo.Columns.Add("W-L Ratio", typeof(double));
-        }
-
-        private void displayTeamOneInfo(ITeam teamOne)
-        {
-            List<ITeamMember> team = source.getTeamMembersByTeamId(teamOne.TeamId);
-            displayTeamInfo(teamOne, dtOne);
-            displayTeammates(team, dtOne);
-        }
-
-        private void displayTeamTwoInfo(ITeam teamTwo)
-        {
-            List<ITeamMember> team = source.getTeamMembersByTeamId(teamTwo.TeamId);
-            displayTeamInfo(teamTwo, dtTwo);
-            displayTeammates(team, dtTwo);
-        }
-
-        private void displayTeammates(List<ITeamMember> inTeam, DataTable inDT)
-        {
-
-            DataRow row = inDT.NewRow();
-            
-            for (int i = 0; i < inTeam.Count; i++)
+            foreach (IMatchup m in thisRound.Pairings)
             {
-                IPerson person = source.getPerson(inTeam[i].PersonId);
-                row = inDT.NewRow();
-                row["Name"] = person.FirstName + " " + person.LastName;
-                row["Wins"] = person.Wins;
-                row["Losses"] = person.Losses;
-                if (person.Losses == 0)
-                    row["W-L Ratio"] = person.Wins;
-                else
-                    row["W-L Ratio"] = ((double)person.Wins) / person.Losses;
+                if (m.Teams != null && m.Teams.Count != 2) continue;
 
-                inDT.Rows.Add(row);
+                IMatchupEntry team1 = m.Teams[0];
+                IMatchupEntry team2 = m.Teams[1];
+
+                //IMatchupEntry has a ITournamentEntry which has a teamId
+                //Will call database to get their teamName
+                String team1Name = source.getTeam(team1.TheTeam.TeamId).TeamName;
+                String team2Name = source.getTeam(team2.TheTeam.TeamId).TeamName;
+
+                TournamentViewListBoxItem matchupsItem = new TournamentViewListBoxItem()
+                {
+                    Team1Name = team1Name,
+                    Team2Name = team2Name,
+                    imageURL = "Assets/x-button.png"
+                };
+
+                matchupsListBox.Items.Add(matchupsItem);
             }
         }
 
-        private void displayTeamInfo(ITeam inTeam, DataTable inDT)
+        private void FinalScoreBtn_Click(object sender, RoutedEventArgs e)
         {
+            String teamScore1 = firstTeamScoreTxtBox.Text;
+            String teamScore2 = secondTeamScoreTxtBox.Text;
 
-            DataRow row = inDT.NewRow();
-            row["Name"] = inTeam.TeamName;
-            row["Wins"] = inTeam.Wins;
-            row["Losses"] = inTeam.Losses;
-            if (inTeam.Losses == 0)
-                row["W-L Ratio"] = 0;
-            else
-                row["W-L Ratio"] = ((double)inTeam.Wins) / inTeam.Losses;
-            inDT.Rows.Add(row);
+            int score1 = int.Parse(teamScore1);
+            int score2 = int.Parse(teamScore2);
+
+            int selectedRound = roundDropDown.SelectedIndex;
+            int selectedPairing = matchupsListBox.SelectedIndex;
+
+            if (tournament.Rounds[selectedRound].Pairings[selectedPairing].NextRound != null)
+            {
+                tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[0].Score = score1;
+                tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[1].Score = score2;
+
+                bool valid = tournament.RecordResult(tournament.Rounds[selectedRound].Pairings[selectedPairing]);
+
+                if (valid)
+                {
+                    TournamentViewListBoxItem currItem = (TournamentViewListBoxItem)matchupsListBox.Items[selectedPairing];
+                    currItem.imageURL = "Assets/confirm.png";
+                    matchupsListBox.Items.Refresh();
+                }
+            }
+
         }
     }
 }

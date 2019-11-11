@@ -64,14 +64,14 @@ namespace TBG.Data.Classes
             return TeamsTable.Get(teamName, dbConn);
         }
 
+        public ITeam getTeam(int teamId)
+        {
+            return TeamsTable.Get(teamId, dbConn);
+        }
+
         public List<ITeam> getAllTeams()
         {
             return TeamsTable.GetAll(dbConn);
-        }
-
-        public string getTeamName(int teamID)
-        {
-            return TeamsTable.Get(teamID, dbConn).TeamName;
         }
         #endregion
 

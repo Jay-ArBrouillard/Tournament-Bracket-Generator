@@ -16,13 +16,13 @@ namespace TBG.Business
         public double TotalPrizePool { get; set; }
         public int TournamentTypeId { get; set; }
         public List<ITournamentEntry> Participants { get; set; }
-        public List<ITournamentPrize> Prizes { get; set; }
+        public List<IPrize> Prizes { get; set; }
         public List<IRound> Rounds { get; set; }
 
         public SingleEliminationTournament()
         {
             Participants = new List<ITournamentEntry>();
-            Prizes = new List<ITournamentPrize>();
+            Prizes = new List<IPrize>();
             Rounds = new List<IRound>();
         }
 
