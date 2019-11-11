@@ -65,6 +65,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Models\Matchup.cs" />
     <Compile Include="Models\Person.cs" />
     <Compile Include="Models\Prize.cs" />
     <Compile Include="Models\Team.cs" />
@@ -172,6 +173,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\trophy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\x-button.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\confirm.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

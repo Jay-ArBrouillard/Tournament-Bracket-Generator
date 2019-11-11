@@ -7,7 +7,7 @@ using TBG.Core.Interfaces;
 
 namespace TBG.UI.Models
 {
-    public class Tournament : ITournament
+    public class SingleEliminationTournament : ITournament
     {
         public int TournamentId { get; set; }
         public int UserId { get; set; }
@@ -17,11 +17,11 @@ namespace TBG.UI.Models
         public int TournamentTypeId { get; set; }
         public List<ITournamentEntry> Participants { get; set; }
         public List<ITournamentPrize> Prizes { get; set; }
-        public List<IRound> Rounds { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public List<IRound> Rounds { get; set; }
 
         public bool BuildTournament()
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("This might change?");
         }
 
         public bool RecordResult(IMatchup matchup)
