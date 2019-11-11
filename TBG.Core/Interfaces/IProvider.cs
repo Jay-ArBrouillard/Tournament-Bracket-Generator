@@ -9,7 +9,9 @@ namespace TBG.Core.Interfaces
     public interface IProvider
     {
         ITournament createTournament(ITournament entry);
+        ITournament getTournamentByName(string entry);
         ITournamentEntry createTournamentEntry(ITournamentEntry entry);
+        IRound createRound(IRound entry);
         ITeam createTeam(ITeam entry);
         ITeam getTeam(string teamName);
         ITeam getTeam(int teamId);
@@ -26,5 +28,6 @@ namespace TBG.Core.Interfaces
         IPrize createPrize(IPrize prize);
         List<ITeamMember> getTeamMembersByTeamId(int teamId);
         List<IPrize> getAllPrizes();
+        List<ITournamentEntry> getTournamentEntriesByTournamentId(int tournamentId);
     }
 }

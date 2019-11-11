@@ -38,6 +38,16 @@ namespace TBG.Data.Classes
 
             return tournament;
         }
+
+        public ITournament getTournamentByName(string entry)
+        {
+            //Create Tournament Record
+            //Create Cross Reference Records For Tournament/Team/Player
+            ITournament tournament = TournamentTable.GetTournamentByName(entry, dbConn);
+            if (tournament == null) { return null; }
+
+            return tournament;
+        }
         #endregion
 
         #region TOURNAMENT ENTRY METHODS
@@ -47,6 +57,25 @@ namespace TBG.Data.Classes
             if (tournament == null) { return null; }
 
             return tournament;
+        }
+
+        public List<ITournamentEntry> getTournamentEntriesByTournamentId (int id)
+        {
+            List<ITournamentEntry> tournamentEntries = TournamentEntryTable.GetByTournamentId(id, dbConn);
+            if (tournamentEntries == null) { return null; }
+
+            return tournamentEntries;
+        }
+
+        #endregion
+
+        #region ROUND METHODS
+        public IRound createRound(IRound entry)
+        {
+            IRound round = RoundsTable.Create(entry, dbConn);
+            if (round == null) { return null; }
+
+            return round;
         }
         #endregion
 

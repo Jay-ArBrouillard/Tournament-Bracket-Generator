@@ -72,7 +72,7 @@
 
         <Label Content="Matchup Details" HorizontalAlignment="Left" Margin="76,93,0,0" VerticalAlignment="Top" FontSize="22" Grid.Column="3"/>
         <Label x:Name="firstTeamLabel" Content="Team 1" HorizontalAlignment="Left" Margin="27,34,0,0" VerticalAlignment="Top" FontSize="24" Grid.Row="3" Width="325" Grid.ColumnSpan="2" HorizontalContentAlignment="Right"/>
-        <Label Content="vs." HorizontalAlignment="Left" Margin="30,45,0,0" VerticalAlignment="Top" FontSize="16" Grid.Row="3" Grid.Column="2"/>
+        <Label x:Name="versusLabel" Content="vs." HorizontalAlignment="Left" Margin="30,45,0,0" VerticalAlignment="Top" FontSize="16" Grid.Row="3" Grid.Column="2"/>
         <Label x:Name="secondTeamLabel" Content="Team 2" HorizontalAlignment="Left" Margin="10,34,0,0" VerticalAlignment="Top" FontSize="24" Grid.Row="3" Grid.Column="3" Width="315"/>
         <Label Content="Score:" HorizontalAlignment="Left" Margin="150.955,76,0,0" Grid.Row="3" VerticalAlignment="Top" Width="64" FontSize="16" Grid.Column="1"/>
         <Label Content="Score:" HorizontalAlignment="Left" Margin="76,76,0,0" Grid.Row="3" VerticalAlignment="Top" Width="64" FontSize="16" Grid.Column="3"/>

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TBG.Core.Interfaces;
 
 namespace TBG.Data.Classes
 {
@@ -31,7 +32,7 @@ namespace TBG.Data.Classes
             return GetNonQueryCount(query, dbConn, new Dictionary<string, string>());
         }
 
-        public static int GetNonQueryCount(string query, MySqlConnection dbConn, Dictionary<string,string> parameters)
+        public static int GetNonQueryCount(string query, MySqlConnection dbConn, Dictionary<string, string> parameters)
         {
             using (MySqlCommand cmd = new MySqlCommand(query, dbConn))
             {
@@ -41,6 +42,36 @@ namespace TBG.Data.Classes
                 }
                 return cmd.ExecuteNonQuery();
             }
+        }
+
+        public static int GetNonQueryCount(string query, MySqlConnection dbConn, Dictionary<string,string> parameters,out int primaryKey)
+        {
+            using (MySqlCommand cmd = new MySqlCommand(query, dbConn))
+            {
+                foreach (var entry in parameters)
+                {
+                    cmd.Parameters.AddWithValue(entry.Key, entry.Value);
+                }
+
+                var result = cmd.ExecuteNonQuery();
+
+
+                if (result > 0)
+                {
+                    primaryKey = GetLastInsertedPrimaryKey(cmd);
+                }
+                else
+                {
+                    primaryKey = -1;
+                }
+
+                return result;
+            }
+        }
+
+        public static int GetLastInsertedPrimaryKey(MySqlCommand cmd)
+        {
+            return (int)cmd.LastInsertedId;
         }
 
         public static string DateToString(DateTime dt)

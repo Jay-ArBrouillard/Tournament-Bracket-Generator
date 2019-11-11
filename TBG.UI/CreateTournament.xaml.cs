@@ -20,6 +20,7 @@ namespace TBG.UI
         public List<IPrize> prizes; //All existing prizes
         public List<IPrize> prizesInTournament;  //Selected prizes
         public int prizePool;
+        public int tournamentId;
 
         public CreateTournament()
         {
@@ -38,22 +39,6 @@ namespace TBG.UI
             prizes = source.getAllPrizes();
             prizeComboBox.ItemsSource = prizes;
             prizePool = 0;
-
-            //Create a row in Tournament Table
-            ITournament tournament = new SingleEliminationTournament()
-            {
-                UserId = 19, //To change. This id for User with username = "Username" and password = "Password"
-                TournamentName = "Test Tournament",
-                EntryFee = 100,
-                TotalPrizePool = 2000.00,
-                TournamentTypeId = 1,
-                Prizes = prizesInTournament
-            };
-
-            tournament = source.createTournament(tournament);
-            tournament = business.createSingleEliminationTournament(tournament);
-            this is where i was last
-                //Add a row to tournaments table then use the tournament id to set for each tournamentEntry
         }
 
         private void SetEntryFee_Click(object sender, RoutedEventArgs e)
@@ -209,7 +194,19 @@ namespace TBG.UI
             //TODO
             //business.validate(something);
 
+            //Create a row in Tournament Table
+            ITournament tournament = new SingleEliminationTournament()
+            {
+                UserId = 19, //To change. This id for User with username = "Username" and password = "Password"
+                TournamentName = "Test Tournament",
+                EntryFee = 100,
+                TotalPrizePool = 2000.00,
+                TournamentTypeId = 1,
+                Prizes = prizesInTournament
+            };
 
+            tournament = source.createTournament(tournament);
+            tournamentId = source.getTournamentByName("Test Tournament").TournamentId;   //Change
 
             List<ITournamentEntry> entries = new List<ITournamentEntry>();
             foreach (TournamentEntryView entry in teamsInTournament)
@@ -217,8 +214,7 @@ namespace TBG.UI
                 TournamentEntry tournamentEntry = new TournamentEntry()
                 {
                     TournamentEntryId = entry.TournamentEntryId,
-                    //TournamentId = entry.TournamentId,
-                    TournamentId = 2,
+                    TournamentId = tournamentId,
                     TeamId = entry.TeamId,
                     Seed = entry.Seed
                 };
@@ -230,6 +226,9 @@ namespace TBG.UI
             }
 
             tournament.Participants = entries;
+
+            tournament = business.createSingleEliminationTournament(tournament);
+            //Add a row to tournaments table then use the tournament id to set for each tournamentEntry
 
 
             if (tournament != null)

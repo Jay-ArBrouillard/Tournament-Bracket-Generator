@@ -67,6 +67,7 @@
     </ApplicationDefinition>
     <Compile Include="Models\Person.cs" />
     <Compile Include="Models\Prize.cs" />
+    <Compile Include="Models\Round.cs" />
     <Compile Include="Models\Team.cs" />
     <Compile Include="Models\TeamMember.cs" />
     <Compile Include="Models\SingleEliminationTournament.cs" />

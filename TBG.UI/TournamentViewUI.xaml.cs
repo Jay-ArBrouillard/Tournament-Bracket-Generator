@@ -26,6 +26,12 @@ namespace TBG.UI
             for (int i = 1; i <= tournament.Rounds.Count; i++)
             {
                 roundDropDown.Items.Add(i);
+                /*source.createRound(new Round()
+                {
+                    TournamentId = tournament.TournamentId,
+                    RoundNum = i,
+                    Pairings = tournament.Rounds[i].Pairings
+                });*/
             }
 
             roundDropDown.SelectedItem = null;
@@ -55,6 +61,8 @@ namespace TBG.UI
                 };
 
                 matchupsListBox.Items.Add(matchupsItem);
+
+                //Add the matchups to roundMatchups
             }
 
             initialization = false;
@@ -200,7 +208,23 @@ namespace TBG.UI
                 currItem.imageURL = "Assets/trophy.png";
                 matchupsListBox.Items.Refresh();
 
+                if (score1 > score2)
+                {
+                    String team1Name = source.getTeam(tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[0].TheTeam.TeamId).TeamName;
 
+                    firstTeamLabel.Content = team1Name;
+                    versusLabel.Content = " is the ";
+                    secondTeamLabel.Content = "winner!";
+
+                }
+                else
+                {
+                    String team2Name = source.getTeam(tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[1].TheTeam.TeamId).TeamName;
+
+                    firstTeamLabel.Content = team2Name;
+                    versusLabel.Content = " is the ";
+                    secondTeamLabel.Content = "winner!";
+                }
             }
 
         }

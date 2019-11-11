@@ -34,6 +34,24 @@ namespace TBG.Data.Tables
             {
                 if (reader.HasRows)
                 {
+                    reader.Read();
+                    return ConvertReader(reader);
+                }
+            }
+            return null;
+        }
+
+        public static ITournament GetTournamentByName(string name, MySqlConnection dbConn)
+        {
+            string query = "SELECT * FROM `Tournaments` WHERE `tournament_name` = @name";
+            Dictionary<string, string> param = new Dictionary<string, string>();
+            param.Add("@name", name);
+
+            using (var reader = DatabaseHelper.GetReader(query, dbConn, param))
+            {
+                if (reader.HasRows)
+                {
+                    reader.Read();
                     return ConvertReader(reader);
                 }
             }
