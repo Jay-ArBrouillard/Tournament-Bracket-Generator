@@ -11,33 +11,13 @@ namespace TBG.Business
     {
         public ITournament createSingleEliminationTournament(ITournament tournament)
         {
-            ITournament newTournament = new SingleEliminationTournament()
-            {
-                TournamentName = tournament.TournamentName,
-                UserId = tournament.UserId,
-                EntryFee = tournament.EntryFee,
-                TotalPrizePool = tournament.TotalPrizePool,
-                TournamentTypeId = tournament.TournamentTypeId,
-                Participants = tournament.Participants
-        };
+            SingleEliminationTournament thisTournament = new SingleEliminationTournament(tournament);
 
-            /*
-             * 
-             *         int TournamentId { get; set; }
-        int UserId { get; set; }
-        string TournamentName { get; set; }
-        decimal EntryFee { get; set; }
-        double TotalPrizePool { get; set; }
-        int TournamentTypeId { get; set; }
-        List<ITournamentEntry> Participants { get; set; }
-        List<IPrize> Prizes { get; set; }
-        List<IRound> Rounds { get; set; }*/
-
-            bool valid = newTournament.BuildTournament();
+            bool valid = thisTournament.BuildTournament();
 
             if (valid)
             {
-                return newTournament;
+                return tournament;
             }
 
             return null;
@@ -45,9 +25,31 @@ namespace TBG.Business
 
         public bool validateEntryFee(string entryFee)
         {
-            if (!int.TryParse(entryFee, out _)) { return false; }
+            if (string.IsNullOrEmpty(entryFee)) { return true; }
 
+            if (!int.TryParse(entryFee, out _)) { return false; }
             return true;
         }
+
+
+        public bool validateTotalPrizePool(string prizePool)
+        {
+            if (!int.TryParse(prizePool, out _)) { return false; }
+            return true;
+        }
+
+        public bool validateTournamentType(string type)
+        {
+            if (string.IsNullOrEmpty(type)) { return false; }
+
+            if (!type.Equals("Single Elimination")) { return false; }
+            return true;
+        }
+
+        public bool validateSingleEliminationTournament(ITournament tournament)
+        {
+            return false;
+        }
+
     }
 }

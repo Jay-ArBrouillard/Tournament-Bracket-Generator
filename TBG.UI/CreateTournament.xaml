@@ -42,8 +42,7 @@
             <TextBlock Text="Tournament Name" 
                    FontSize="18">
             </TextBlock>
-            <TextBox Text="" 
-                     BorderThickness="2">
+            <TextBox x:Name="tournamentNameTextBox" BorderThickness="2">
             </TextBox>
         </StackPanel>
 
@@ -166,6 +165,9 @@
             </TextBlock>
             <Button Content="Create New Prize" Click="Create_New_Prize_Click" Margin="10,0,0,0" Height="20" Width="100"/>
         </StackPanel>
+        
+        <!-- Error Messages -->
+        <TextBlock x:Name="errorMessages" Grid.Row="6" Grid.Column="2" Grid.ColumnSpan="2" Foreground="Red" HorizontalAlignment="Right"></TextBlock>
         
         <!-- Prizes ComboBox -->
         <ComboBox x:Name="prizeComboBox" Grid.Row="7" Grid.Column="1" Margin="0,5,0,0" SelectionChanged="PrizeComboBox_Selected">

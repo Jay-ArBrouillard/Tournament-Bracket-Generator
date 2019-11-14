@@ -65,13 +65,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Models\Person.cs" />
-    <Compile Include="Models\Prize.cs" />
-    <Compile Include="Models\Round.cs" />
-    <Compile Include="Models\Team.cs" />
-    <Compile Include="Models\TeamMember.cs" />
-    <Compile Include="Models\SingleEliminationTournament.cs" />
-    <Compile Include="Models\TournamentEntry.cs" />
+    <Compile Include="Classes\Matchup.cs" />
+    <Compile Include="Classes\MatchupEntry.cs" />
+    <Compile Include="Classes\Person.cs" />
+    <Compile Include="Classes\Prize.cs" />
+    <Compile Include="Classes\Round.cs" />
+    <Compile Include="Classes\Team.cs" />
+    <Compile Include="Classes\TeamMember.cs" />
+    <Compile Include="Classes\SingleEliminationTournament.cs" />
+    <Compile Include="Classes\TournamentEntry.cs" />
     <Compile Include="Models\TournamentEntryView.cs" />
     <Compile Include="Models\TournamentViewDataGridItem.cs" />
     <Compile Include="Models\TournamentViewListBoxItem.cs" />
@@ -125,7 +127,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\TournamentListBoxItem.cs" />
-    <Compile Include="Models\User.cs" />
+    <Compile Include="Classes\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

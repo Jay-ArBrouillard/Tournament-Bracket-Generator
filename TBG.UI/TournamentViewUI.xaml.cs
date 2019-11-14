@@ -34,6 +34,9 @@ namespace TBG.UI
                 });*/
             }
 
+            //Set tournament Name
+            tournamentNameLbl.Content = tournament.TournamentName;
+
             roundDropDown.SelectedItem = null;
             roundDropDown.SelectedIndex = 0;
             displayRound1();
@@ -42,6 +45,8 @@ namespace TBG.UI
         private void displayRound1()
         {
             int selectedRound = roundDropDown.SelectedIndex;
+
+            if (selectedRound == -1) return; 
 
             foreach (IMatchup matchup in tournament.Rounds[selectedRound].Pairings)
             {

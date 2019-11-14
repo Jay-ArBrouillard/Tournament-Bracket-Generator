@@ -19,8 +19,13 @@ namespace TBG.Data.Tables
             param.Add("@pool", entity.TotalPrizePool.ToString());
             param.Add("@type", entity.TournamentTypeId.ToString());
 
-            var results = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
-            if (results > 0) { return entity; }
+
+            var insertedId = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
+            if (insertedId > 0)
+            {
+                entity.TournamentId = insertedId;
+                return entity;
+            }
             return null;
         }
 
@@ -113,7 +118,7 @@ namespace TBG.Data.Tables
             return new Tournament()
             {
                 TournamentId = Int32.Parse(reader["tournament_id"].ToString()),
-                UserId = Int32.Parse(reader["tournament_id"].ToString()),
+                UserId = Int32.Parse(reader["user_id"].ToString()),
                 TournamentName = reader["tournament_name"].ToString(),
                 EntryFee = Decimal.Parse(reader["entry_fee"].ToString()),
                 TotalPrizePool = Double.Parse(reader["total_prize_pool"].ToString()),

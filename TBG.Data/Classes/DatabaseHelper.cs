@@ -40,38 +40,18 @@ namespace TBG.Data.Classes
                 {
                     cmd.Parameters.AddWithValue(entry.Key, entry.Value);
                 }
-                return cmd.ExecuteNonQuery();
+                var results = cmd.ExecuteNonQuery();
+
+                // If has last inserted id, add a parameter to hold it.
+                if (cmd.LastInsertedId > 0)
+                {
+                    cmd.Parameters.Add(new MySqlParameter("newId", cmd.LastInsertedId));
+                    // Return the id of the new record. Convert from Int64 to Int32 (int).
+                    return Convert.ToInt32(cmd.Parameters["@newId"].Value);
+                }
+
+                return results;
             }
-        }
-
-        public static int GetNonQueryCount(string query, MySqlConnection dbConn, Dictionary<string,string> parameters,out int primaryKey)
-        {
-            using (MySqlCommand cmd = new MySqlCommand(query, dbConn))
-            {
-                foreach (var entry in parameters)
-                {
-                    cmd.Parameters.AddWithValue(entry.Key, entry.Value);
-                }
-
-                var result = cmd.ExecuteNonQuery();
-
-
-                if (result > 0)
-                {
-                    primaryKey = GetLastInsertedPrimaryKey(cmd);
-                }
-                else
-                {
-                    primaryKey = -1;
-                }
-
-                return result;
-            }
-        }
-
-        public static int GetLastInsertedPrimaryKey(MySqlCommand cmd)
-        {
-            return (int)cmd.LastInsertedId;
         }
 
         public static string DateToString(DateTime dt)

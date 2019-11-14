@@ -19,11 +19,13 @@ namespace TBG.Data.Tables
             param.Add("@id", entity.TournamentId.ToString());
             param.Add("@round", entity.RoundNum.ToString());
 
-            var results = DatabaseHelper.GetNonQueryCount(query, dbConn, param, out int primaryKey);
-            if (results > 0)
+            using (var reader = DatabaseHelper.GetReader(query, dbConn, param))
             {
-                entity.RoundId = primaryKey;
-                return entity;
+                if (reader.HasRows)
+                {
+                    reader.Read();
+                    return ConvertReader(reader);
+                }
             }
             return null;
         }

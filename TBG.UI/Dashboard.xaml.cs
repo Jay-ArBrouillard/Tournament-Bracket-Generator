@@ -16,10 +16,10 @@ namespace TBG.UI
         private ITournamentController business;
         private IUser user;
 
-        public Dashboard(User thisUser)
+        public Dashboard(User user)
         {
             InitializeComponent();
-            user = thisUser;
+            this.user = user;
             this.source = ApplicationController.getProvider();
             business = ApplicationController.getTournamentController();
 
@@ -44,7 +44,7 @@ namespace TBG.UI
             }
 
             //Logged in as guest -> don't allow them to create a tournament
-            if (thisUser == null)   
+            if (user == null)   
             {
                 createTournamentButton.Visibility = Visibility.Hidden;
             }
@@ -56,17 +56,13 @@ namespace TBG.UI
             if (tournamentList.SelectedIndex == -1) return;
 
             //Look at selected item in tournamentList, pass that id to Tournament For
-            this.source = ApplicationController.getProvider();
-            var tournaments = source.getAllTournaments();
+            source = ApplicationController.getProvider();
+            List<ITournament> tournaments = source.getAllTournaments();
             int selectedTourney = tournamentList.SelectedIndex;
-            //Need to get the source
-            ITournament selected = tournaments[selectedTourney];
-            ITournament selectedTournament = source.getTournamentByName(selected.TournamentName);
-            //selectedTournament. source.getTournamentEntriesByTournmentId(selected.TournamentId);
+            ITournament selectedTournament = source.getTournamentByName(tournaments[selectedTourney].TournamentName);
+            int tournamentId = source.getTournamentByName(selectedTournament.TournamentName).TournamentId;   //Change
 
-            int tournamentId = source.getTournamentByName("Test Tournament").TournamentId;   //Change
-
-            List<ITournamentEntry> entries = source.getTournamentEntriesByTournamentId(selected.TournamentId);
+            List<ITournamentEntry> entries = source.getTournamentEntriesByTournamentId(tournaments[selectedTourney].TournamentId);
 
             selectedTournament.Participants = entries;
             selectedTournament = business.createSingleEliminationTournament(selectedTournament);
@@ -77,9 +73,9 @@ namespace TBG.UI
 
         private void CreateTournament_Click(object sender, RoutedEventArgs e)
         {
-            CreateTournament newTournament = new CreateTournament();
+            CreateTournament newTournament = new CreateTournament(user);
             newTournament.Show();
-            //this.Close();
+            this.Close();
         }
     }
 }

@@ -27,7 +27,6 @@ namespace TBG.Data.Classes
         }
         #endregion
 
-
         #region TOURNAMENT METHODS
         public ITournament createTournament(ITournament entry)
         {
@@ -209,7 +208,23 @@ namespace TBG.Data.Classes
         #endregion
 
         #region MATCHUP METHODS
-        
+        public IMatchup createMatchup(IMatchup entry)
+        {
+            IMatchup matchup = MatchupsTable.Create(entry, dbConn);
+            if (matchup == null) return null;
+
+            return matchup;
+        }
+        #endregion
+
+        #region MATCHUP ENTRY METHODS
+        public IMatchupEntry createMatchupEntry(IMatchupEntry entry)
+        {
+            IMatchupEntry matchupEntry = MatchupEntriesTable.Create(entry, dbConn);
+            if (matchupEntry == null) return null;
+
+            return matchupEntry;
+        }
         #endregion
     }
 }

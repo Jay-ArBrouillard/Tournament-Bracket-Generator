@@ -69,8 +69,8 @@ namespace TBG.UI
                         selectedPersons.Add(p);
                     }
                 }
-
-                selectedPersons.Sort();
+                //if (selectedPersons != null && selectedPersons.Count > 0)
+                //selectedPersons.Sort();
                 selectionListBox.ItemsSource = selectedPersons;
             }
             else if (searchBox.Text == "")

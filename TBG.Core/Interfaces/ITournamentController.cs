@@ -10,5 +10,8 @@ namespace TBG.Core.Interfaces
     {
         bool validateEntryFee(string entryFee);
         ITournament createSingleEliminationTournament(ITournament tournament);
+        bool validateSingleEliminationTournament(ITournament tournament);
+        bool validateTournamentType(string text);
+        bool validateTotalPrizePool(string text);
     }
 }

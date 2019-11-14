@@ -29,5 +29,7 @@ namespace TBG.Core.Interfaces
         List<ITeamMember> getTeamMembersByTeamId(int teamId);
         List<IPrize> getAllPrizes();
         List<ITournamentEntry> getTournamentEntriesByTournamentId(int tournamentId);
+        IMatchup createMatchup(IMatchup entry);
+        IMatchupEntry createMatchupEntry(IMatchupEntry matchupEntry);
     }
 }

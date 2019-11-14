@@ -20,8 +20,12 @@ namespace TBG.Data.Tables
             param.Add("@team", entity.TeamId.ToString());
             param.Add("@seed", entity.Seed.ToString());
 
-            var results = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
-            if (results > 0) { return entity; }
+            var insertedId = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
+            if (insertedId > 0)
+            {
+                entity.TournamentEntryId = insertedId;
+                return entity;
+            }
             return null;
         }
 

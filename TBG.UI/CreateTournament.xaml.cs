@@ -7,6 +7,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using TBG.Core.Interfaces;
 using TBG.Driver;
+using TBG.UI.Classes;
 using TBG.UI.Models;
 
 namespace TBG.UI
@@ -20,11 +21,12 @@ namespace TBG.UI
         public List<IPrize> prizes; //All existing prizes
         public List<IPrize> prizesInTournament;  //Selected prizes
         public int prizePool;
-        public int tournamentId;
+        private IUser user;
 
-        public CreateTournament()
+        public CreateTournament(IUser user)
         {
             InitializeComponent();
+            this.user = user;
             business = ApplicationController.getTournamentController();
             source = ApplicationController.getProvider();
             tournamentTypesComboBox.ItemsSource = source.getTournamentTypes();
@@ -189,55 +191,6 @@ namespace TBG.UI
             prizesListBox.Items.Refresh();
         }
 
-        private void Create_Tournament_Click(object sender, RoutedEventArgs e)
-        {
-            //TODO
-            //business.validate(something);
-
-            //Create a row in Tournament Table
-            ITournament tournament = new SingleEliminationTournament()
-            {
-                UserId = 19, //To change. This id for User with username = "Username" and password = "Password"
-                TournamentName = "Test Tournament",
-                EntryFee = 100,
-                TotalPrizePool = 2000.00,
-                TournamentTypeId = 1,
-                Prizes = prizesInTournament
-            };
-
-            tournament = source.createTournament(tournament);
-            tournamentId = source.getTournamentByName("Test Tournament").TournamentId;   //Change
-
-            List<ITournamentEntry> entries = new List<ITournamentEntry>();
-            foreach (TournamentEntryView entry in teamsInTournament)
-            {
-                TournamentEntry tournamentEntry = new TournamentEntry()
-                {
-                    TournamentEntryId = entry.TournamentEntryId,
-                    TournamentId = tournamentId,
-                    TeamId = entry.TeamId,
-                    Seed = entry.Seed
-                };
-
-                entries.Add(entry);
-
-                //Add row TournmentEntries Table. LATER move this somewhere else
-                source.createTournamentEntry(tournamentEntry);
-            }
-
-            tournament.Participants = entries;
-
-            tournament = business.createSingleEliminationTournament(tournament);
-            //Add a row to tournaments table then use the tournament id to set for each tournamentEntry
-
-
-            if (tournament != null)
-            {
-                TournamentViewUI viewUI = new TournamentViewUI(tournament);
-                viewUI.Show();
-            }
-        }
-
         private void SeedToggle_Checked(object sender, RoutedEventArgs e)
         {
             for (int i = 0; i < teamsInTournament.Count; i++)
@@ -255,5 +208,104 @@ namespace TBG.UI
             }
             participantsTreeView.Items.Refresh();
         }
+
+        private void Create_Tournament_Click(object sender, RoutedEventArgs e)
+        {
+            bool validateEntryFee = business.validateEntryFee(entryFeeTextBox.Text);
+            ITournamentType tournamentType = (ITournamentType)tournamentTypesComboBox.SelectedItem;
+            bool validateTournamentTypeId = business.validateTournamentType(tournamentType.TournamentTypeName);
+            bool validateTotalPrizePool = business.validateTotalPrizePool(totalPrizePool.Text);
+
+            if (!validateEntryFee)
+            {
+                errorMessages.Text = "Entry Fee must be an Integer";
+                return;
+            }
+
+            if (!validateTournamentTypeId)
+            {
+                errorMessages.Text = "Please select a Tournament Type";
+                return;
+            }
+
+            if (validateEntryFee && !validateTotalPrizePool)
+            {
+                errorMessages.Text = "Set the entry fee before proceeding or remove entry fee entirely";
+                return;
+            }
+
+            //TODO: FIX VALIDATION AND THEN CREATE MATCHUPS AND MATCHUP ENTRIES IN TOURNAMENT VIEWER UI
+
+            errorMessages.Text = "";
+
+            ITournament tournament = new SingleEliminationTournament()
+            {
+                TournamentName = tournamentNameTextBox.Text,
+                EntryFee = int.Parse(entryFeeTextBox.Text),
+                TournamentTypeId = tournamentType.TournamentTypeId,
+                TotalPrizePool = int.Parse(totalPrizePool.Text), 
+                UserId = user.UserId,
+            };
+
+            bool validate = business.validateSingleEliminationTournament(tournament);
+
+            if (!validate)
+            {
+                return;
+            }
+
+            int tournamentId = source.createTournament(tournament).TournamentId;
+            tournament.TournamentId = tournamentId;
+
+            //Convert TournamentEntryView objects to ITournmentEntries
+            foreach (TournamentEntryView entry in teamsInTournament)
+            {
+                ITournamentEntry tournamentEntry = new TournamentEntry()
+                {
+                    TournamentId = tournamentId,
+                    TeamId = entry.TeamId,
+                    Seed = 0    //CHANGE later
+                };
+
+                tournamentEntry = source.createTournamentEntry(tournamentEntry);
+                tournament.Participants.Add(tournamentEntry);
+            }
+
+            //Create Backend Logic
+            ITournament newTournament = business.createSingleEliminationTournament(tournament);
+
+            //Add the Starting Matchups and MatchupEntries to DB
+            int numberOfMatchups = (int)Math.Log(newTournament.Participants.Count, 2);
+            for (int i = 0; i < numberOfMatchups; i++) 
+            {
+                //Create a Matchup and two MatchEntries
+                IMatchup matchup = source.createMatchup(new Matchup());
+
+                const int numberOfTeamsPerMatchup = 2;
+                for (int j = 0; j < numberOfTeamsPerMatchup; j+=2)
+                {
+                    IMatchupEntry matchupEntry1 = source.createMatchupEntry(new MatchupEntry()
+                    {
+                        MatchupId = matchup.MatchupId,
+                        TournamentEntryId = newTournament.Participants[j].TournamentEntryId,
+                        Score = 0
+                    });
+                    IMatchupEntry matchupEntry2 = source.createMatchupEntry(new MatchupEntry()
+                    {
+                        MatchupId = matchup.MatchupId,
+                        TournamentEntryId = newTournament.Participants[j + 1].TournamentEntryId,
+                        Score = 0
+                    });
+                }
+            }
+
+            if (newTournament != null)
+            {
+                TournamentViewUI viewUI = new TournamentViewUI(newTournament);
+                viewUI.Show();
+            }
+            
+        }
+
     }
 }

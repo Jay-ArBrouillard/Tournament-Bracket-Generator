@@ -19,27 +19,5 @@ namespace TBG.Data.Entities
         {
 
         }
-        public User(string UserName, string Password)
-        {
-            this.UserName = UserName;
-            this.Password = Password;
-        }
-
-        public User(string UserName, string Password, bool Active, bool Admin)
-        {
-            this.UserName = UserName;
-            this.Password = Password;
-            this.Active = Active;
-            this.Admin = Admin;
-        }
-
-        public User(string UserName, string Password, bool Active, bool Admin, DateTime LastLogin)
-        {
-            this.UserName = UserName;
-            this.Password = Password;
-            this.Active = Active;
-            this.Admin = Admin;
-            this.LastLogin = LastLogin;
-        }
     }
 }

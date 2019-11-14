@@ -81,7 +81,7 @@ namespace TBG.Data.Tables
             string query = "UPDATE Users SET user_name = @user, password = @password, active = @active, admin = @admin, last_login = @lastLogin  WHERE user_id = @id";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@user", entity.UserName.ToString());
-            param.Add("@password", entity.Password.ToString());
+            param.Add("@password", MD5.Encrypt(entity.Password, true));
             param.Add("@active", DatabaseHelper.BoolToString(entity.Active));
             param.Add("@admin", DatabaseHelper.BoolToString(entity.Admin));
             param.Add("@lastLogin", DatabaseHelper.DateToString(entity.LastLogin));

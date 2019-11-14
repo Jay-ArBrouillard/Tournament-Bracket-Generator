@@ -15,15 +15,37 @@ namespace TBG.Business
         public decimal EntryFee { get; set; }
         public double TotalPrizePool { get; set; }
         public int TournamentTypeId { get; set; }
-        public List<ITournamentEntry> Participants { get; set; }
-        public List<IPrize> Prizes { get; set; }
-        public List<IRound> Rounds { get; set; }
-
+        public List<ITournamentEntry> Participants { get; set; } = new List<ITournamentEntry>();
+        public List<IPrize> Prizes { get; set; } = new List<IPrize>();
+        public List<IRound> Rounds { get; set; } = new List<IRound>();
+        
         public SingleEliminationTournament()
         {
-            Participants = new List<ITournamentEntry>();
-            Prizes = new List<IPrize>();
-            Rounds = new List<IRound>();
+
+        }
+        public SingleEliminationTournament(ITournament tournament)
+        {
+            TournamentId = tournament.TournamentId;
+            UserId = tournament.UserId;
+            TournamentName = tournament.TournamentName;
+            EntryFee = tournament.EntryFee;
+            TotalPrizePool = tournament.TotalPrizePool;
+            TournamentTypeId = tournament.TournamentTypeId;
+
+            if (tournament.Participants != null)
+            {
+                Participants = tournament.Participants;
+            }
+
+            if (tournament.Prizes != null)
+            {
+                Prizes = tournament.Prizes;
+            }
+
+            if (tournament.Rounds != null)
+            {
+                Rounds = tournament.Rounds;
+            }
         }
 
         public bool BuildTournament()
@@ -112,6 +134,11 @@ namespace TBG.Business
             return nextRound;
         }
 
+        /// <summary>
+        /// Assuming there are 2 teams per matchup
+        /// </summary>
+        /// <param name="FieldSize"></param>
+        /// <returns></returns>
         private int CalculateRoundTotal(int FieldSize)
         {
             return (int) Math.Log(FieldSize, 2);

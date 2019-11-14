@@ -18,6 +18,8 @@ namespace TBG.Business
             //Check Password
             if (!thisUser.Password.Equals(thatUser.Password)) { return false; }
 
+            thisUser.UserId = thatUser.UserId;  //They are the same users
+
             return true;
         }
 
