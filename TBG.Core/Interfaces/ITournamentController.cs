@@ -8,10 +8,9 @@ namespace TBG.Core.Interfaces
 {
     public interface ITournamentController
     {
-        bool validateEntryFee(string entryFee);
+        bool validateEntryFee(string number);
         ITournament createSingleEliminationTournament(ITournament tournament);
         bool validateSingleEliminationTournament(ITournament tournament);
-        bool validateTournamentType(string text);
-        bool validateTotalPrizePool(string text);
+        bool validateTournamentType(ITournamentType tournamentType);
     }
 }

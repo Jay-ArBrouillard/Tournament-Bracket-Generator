@@ -12,12 +12,12 @@ namespace TBG.Business
         public int TournamentId { get; set; }
         public int UserId { get; set; }
         public string TournamentName { get; set; }
-        public decimal EntryFee { get; set; }
+        public double EntryFee { get; set; }
         public double TotalPrizePool { get; set; }
         public int TournamentTypeId { get; set; }
-        public List<ITournamentEntry> Participants { get; set; } = new List<ITournamentEntry>();
-        public List<IPrize> Prizes { get; set; } = new List<IPrize>();
-        public List<IRound> Rounds { get; set; } = new List<IRound>();
+        public List<ITournamentEntry> Participants { get; set; } 
+        public List<IPrize> Prizes { get; set; }
+        public List<IRound> Rounds { get; set; } 
         
         public SingleEliminationTournament()
         {
@@ -36,15 +36,27 @@ namespace TBG.Business
             {
                 Participants = tournament.Participants;
             }
+            else
+            {
+                Participants = new List<ITournamentEntry>();
+            }
 
             if (tournament.Prizes != null)
             {
                 Prizes = tournament.Prizes;
             }
+            else
+            {
+                Prizes = new List<IPrize>();
+            }
 
             if (tournament.Rounds != null)
             {
                 Rounds = tournament.Rounds;
+            }
+            else
+            {
+                Rounds = new List<IRound>();
             }
         }
 

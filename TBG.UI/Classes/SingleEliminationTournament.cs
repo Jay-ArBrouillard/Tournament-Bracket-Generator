@@ -12,7 +12,7 @@ namespace TBG.UI.Models
         public int TournamentId { get; set; }
         public int UserId { get; set; }
         public string TournamentName { get; set; }
-        public decimal EntryFee { get; set; }
+        public double EntryFee { get; set; }
         public double TotalPrizePool { get; set; }
         public int TournamentTypeId { get; set; }
         public List<ITournamentEntry> Participants { get; set; } = new List<ITournamentEntry>();

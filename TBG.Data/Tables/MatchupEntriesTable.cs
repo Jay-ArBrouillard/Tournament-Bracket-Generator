@@ -23,7 +23,7 @@ namespace TBG.Data.Tables
             var insertedId = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
             if (insertedId > 0)
             {
-                entity.MatchupId = insertedId;
+                entity.MatchupEntryId = insertedId;
                 return entity;
             }
             return null;
@@ -34,6 +34,48 @@ namespace TBG.Data.Tables
             string query = "SELECT * FROM MatchupEntries WHERE matchup_entry_id = @Id";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@Id", Id.ToString());
+
+            using (var reader = DatabaseHelper.GetReader(query, dbConn, param))
+            {
+                if (reader.HasRows)
+                {
+                    reader.Read();
+                    return ConvertReader(reader);
+                }
+            }
+            return null;
+        }
+
+        public static List<IMatchupEntry> GetByMatchupId(int matchupId, MySqlConnection dbConn)
+        {
+            List<IMatchupEntry> results = new List<IMatchupEntry>();
+
+            string query = "SELECT * FROM MatchupEntries WHERE matchup_id = @Id";
+            Dictionary<string, string> param = new Dictionary<string, string>();
+            param.Add("@Id", matchupId.ToString());
+
+            using (var reader = DatabaseHelper.GetReader(query, dbConn, param))
+            {
+                while (reader.Read())
+                {
+                    results.Add(ConvertReader(reader));
+                }
+            }
+            return results;
+        }
+
+        public static int GetByMatchupIdCount(int matchupId, MySqlConnection dbConn)
+        {
+            List<IMatchupEntry> results = GetByMatchupId(matchupId, dbConn);
+            return results.Count;
+        }
+
+        public static IMatchupEntry UpdateScore(int Id, int score, MySqlConnection dbConn)
+        {
+            string query = "UPDATE MatchupEntries SET score = @score WHERE matchup_entry_id = @id";
+            Dictionary<string, string> param = new Dictionary<string, string>();
+            param.Add("@Id", Id.ToString());
+            param.Add("@score", score.ToString());
 
             using (var reader = DatabaseHelper.GetReader(query, dbConn, param))
             {

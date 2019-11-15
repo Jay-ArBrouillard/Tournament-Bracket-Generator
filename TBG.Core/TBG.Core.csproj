@@ -51,6 +51,7 @@
     <Compile Include="Interfaces\IPrizeController.cs" />
     <Compile Include="Interfaces\IProvider.cs" />
     <Compile Include="Interfaces\IRound.cs" />
+    <Compile Include="Interfaces\IRoundMatchup.cs" />
     <Compile Include="Interfaces\ITeam.cs" />
     <Compile Include="Interfaces\ITeamController.cs" />
     <Compile Include="Interfaces\ITeamMember.cs" />

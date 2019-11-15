@@ -27,7 +27,7 @@ namespace TBG.Data.Tables
 
         public static IMatchup Get(int Id, MySqlConnection dbConn)
         {
-            string query = "SELECT * FROM Matchups WHERE matchup_ = @Id";
+            string query = "SELECT * FROM Matchups WHERE matchup_id = @Id";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@Id", Id.ToString());
 

@@ -114,7 +114,7 @@
                 <ToggleButton x:Name="SeedToggle" Content="Enable Seeding" Width="100" Margin="10,0,0,0" Checked="SeedToggle_Checked" Unchecked="SeedToggle_Unchecked"/>
             </StackPanel>
 
-            <TextBox x:Name="entryFeeTextBox" Text="" BorderThickness="2" Margin="0,5,0,0"/>
+            <TextBox x:Name="entryFeeTextBox" Text="0" BorderThickness="2" Margin="0,5,0,0"/>
         </StackPanel>
 
         <!-- Tournament Type -->

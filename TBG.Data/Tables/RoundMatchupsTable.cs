@@ -10,27 +10,27 @@ using TBG.Data.Entities;
 
 namespace TBG.Data.Tables
 {
-    public class RoundsTable
+    public class RoundMatchupsTable
     {
-        public static IRound Create(IRound entity, MySqlConnection dbConn)
+        public static IRoundMatchup Create(IRoundMatchup entity, MySqlConnection dbConn)
         {
-            string query = "INSERT INTO Rounds (tournament_id, round_num) VALUES (@id, @round)";
+            string query = "INSERT INTO RoundMatchups (round_id, matchup_id) VALUES (@round, @matchup)";
             Dictionary<string, string> param = new Dictionary<string, string>();
-            param.Add("@id", entity.TournamentId.ToString());
-            param.Add("@round", entity.RoundNum.ToString());
+            param.Add("@round", entity.RoundId.ToString());
+            param.Add("@matchup", entity.MatchupId.ToString());
 
             var insertedId = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
             if (insertedId > 0)
             {
-                entity.RoundId = insertedId;
+                entity.RoundMatchupId = insertedId;
                 return entity;
             }
             return null;
         }
 
-        public static IRound Get(int Id, MySqlConnection dbConn)
+        public static IRoundMatchup Get(int Id, MySqlConnection dbConn)
         {
-            string query = "SELECT * FROM Rounds WHERE round_id = @Id";
+            string query = "SELECT * FROM RoundMatchups WHERE round_matchup_id = @Id";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@Id", Id.ToString());
 
@@ -45,11 +45,11 @@ namespace TBG.Data.Tables
             return null;
         }
 
-        public static List<IRound> GetAll(MySqlConnection dbConn)
+        public static List<IRoundMatchup> GetAll(MySqlConnection dbConn)
         {
-            List<IRound> result = new List<IRound>();
+            List<IRoundMatchup> result = new List<IRoundMatchup>();
 
-            string query = "SELECT * FROM Rounds";
+            string query = "SELECT * FROM RoundMatchups";
             using (var reader = DatabaseHelper.GetReader(query, dbConn))
             {
                 while (reader.Read())
@@ -60,31 +60,30 @@ namespace TBG.Data.Tables
             return result;
         }
 
-        public static IRound GetByTournamentIdAndRoundNum(IRound entity, MySqlConnection dbConn)
+        public static List<IRoundMatchup> GetByRoundId(IRound entity, MySqlConnection dbConn)
         {
-            string query = "SELECT * FROM Rounds WHERE tournament_id = @tournamentId AND round_num = @roundNum";
+            List<IRoundMatchup> result = new List<IRoundMatchup>();
+            string query = "SELECT * FROM RoundMatchups WHERE round_id = @id";
             Dictionary<string, string> param = new Dictionary<string, string>();
-            param.Add("@tournamentId", entity.TournamentId.ToString());
-            param.Add("@roundNum", entity.RoundNum.ToString());
+            param.Add("@Id", entity.RoundId.ToString());
 
             using (var reader = DatabaseHelper.GetReader(query, dbConn, param))
             {
-                if (reader.HasRows)
+                while (reader.Read())
                 {
-                    reader.Read();
-                    return ConvertReader(reader);
+                    result.Add(ConvertReader(reader));
                 }
             }
-            return null;
+            return result;
         }
 
-        private static IRound ConvertReader(MySqlDataReader reader)
+        private static IRoundMatchup ConvertReader(MySqlDataReader reader)
         {
-            return new Round()
-            { 
+            return new RoundMatchup()
+            {
+                RoundMatchupId = int.Parse(reader["round_matchup_id"].ToString()),
                 RoundId = int.Parse(reader["round_id"].ToString()),
-                TournamentId = int.Parse(reader["tournament_id"].ToString()),
-                RoundNum = int.Parse(reader["round_num"].ToString()),
+                MatchupId = int.Parse(reader["matchup_id"].ToString()),
             };
         }
     }

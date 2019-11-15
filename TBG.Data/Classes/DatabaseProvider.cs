@@ -38,6 +38,14 @@ namespace TBG.Data.Classes
             return tournament;
         }
 
+        public ITournament deleteTournament (ITournament entry)
+        {
+            ITournament tournament = TournamentTable.Delete(entry, dbConn);
+            if (tournament == null) { return null; }
+
+            return tournament;
+        }
+
         public ITournament getTournamentByName(string entry)
         {
             //Create Tournament Record
@@ -75,6 +83,32 @@ namespace TBG.Data.Classes
             if (round == null) { return null; }
 
             return round;
+        }
+
+        public IRound getRoundByTournamentIdandRoundNum(IRound entry)
+        {
+            IRound round = RoundsTable.GetByTournamentIdAndRoundNum(entry, dbConn);
+            if (round == null) { return null; }
+
+            return round;
+        }
+        #endregion
+
+        #region ROUND MATCHUP METHODS
+        public IRoundMatchup createRoundMatchup(IRoundMatchup entry)
+        {
+            IRoundMatchup roundMatchup = RoundMatchupsTable.Create(entry, dbConn);
+            if (roundMatchup == null) { return null; }
+
+            return roundMatchup;
+        }
+
+        public List<IRoundMatchup> getRoundMatchupsByRoundId(IRound entry)
+        {
+            List<IRoundMatchup> roundMatchups = RoundMatchupsTable.GetByRoundId(entry, dbConn);
+            if (roundMatchups == null) { return null; }
+
+            return roundMatchups;
         }
         #endregion
 
@@ -208,6 +242,13 @@ namespace TBG.Data.Classes
         #endregion
 
         #region MATCHUP METHODS
+        public IMatchup getMatchup(int matchupId)
+        {
+            IMatchup matchup = MatchupsTable.Get(matchupId, dbConn);
+            if (matchup == null) { return null; }
+
+            return matchup;
+        }
         public IMatchup createMatchup(IMatchup entry)
         {
             IMatchup matchup = MatchupsTable.Create(entry, dbConn);
@@ -224,6 +265,27 @@ namespace TBG.Data.Classes
             if (matchupEntry == null) return null;
 
             return matchupEntry;
+        }
+
+        public List<IMatchupEntry> getMatchupEntriesByMatchupId(int matchupId)
+        {
+            List<IMatchupEntry> matchupEntries = MatchupEntriesTable.GetByMatchupId(matchupId, dbConn);
+            if (matchupEntries == null) return null;
+
+            return matchupEntries;
+        }
+
+        public IMatchupEntry updateMatchupEntryScore(int matchupEntryId, int score)
+        {
+            IMatchupEntry matchupEntry = MatchupEntriesTable.UpdateScore(matchupEntryId, score, dbConn);
+            if (matchupEntry == null) return null;
+
+            return matchupEntry;
+        }
+
+        public int getMatchupEntryCount(int matchupId)
+        {
+            return MatchupEntriesTable.GetByMatchupIdCount(matchupId, dbConn);
         }
         #endregion
     }

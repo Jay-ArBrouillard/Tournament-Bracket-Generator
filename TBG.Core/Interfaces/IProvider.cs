@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace TBG.Core.Interfaces
 {
     public interface IProvider
     {
         ITournament createTournament(ITournament entry);
+        ITournament deleteTournament(ITournament entry);
         ITournament getTournamentByName(string entry);
         ITournamentEntry createTournamentEntry(ITournamentEntry entry);
         IRound createRound(IRound entry);
@@ -31,5 +28,12 @@ namespace TBG.Core.Interfaces
         List<ITournamentEntry> getTournamentEntriesByTournamentId(int tournamentId);
         IMatchup createMatchup(IMatchup entry);
         IMatchupEntry createMatchupEntry(IMatchupEntry matchupEntry);
+        IRoundMatchup createRoundMatchup(IRoundMatchup roundMatchup);
+        IMatchup getMatchup(int matchupId);
+        IRound getRoundByTournamentIdandRoundNum(IRound round);
+        List<IRoundMatchup> getRoundMatchupsByRoundId(IRound currRound);
+        List<IMatchupEntry> getMatchupEntriesByMatchupId(int matchupId);
+        IMatchupEntry updateMatchupEntryScore(int matchupEntryId, int score);
+        int getMatchupEntryCount(int matchupId);
     }
 }

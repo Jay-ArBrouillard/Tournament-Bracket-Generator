@@ -120,7 +120,7 @@ namespace TBG.Data.Tables
                 TournamentId = Int32.Parse(reader["tournament_id"].ToString()),
                 UserId = Int32.Parse(reader["user_id"].ToString()),
                 TournamentName = reader["tournament_name"].ToString(),
-                EntryFee = Decimal.Parse(reader["entry_fee"].ToString()),
+                EntryFee = Double.Parse(reader["entry_fee"].ToString()),
                 TotalPrizePool = Double.Parse(reader["total_prize_pool"].ToString()),
                 TournamentTypeId = Int32.Parse(reader["tournament_type_id"].ToString())
             };

@@ -17,38 +17,54 @@ namespace TBG.Business
 
             if (valid)
             {
-                return tournament;
+                return thisTournament;
             }
 
             return null;
         }
 
-        public bool validateEntryFee(string entryFee)
+        public bool validateEntryFee(string number)
         {
-            if (string.IsNullOrEmpty(entryFee)) { return true; }
+            if (string.IsNullOrEmpty(number)) { return false; }
 
-            if (!int.TryParse(entryFee, out _)) { return false; }
+            if (!int.TryParse(number, out _) && !double.TryParse(number, out _) && !decimal.TryParse(number, out _)) { return false; }
             return true;
         }
 
-
-        public bool validateTotalPrizePool(string prizePool)
+        public bool validateTournamentType(ITournamentType type)
         {
-            if (!int.TryParse(prizePool, out _)) { return false; }
-            return true;
-        }
+            if (type == null) { return false; }
 
-        public bool validateTournamentType(string type)
-        {
-            if (string.IsNullOrEmpty(type)) { return false; }
+            String tournamentName = type.TournamentTypeName;
 
-            if (!type.Equals("Single Elimination")) { return false; }
+            if (string.IsNullOrEmpty(tournamentName)) { return false; }
+
+            if (!tournamentName.Equals("Single Elimination")) { return false; }
             return true;
         }
 
         public bool validateSingleEliminationTournament(ITournament tournament)
         {
-            return false;
+            string tournamentName = tournament.TournamentName;
+            if (string.IsNullOrEmpty(tournamentName)) { return false; }
+
+            int numParticipants = tournament.Participants.Count;
+            if (numParticipants == 0)
+            {
+                return false;
+            }
+            else
+            {
+                //Validate totalPrizePool calculated correctly
+                double entryFee = tournament.EntryFee;
+                double totalPrizePool = tournament.TotalPrizePool;
+                if (Math.Abs(totalPrizePool - (numParticipants * entryFee)) > 0.01)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
     }
