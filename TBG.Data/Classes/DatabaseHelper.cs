@@ -45,12 +45,10 @@ namespace TBG.Data.Classes
                 // If has last inserted id, add a parameter to hold it.
                 if (cmd.LastInsertedId > 0)
                 {
-                    cmd.Parameters.Add(new MySqlParameter("newId", cmd.LastInsertedId));
-                    // Return the id of the new record. Convert from Int64 to Int32 (int).
-                    return Convert.ToInt32(cmd.Parameters["@newId"].Value);
+                    return Convert.ToInt32(cmd.LastInsertedId);
                 }
 
-                return results;
+                return -1;
             }
         }
 

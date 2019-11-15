@@ -63,7 +63,7 @@ namespace TBG.UI
             List<ITournamentEntry> entries = source.getTournamentEntriesByTournamentId(tournamentId);
             selectedTournament.Participants = entries;
 
-            selectedTournament = business.createSingleEliminationTournament(selectedTournament);
+            selectedTournament = business.createTournament(selectedTournament);
             for (int i = 0; i < selectedTournament.Rounds.Count; i++) 
             {
                 //Get the RoundId for the current round
@@ -84,10 +84,14 @@ namespace TBG.UI
                             selectedTournament.Rounds[i].Pairings[j].Teams[k % 2].MatchupEntryId = matchupEntries[k].MatchupEntryId;
                             selectedTournament.Rounds[i].Pairings[j].Teams[k % 2].MatchupId = matchupEntries[k].MatchupId;
                             selectedTournament.Rounds[i].Pairings[j].Teams[k % 2].TournamentEntryId = matchupEntries[k].TournamentEntryId;
-                            selectedTournament.Rounds[i].Pairings[j].Teams[(k + 1) % 2].Score = matchupEntries[(k + 1) % 2].Score;
-                            selectedTournament.Rounds[i].Pairings[j].Teams[(k + 1) % 2].MatchupEntryId = matchupEntries[(k + 1) % 2].MatchupEntryId;
-                            selectedTournament.Rounds[i].Pairings[j].Teams[(k + 1) % 2].MatchupId = matchupEntries[(k + 1) % 2].MatchupId;
-                            selectedTournament.Rounds[i].Pairings[j].Teams[(k + 1) % 2].TournamentEntryId = matchupEntries[(k + 1) % 2].TournamentEntryId;
+
+                            if ((k + 1) % 2 < matchupEntries.Count)
+                            {
+                                selectedTournament.Rounds[i].Pairings[j].Teams[(k + 1) % 2].Score = matchupEntries[(k + 1) % 2].Score;
+                                selectedTournament.Rounds[i].Pairings[j].Teams[(k + 1) % 2].MatchupEntryId = matchupEntries[(k + 1) % 2].MatchupEntryId;
+                                selectedTournament.Rounds[i].Pairings[j].Teams[(k + 1) % 2].MatchupId = matchupEntries[(k + 1) % 2].MatchupId;
+                                selectedTournament.Rounds[i].Pairings[j].Teams[(k + 1) % 2].TournamentEntryId = matchupEntries[(k + 1) % 2].TournamentEntryId;
+                            }
                         }
                     }
                 }

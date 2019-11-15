@@ -58,6 +58,7 @@
     <Compile Include="TeamController.cs" />
     <Compile Include="TournamentController.cs" />
     <Compile Include="TournamentEntry.cs" />
+    <Compile Include="TournamentTypeHelper.cs" />
     <Compile Include="TournamentViewController.cs" />
   </ItemGroup>
   <ItemGroup>

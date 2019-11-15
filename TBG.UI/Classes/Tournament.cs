@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using TBG.Core.Interfaces;
 
-namespace TBG.UI.Models
+namespace TBG.UI.Classes
 {
-    public class SingleEliminationTournament : ITournament
+    public class Tournament : ITournament
     {
         public int TournamentId { get; set; }
         public int UserId { get; set; }
@@ -15,9 +15,21 @@ namespace TBG.UI.Models
         public double EntryFee { get; set; }
         public double TotalPrizePool { get; set; }
         public int TournamentTypeId { get; set; }
-        public List<ITournamentEntry> Participants { get; set; } = new List<ITournamentEntry>();
-        public List<IPrize> Prizes { get; set; } = new List<IPrize>();
-        public List<IRound> Rounds { get; set; } = new List<IRound>();
+        public List<ITournamentEntry> Participants { get; set; }
+        public List<IPrize> Prizes { get; set; }
+        public List<IRound> Rounds { get; set; }
+
+        public Tournament()
+        {
+            Participants = new List<ITournamentEntry>();
+            Prizes = new List<IPrize>();
+            Rounds = new List<IRound>();
+        }
+
+        public ITournament BuildTournament()
+        {
+            throw new NotImplementedException();
+        }
 
         public bool RecordResult(IMatchup matchup)
         {

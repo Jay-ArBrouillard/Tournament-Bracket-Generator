@@ -73,7 +73,6 @@ namespace TBG.Data.Classes
 
             return tournamentEntries;
         }
-
         #endregion
 
         #region ROUND METHODS
@@ -286,6 +285,14 @@ namespace TBG.Data.Classes
         public int getMatchupEntryCount(int matchupId)
         {
             return MatchupEntriesTable.GetByMatchupIdCount(matchupId, dbConn);
+        }
+
+        public List<IMatchupEntry> getTournamentEntryIdFromPreviousMatchup(IMatchupEntry matchupEntry)
+        {
+            List<IMatchupEntry> matchupEntries = MatchupEntriesTable.GetByMatchupId(matchupEntry.MatchupId, dbConn);
+            if (matchupEntries == null) { return null; }
+
+            return matchupEntries;
         }
         #endregion
     }

@@ -16,10 +16,10 @@ namespace TBG.UI.Models
         public int Seed { get; set; }
         public int TeamId { get; set; }
         public string TeamName { get; set; }
-        public ObservableCollection<TeamMember> Members { get; set; }
+        public ObservableCollection<IPerson> Members { get; set; }
         public TournamentEntryView()
         {
-            this.Members = new ObservableCollection<TeamMember>();
+            this.Members = new ObservableCollection<IPerson>();
         }
 
     }

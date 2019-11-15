@@ -200,12 +200,29 @@ namespace TBG.UI
 
                 //Create a Matchup and a single MatchupEntry if a it doesn't already exist
                 //IDEA=> get the matchup id from RoundMatchups then check if MatchupEntries has 0 or 1 rows matching that matchupId
-                int matchupId = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[0].MatchupId;
-                List<IMatchupEntry> entries = source.getMatchupEntriesByMatchupId(matchupId);
+                int tournamentId = tournament.TournamentId;
+                IRound currRound = source.getRoundByTournamentIdandRoundNum(new Round()
+                {
+                    TournamentId = tournamentId,
+                    RoundNum = selectedRound+1,
+                });
+
+                List<IRoundMatchup> roundMatchups = source.getRoundMatchupsByRoundId(new Round()
+                {
+                    RoundId = currRound.RoundId,
+                });
+                //tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[0].MatchupId;
+                List<IMatchupEntry> entries = source.getMatchupEntriesByMatchupId(roundMatchups[roundMatchups.Count-1].MatchupId);
 
                 if (entries.Count == 2)
                 {
                     IMatchup matchup = source.createMatchup(new Matchup());
+
+                    source.createRoundMatchup(new RoundMatchup()
+                    {
+                        MatchupId = matchup.MatchupId,
+                        RoundId = currRound.RoundId,
+                    });
 
                     if (score1 > score2)
                     {
@@ -230,19 +247,31 @@ namespace TBG.UI
                 {
                     if (score1 > score2)
                     {
+                        List<IMatchupEntry> matchupEntries = source.getTournamentEntryIdFromPreviousMatchup(new MatchupEntry()
+                        {
+                            MatchupId = entries[0].MatchupId,
+                        });
+
                         IMatchupEntry newMatchupEntry = source.createMatchupEntry(new MatchupEntry()
                         {
                             MatchupId = entries[0].MatchupId,
-                            TournamentEntryId = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[0].TournamentEntryId,
+                            //TournamentEntryId = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[0].TournamentEntryId,
+                            TournamentEntryId = matchupEntries[0].TournamentEntryId,
                             Score = 0
                         });
                     }
                     else
                     {
+                        List<IMatchupEntry> matchupEntries = source.getTournamentEntryIdFromPreviousMatchup(new MatchupEntry()
+                        {
+                            MatchupId = entries[0].MatchupId,
+                        });
+
                         IMatchupEntry newMatchupEntry = source.createMatchupEntry(new MatchupEntry()
                         {
                             MatchupId = entries[0].MatchupId,
-                            TournamentEntryId = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[1].TournamentEntryId,
+                            //TournamentEntryId = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[1].TournamentEntryId,
+                            TournamentEntryId = matchupEntries[matchupEntries.Count - 1].TournamentEntryId,
                             Score = 0
                         });
                     }

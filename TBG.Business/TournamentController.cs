@@ -9,18 +9,10 @@ namespace TBG.Business
 {
     public class TournamentController : ITournamentController
     {
-        public ITournament createSingleEliminationTournament(ITournament tournament)
+        public ITournament createTournament(ITournament tournament)
         {
-            SingleEliminationTournament thisTournament = new SingleEliminationTournament(tournament);
-
-            bool valid = thisTournament.BuildTournament();
-
-            if (valid)
-            {
-                return thisTournament;
-            }
-
-            return null;
+            var convertedTournament = TournamentTypeHelper.ConvertTournamentType(tournament);
+            return convertedTournament.BuildTournament();
         }
 
         public bool validateEntryFee(string number)
@@ -67,5 +59,22 @@ namespace TBG.Business
             return true;
         }
 
+        public List<ITournamentEntry> ConvertITournmentEntries(List<ITournamentEntry> tournmentEntries, ITournament tournament)
+        {
+            List<ITournamentEntry> results = new List<ITournamentEntry>();
+            foreach (ITournamentEntry entry in tournmentEntries)
+            {
+                ITournamentEntry tournamentEntry = new TournamentEntry()
+                {
+                    TournamentId = tournament.TournamentId,
+                    TeamId = entry.TeamId,
+                    Seed = 0    //CHANGE later when seeding is implemented
+                };
+                results.Add(tournamentEntry);
+            }
+
+            return results;
+        }
+    
     }
 }

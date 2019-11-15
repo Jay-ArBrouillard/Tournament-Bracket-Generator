@@ -73,7 +73,7 @@
     <Compile Include="Classes\RoundMatchup.cs" />
     <Compile Include="Classes\Team.cs" />
     <Compile Include="Classes\TeamMember.cs" />
-    <Compile Include="Classes\SingleEliminationTournament.cs" />
+    <Compile Include="Classes\Tournament.cs" />
     <Compile Include="Classes\TournamentEntry.cs" />
     <Compile Include="Models\TournamentEntryView.cs" />
     <Compile Include="Models\TournamentViewDataGridItem.cs" />

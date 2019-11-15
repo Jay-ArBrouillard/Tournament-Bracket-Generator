@@ -79,7 +79,6 @@ namespace TBG.Data.Tables
             return result;
         }
 
-
         public static ITournamentEntry ConvertReader(MySqlDataReader reader)
         {
             return new TournamentEntry()

@@ -18,6 +18,11 @@ namespace TBG.UI.Classes
         public int Losses { get; set; }
         public string Ratio { get; set; }
 
+        public Person()
+        {
+
+        }
+
         public Person(int PersonId, string FirstName, string LastName, string Email, string Phone, int Wins = 0, int Losses = 0)
         {
             this.PersonId = PersonId;

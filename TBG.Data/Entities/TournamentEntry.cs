@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,5 +14,6 @@ namespace TBG.Data.Entities
         public int TournamentId { get; set; }
         public int TeamId { get; set; }
         public int Seed { get; set; }
+        public ObservableCollection<IPerson> Members { get; set; }
     }
 }

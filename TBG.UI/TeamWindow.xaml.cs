@@ -179,16 +179,15 @@ namespace TBG.UI
                 ITeam createdTeam = source.createTeam(newTeam);
 
                 //Update Teams/Players on tournament Screen
-                List<TournamentEntryView> teams = tournament.teamsInTournament;
-                TournamentEntryView convertedTeam = tournament.convertToTeam(new List<ITeam>() { createdTeam })[0];
-                ObservableCollection<TeamMember> teamMembers = new ObservableCollection<TeamMember>();
-                foreach (ITeamMember teamMember in source.getTeamMembersByTeamId(createdTeam.TeamId))
+                List<ITournamentEntry> teams = tournament.teamsInTournament;
+                ITournamentEntry convertedTeam = convertToTeam(new List<ITeam>() { createdTeam })[0];
+                ObservableCollection<IPerson> teamMembers = new ObservableCollection<IPerson>();
+                foreach (IPerson teamMember in source.getTeamMembersByTeamId(createdTeam.TeamId))
                 {
                     IPerson person = source.getPerson(teamMember.PersonId);
-                    teamMembers.Add(new TeamMember()
+                    teamMembers.Add(new Person()
                     {
                         PersonId = person.PersonId,
-                        TeamName = newTeam.TeamName,
                         FirstName = person.FirstName,
                         LastName = person.LastName
                     });
@@ -207,6 +206,35 @@ namespace TBG.UI
                 tournament.selectionListBox.Items.Refresh();
             }
 
+        }
+
+        public List<ITournamentEntry> convertToTeam(List<ITeam> list)
+        {
+            List<ITournamentEntry> result = new List<ITournamentEntry>();
+
+            foreach (ITeam team in list)
+            {
+                ObservableCollection<IPerson> teamMembers = new ObservableCollection<IPerson>();
+                int teamId = team.TeamId;
+                foreach (IPerson teamMember in source.getTeamMembersByTeamId(teamId))
+                {
+                    IPerson person = source.getPerson(teamMember.PersonId);
+                    teamMembers.Add(new Person()
+                    {
+                        PersonId = person.PersonId,
+                        FirstName = person.FirstName,
+                        LastName = person.LastName
+                    });
+                }
+
+                result.Add(new TournamentEntry()
+                {
+                    TeamId = teamId,
+                    Members = teamMembers
+                });
+            }
+
+            return result;
         }
 
 

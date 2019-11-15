@@ -23,44 +23,8 @@ namespace TBG.Business
         {
 
         }
-        public SingleEliminationTournament(ITournament tournament)
-        {
-            TournamentId = tournament.TournamentId;
-            UserId = tournament.UserId;
-            TournamentName = tournament.TournamentName;
-            EntryFee = tournament.EntryFee;
-            TotalPrizePool = tournament.TotalPrizePool;
-            TournamentTypeId = tournament.TournamentTypeId;
 
-            if (tournament.Participants != null)
-            {
-                Participants = tournament.Participants;
-            }
-            else
-            {
-                Participants = new List<ITournamentEntry>();
-            }
-
-            if (tournament.Prizes != null)
-            {
-                Prizes = tournament.Prizes;
-            }
-            else
-            {
-                Prizes = new List<IPrize>();
-            }
-
-            if (tournament.Rounds != null)
-            {
-                Rounds = tournament.Rounds;
-            }
-            else
-            {
-                Rounds = new List<IRound>();
-            }
-        }
-
-        public bool BuildTournament()
+        public ITournament BuildTournament()
         {
             Queue<ITournamentEntry> teamQueue = new Queue<ITournamentEntry>();
             foreach (var team in Participants)
@@ -125,7 +89,8 @@ namespace TBG.Business
                     }
                 }
             }
-            return true;
+
+            return this;
         }
 
         public bool RecordResult(IMatchup matchup)
@@ -160,5 +125,6 @@ namespace TBG.Business
         {
             return value % 2 != 0;
         }
+
     }
 }

@@ -21,7 +21,7 @@ namespace TBG.Data.Entities
         List<ITournamentEntry> ITournament.Participants { get; set; }
         List<IPrize> ITournament.Prizes { get; set; }
 
-        public bool BuildTournament()
+        public ITournament BuildTournament()
         {
             throw new NotImplementedException();
         }

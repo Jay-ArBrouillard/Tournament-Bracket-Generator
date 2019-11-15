@@ -41,7 +41,6 @@ namespace TBG.Business
             matchup.Teams.Find(x => x.TheTeam.TeamId == 4).Score = 11;
             tournament.RecordResult(matchup);
 
-            var stop = "Stop";
         }
 
         public ITournament AnotherTestTournament()
