@@ -16,13 +16,9 @@ namespace TBG.Data.Tables
         {
             string query = "INSERT INTO Matchups (matchup_id, winner_id, loser_id) VALUES (NULL, NULL, NULL)";
 
-            var insertedId = DatabaseHelper.GetNonQueryCount(query, dbConn);
-            if (insertedId > 0)
-            {
-                entity.MatchupId = insertedId;
-                return entity;
-            }
-            return null;
+            var resultsPK = DatabaseHelper.GetNonQueryCount(query, dbConn);
+            entity.MatchupId = resultsPK;
+            return entity;
         }
 
         public static IMatchup Get(int Id, MySqlConnection dbConn)

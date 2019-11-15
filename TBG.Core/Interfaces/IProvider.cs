@@ -7,7 +7,7 @@ namespace TBG.Core.Interfaces
         ITournament createTournament(ITournament entry);
         ITournament deleteTournament(ITournament entry);
         ITournament getTournamentByName(string entry);
-        ITournamentEntry createTournamentEntry(ITournamentEntry entry);
+        List<ITournamentEntry> createTournamentEntries(List<ITournamentEntry> entry);
         IRound createRound(IRound entry);
         ITeam createTeam(ITeam entry);
         ITeam getTeam(string teamName);

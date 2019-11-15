@@ -21,10 +21,9 @@ namespace TBG.Data.Tables
             param.Add("@amount", entity.PrizeAmount.ToString());
             param.Add("@percent", entity.PrizePercent.ToString());
 
-            var results = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
-
-            if (results > 0) { return entity; }
-            return null;
+            var resultsPK = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
+            entity.PrizeId = resultsPK;
+            return entity;
         }
 
         public static IPrize Get(int Id, MySqlConnection dbConn)

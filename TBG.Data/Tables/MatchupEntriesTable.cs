@@ -20,13 +20,9 @@ namespace TBG.Data.Tables
             param.Add("@entryId", entity.TournamentEntryId.ToString());
             param.Add("@score", entity.Score.ToString());
 
-            var insertedId = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
-            if (insertedId > 0)
-            {
-                entity.MatchupEntryId = insertedId;
-                return entity;
-            }
-            return null;
+            var resultsPK = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
+            entity.MatchupEntryId = resultsPK;
+            return entity;
         }
 
         public static IMatchupEntry Get(int Id, MySqlConnection dbConn)

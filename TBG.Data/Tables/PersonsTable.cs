@@ -23,9 +23,9 @@ namespace TBG.Data.Tables
             param.Add("@wins", entity.Wins.ToString());
             param.Add("@losses", entity.Losses.ToString());
 
-            var results = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
-            if (results > 0) { return entity; }
-            return null;
+            var resultsPK = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
+            entity.PersonId = resultsPK;
+            return entity;
         }
 
         public static IPerson Get(int Id, MySqlConnection dbConn)

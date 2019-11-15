@@ -19,13 +19,9 @@ namespace TBG.Data.Tables
             param.Add("@id", entity.TournamentId.ToString());
             param.Add("@round", entity.RoundNum.ToString());
 
-            var insertedId = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
-            if (insertedId > 0)
-            {
-                entity.RoundId = insertedId;
-                return entity;
-            }
-            return null;
+            var resultsPK = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
+            entity.RoundId = resultsPK;
+            return entity;
         }
 
         public static IRound Get(int Id, MySqlConnection dbConn)

@@ -20,13 +20,9 @@ namespace TBG.Data.Tables
             param.Add("@type", entity.TournamentTypeId.ToString());
 
 
-            var insertedId = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
-            if (insertedId > 0)
-            {
-                entity.TournamentId = insertedId;
-                return entity;
-            }
-            return null;
+            var resultsPK = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
+            entity.TournamentId = resultsPK;
+            return entity;
         }
 
         public static ITournament Get(int Id, MySqlConnection dbConn)

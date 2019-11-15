@@ -22,9 +22,9 @@ namespace TBG.Data.Tables
             param.Add("@admin", DatabaseHelper.BoolToString(entity.Admin));
             param.Add("@lastLogin", DatabaseHelper.DateToString(entity.LastLogin));
 
-            var results = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
-            if (results > 0) { return entity; }
-            return null;
+            var resultsPK = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
+            entity.UserId = resultsPK;
+            return entity;
         }
 
         public static IUser Get(int Id, MySqlConnection dbConn)

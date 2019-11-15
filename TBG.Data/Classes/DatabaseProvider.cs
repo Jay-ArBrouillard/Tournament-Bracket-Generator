@@ -58,12 +58,16 @@ namespace TBG.Data.Classes
         #endregion
 
         #region TOURNAMENT ENTRY METHODS
-        public ITournamentEntry createTournamentEntry(ITournamentEntry entry)
+        public List<ITournamentEntry> createTournamentEntries(List<ITournamentEntry> entries)
         {
-            ITournamentEntry tournament = TournamentEntryTable.Create(entry, dbConn);
-            if (tournament == null) { return null; }
+            List<ITournamentEntry> results = new List<ITournamentEntry>();
+            foreach (ITournamentEntry tournamentEntry in entries)
+            {
+                ITournamentEntry tournament = TournamentEntryTable.Create(tournamentEntry, dbConn);
+                results.Add(tournament);
+            }
 
-            return tournament;
+            return results;
         }
 
         public List<ITournamentEntry> getTournamentEntriesByTournamentId (int id)

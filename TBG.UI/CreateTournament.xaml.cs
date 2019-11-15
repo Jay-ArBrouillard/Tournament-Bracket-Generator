@@ -231,31 +231,21 @@ namespace TBG.UI
             //Convert TournamentEntryView objects to ITournmentEntries
             tournament.Participants = business.ConvertITournmentEntries(teamsInTournament, tournament); //Convert to useable object
 
-            bool validate = business.validateSingleEliminationTournament(tournament);
-            if (validate)
+            //Create Backend Logic
+            ITournament newTournament = business.createTournament((ITournament)tournament); //Combine with validate. remove if(validate)
+
+            if (newTournament != null)
             {
-                //TODO: ONE DATABASE METHOD THAT CREATES A TOURNAMENT AND CREATES TOURNAMENT ENTRIES BASED ON THAT TOURNAMENT
-                //Give the source the entire list
-                tournament.Participants.ForEach(entry => source.createTournamentEntry(entry));    
-
-                //Create Backend Logic
-                ITournament newTournament = business.createTournament((ITournament)tournament); //Combine with validate. remove if(validate)
-
-                if (newTournament != null)
-                {
-                    //Add the Starting Matchups and MatchupEntries to DB
-                    initializeMatchups(newTournament);
-
-                    TournamentViewUI viewUI = new TournamentViewUI(newTournament);
-                    viewUI.Show();
-                }
+                source.createTournamentEntries(newTournament.Participants);
+                initializeMatchups(newTournament);
+                TournamentViewUI viewUI = new TournamentViewUI(newTournament);
+                viewUI.Show();
             }
             else //error
             {
                 errorMessages.Text = "Must define tournament name and teams in order to continue";
                 source.deleteTournament(tournament);
             }
-            
         }
 
         private void initializeMatchups(ITournament newTournament)

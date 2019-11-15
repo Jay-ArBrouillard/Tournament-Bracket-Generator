@@ -19,13 +19,9 @@ namespace TBG.Data.Tables
             param.Add("@round", entity.RoundId.ToString());
             param.Add("@matchup", entity.MatchupId.ToString());
 
-            var insertedId = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
-            if (insertedId > 0)
-            {
-                entity.RoundMatchupId = insertedId;
-                return entity;
-            }
-            return null;
+            var resultsPK = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
+            entity.RoundId = resultsPK;
+            return entity;
         }
 
         public static IRoundMatchup Get(int Id, MySqlConnection dbConn)

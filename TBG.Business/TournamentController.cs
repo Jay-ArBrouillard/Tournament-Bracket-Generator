@@ -11,6 +11,25 @@ namespace TBG.Business
     {
         public ITournament createTournament(ITournament tournament)
         {
+            string tournamentName = tournament.TournamentName;
+            if (string.IsNullOrEmpty(tournamentName)) { return null; }
+
+            int numParticipants = tournament.Participants.Count;
+            if (numParticipants == 0)
+            {
+                return null;
+            }
+            else
+            {
+                //Validate totalPrizePool calculated correctly
+                double entryFee = tournament.EntryFee;
+                double totalPrizePool = tournament.TotalPrizePool;
+                if (Math.Abs(totalPrizePool - (numParticipants * entryFee)) > 0.01)
+                {
+                    return null;
+                }
+            }
+
             var convertedTournament = TournamentTypeHelper.ConvertTournamentType(tournament);
             return convertedTournament.BuildTournament();
         }
@@ -32,30 +51,6 @@ namespace TBG.Business
             if (string.IsNullOrEmpty(tournamentName)) { return false; }
 
             if (!tournamentName.Equals("Single Elimination")) { return false; }
-            return true;
-        }
-
-        public bool validateSingleEliminationTournament(ITournament tournament)
-        {
-            string tournamentName = tournament.TournamentName;
-            if (string.IsNullOrEmpty(tournamentName)) { return false; }
-
-            int numParticipants = tournament.Participants.Count;
-            if (numParticipants == 0)
-            {
-                return false;
-            }
-            else
-            {
-                //Validate totalPrizePool calculated correctly
-                double entryFee = tournament.EntryFee;
-                double totalPrizePool = tournament.TotalPrizePool;
-                if (Math.Abs(totalPrizePool - (numParticipants * entryFee)) > 0.01)
-                {
-                    return false;
-                }
-            }
-
             return true;
         }
 
