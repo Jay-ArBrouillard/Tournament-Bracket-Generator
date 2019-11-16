@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using TBG.Core.Interfaces;
 using TBG.Driver;
+using TBG.UI.Classes;
 using TBG.UI.Models;
 
 namespace TBG.UI
@@ -13,7 +14,7 @@ namespace TBG.UI
     public partial class Dashboard : Window
     {
         private IProvider source;
-        private ITournamentController business;
+        private ITournamentController tournamentControl;
         private IUser user;
 
         public Dashboard(User user)
@@ -21,7 +22,7 @@ namespace TBG.UI
             InitializeComponent();
             this.user = user;
             this.source = ApplicationController.getProvider();
-            business = ApplicationController.getTournamentController();
+            tournamentControl = ApplicationController.getTournamentController();
 
             var tournaments = source.getAllTournaments();
             var tournamentTypes = source.getTournamentTypes();
@@ -57,48 +58,44 @@ namespace TBG.UI
 
             //Look at selected item in tournamentList, pass that id to Tournament
             List<ITournament> tournaments = source.getAllTournaments();
-            int selectedTourney = tournamentList.SelectedIndex;
-            ITournament selectedTournament = source.getTournamentByName(tournaments[selectedTourney].TournamentName);
-            int tournamentId = tournaments[selectedTourney].TournamentId;
-            List<ITournamentEntry> entries = source.getTournamentEntriesByTournamentId(tournamentId);
-            selectedTournament.Participants = entries;
+            ITournament selectedTournament = source.getTournamentByName(tournaments[tournamentList.SelectedIndex].TournamentName);
 
-            selectedTournament = business.createTournament(selectedTournament);
-            for (int i = 0; i < selectedTournament.Rounds.Count; i++) 
+            ITournament newTournament = new Tournament()
             {
-                //Get the RoundId for the current round
-                IRound currRound = source.getRoundByTournamentIdandRoundNum(selectedTournament.Rounds[i]);
-                selectedTournament.Rounds[i].RoundId = currRound.RoundId;
+                TournamentId = selectedTournament.TournamentId,
+                UserId = selectedTournament.UserId,
+                TournamentName = selectedTournament.TournamentName,
+                EntryFee = selectedTournament.EntryFee,
+                TotalPrizePool = selectedTournament.TotalPrizePool,
+                TournamentTypeId = selectedTournament.TournamentTypeId
+            };
+            newTournament.Participants = source.getTournamentEntriesByTournamentId(selectedTournament.TournamentId);
+            newTournament = tournamentControl.createTournament(newTournament);
+            for (int i = 0; i < newTournament.Rounds.Count; i++)
+            {
+                IRound currRound = source.getRoundByTournamentIdandRoundNum(new Round(newTournament.TournamentId, i+1));
 
-                //Get every RoundMatchup for each round
-                List <IRoundMatchup> roundMatchups = source.getRoundMatchupsByRoundId(currRound);
-                for (int j = 0; j < roundMatchups.Count; j++)
+                List<IRoundMatchup> roundMatchups = source.getRoundMatchupsByRoundId(new RoundMatchup(currRound.RoundId));
+                if (roundMatchups.Count > 0)
                 {
-                    //Look up Score in MatchupEntries by MatchupId
-                    List<IMatchupEntry> matchupEntries = source.getMatchupEntriesByMatchupId(roundMatchups[j].MatchupId);
-                    for (int k = 0; k < matchupEntries.Count; k++)
+                    for (int j = 0; j < roundMatchups.Count; j++)
                     {
-                        if (selectedTournament.Rounds[i].Pairings[j].Teams.Count > 0)
-                        {
-                            selectedTournament.Rounds[i].Pairings[j].Teams[k % 2].Score = matchupEntries[k].Score;
-                            selectedTournament.Rounds[i].Pairings[j].Teams[k % 2].MatchupEntryId = matchupEntries[k].MatchupEntryId;
-                            selectedTournament.Rounds[i].Pairings[j].Teams[k % 2].MatchupId = matchupEntries[k].MatchupId;
-                            selectedTournament.Rounds[i].Pairings[j].Teams[k % 2].TournamentEntryId = matchupEntries[k].TournamentEntryId;
+                        List<IMatchupEntry> matchupEntries = source.getMatchupEntriesByMatchupId(roundMatchups[j].MatchupId);
 
-                            if ((k + 1) % 2 < matchupEntries.Count)
-                            {
-                                selectedTournament.Rounds[i].Pairings[j].Teams[(k + 1) % 2].Score = matchupEntries[(k + 1) % 2].Score;
-                                selectedTournament.Rounds[i].Pairings[j].Teams[(k + 1) % 2].MatchupEntryId = matchupEntries[(k + 1) % 2].MatchupEntryId;
-                                selectedTournament.Rounds[i].Pairings[j].Teams[(k + 1) % 2].MatchupId = matchupEntries[(k + 1) % 2].MatchupId;
-                                selectedTournament.Rounds[i].Pairings[j].Teams[(k + 1) % 2].TournamentEntryId = matchupEntries[(k + 1) % 2].TournamentEntryId;
-                            }
+                        if (matchupEntries.Count == 1)
+                        {
+                            newTournament.Rounds[i].Pairings[j].Teams[0].Score = matchupEntries[0].Score;
+                        }
+                        else if (matchupEntries.Count == 2)
+                        {
+                            newTournament.Rounds[i].Pairings[j].Teams[0].Score = matchupEntries[0].Score;
+                            newTournament.Rounds[i].Pairings[j].Teams[1].Score = matchupEntries[1].Score;
                         }
                     }
                 }
             }
 
-            
-            TournamentViewUI viewUI = new TournamentViewUI(selectedTournament);
+            TournamentViewUI viewUI = new TournamentViewUI(newTournament);
             viewUI.Show();
         }
 

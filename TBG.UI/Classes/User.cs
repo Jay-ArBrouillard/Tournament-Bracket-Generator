@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TBG.Core.Interfaces;
 
-namespace TBG.UI.Models
+namespace TBG.UI.Classes
 {
     public class User : IUser
     {

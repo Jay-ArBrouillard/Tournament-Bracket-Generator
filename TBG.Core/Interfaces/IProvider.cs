@@ -31,10 +31,12 @@ namespace TBG.Core.Interfaces
         IRoundMatchup createRoundMatchup(IRoundMatchup roundMatchup);
         IMatchup getMatchup(int matchupId);
         IRound getRoundByTournamentIdandRoundNum(IRound round);
-        List<IRoundMatchup> getRoundMatchupsByRoundId(IRound currRound);
+        List<IRoundMatchup> getRoundMatchupsByRoundId(IRoundMatchup currRound);
         List<IMatchupEntry> getMatchupEntriesByMatchupId(int matchupId);
         IMatchupEntry updateMatchupEntryScore(int matchupEntryId, int score);
         int getMatchupEntryCount(int matchupId);
         List<IMatchupEntry> getTournamentEntryIdFromPreviousMatchup(IMatchupEntry matchupEntry);
+        void setupTournamentData(ITournament newTournament);
+        ITournamentEntry getTournamentEntry(ITournamentEntry tournamentEntry);
     }
 }

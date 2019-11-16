@@ -16,11 +16,11 @@ namespace TBG.UI
     public partial class CreateTournament : Window
     {
         private IProvider source;
-        private ITournamentController business;
+        private ITournamentController tournamentControl;
         public List<ITeam> teams;   //All existing teams
         public List<ITournamentEntry> teamsInTournament;    //Selected teams. Implements ITournamentEntry
         public List<IPrize> prizes; //All existing prizes
-        public List<IPrize> prizesInTournament;  //Selected prizes
+        public List<ITournamentPrize> prizesInTournament;  //Selected prizes
         public double prizePool;
         private IUser user;
 
@@ -28,7 +28,7 @@ namespace TBG.UI
         {
             InitializeComponent();
             this.user = user;
-            business = ApplicationController.getTournamentController();
+            tournamentControl = ApplicationController.getTournamentController();
             source = ApplicationController.getProvider();
             tournamentTypesComboBox.ItemsSource = source.getTournamentTypes();
             teams = source.getAllTeams();
@@ -38,7 +38,7 @@ namespace TBG.UI
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            prizesInTournament = new List<IPrize>();
+            prizesInTournament = new List<ITournamentPrize>();
             prizes = source.getAllPrizes();
             prizeComboBox.ItemsSource = prizes;
             prizePool = 0;
@@ -47,7 +47,7 @@ namespace TBG.UI
         private void SetEntryFee_Click(object sender, RoutedEventArgs e)
         {
             string entryFeeInput = entryFeeTextBox.Text;
-            bool validate = business.validateEntryFee(entryFeeInput);
+            bool validate = tournamentControl.validateEntryFee(entryFeeInput);
 
             if (validate)
             {
@@ -70,7 +70,7 @@ namespace TBG.UI
 
         public List<ITournamentEntry> convertToTeam(List<ITeam> list)
         {
-            List<ITournamentEntry> result = new List<ITournamentEntry>();
+            List<ITournamentEntry> results = new List<ITournamentEntry>();
 
             foreach(ITeam team in list)
             {
@@ -83,17 +83,23 @@ namespace TBG.UI
                     {
                         PersonId = person.PersonId,
                         FirstName = person.FirstName,
-                        LastName = person.LastName
+                        LastName = person.LastName,
+                        Email = person.Email,
+                        Phone = person.Phone,
+                        Wins = person.Wins,
+                        Losses = person.Losses
                     }); 
                 }
 
-                result.Add(new TournamentEntry() {
+                results.Add(new TournamentEntry() {
                     TeamId = teamId,
-                    Members = teamMembers
+                    TeamName = team.TeamName,
+                    Members = teamMembers,
+                    Seed = 0 //change later
                 });
             }
 
-            return result;
+            return results;
         }
 
         private void AddSelectedTeam_Click(object sender, RoutedEventArgs e)
@@ -143,13 +149,13 @@ namespace TBG.UI
 
         private void DeletePrizeButton_Click(object sender, RoutedEventArgs e)
         {
-            List<IPrize> remove = new List<IPrize>();
+            List<ITournamentPrize> remove = new List<ITournamentPrize>();
             foreach (var prize in prizesListBox.SelectedItems)
             {
-                remove.Add((IPrize)prize);
+                remove.Add((ITournamentPrize)prize);
             }
 
-            foreach (IPrize p in remove)
+            foreach (ITournamentPrize p in remove)
             {
                 prizesInTournament.Remove(p);
             }
@@ -161,7 +167,10 @@ namespace TBG.UI
         {
             object selectedItem = ((ComboBox)sender).SelectedItem;
             IPrize selectedPrize = (IPrize)selectedItem;
-            prizesInTournament.Add(selectedPrize);
+            prizesInTournament.Add(new TournamentPrize()
+            {
+                PrizeId = selectedPrize.PrizeId,
+            });
             prizesListBox.ItemsSource = prizesInTournament;
             prizesListBox.Items.Refresh();
         }
@@ -186,8 +195,8 @@ namespace TBG.UI
 
         private void Create_Tournament_Click(object sender, RoutedEventArgs e)
         {
-            bool validateEntryFee = business.validateEntryFee(entryFeeTextBox.Text);
-            bool validateTournamentTypeId = business.validateTournamentType((ITournamentType)tournamentTypesComboBox.SelectedItem);
+            bool validateEntryFee = tournamentControl.validateEntryFee(entryFeeTextBox.Text);
+            bool validateTournamentTypeId = tournamentControl.validateTournamentType((ITournamentType)tournamentTypesComboBox.SelectedItem);
 
             if (!validateEntryFee)
             {
@@ -228,16 +237,12 @@ namespace TBG.UI
             }
 
             tournament.TournamentId = source.createTournament(tournament).TournamentId;    //Add a tournament to TournamentTable
-            //Convert TournamentEntryView objects to ITournmentEntries
-            tournament.Participants = business.ConvertITournmentEntries(teamsInTournament, tournament); //Convert to useable object
-
-            //Create Backend Logic
-            ITournament newTournament = business.createTournament((ITournament)tournament); //Combine with validate. remove if(validate)
+            tournament.Participants = tournamentControl.ConvertITournmentEntries(teamsInTournament, tournament);  //Convert TournamentEntryView objects to ITournmentEntries
+            ITournament newTournament = tournamentControl.createTournament(tournament);
 
             if (newTournament != null)
             {
-                source.createTournamentEntries(newTournament.Participants);
-                initializeMatchups(newTournament);
+                source.setupTournamentData(newTournament);
                 TournamentViewUI viewUI = new TournamentViewUI(newTournament);
                 viewUI.Show();
             }
@@ -246,51 +251,6 @@ namespace TBG.UI
                 errorMessages.Text = "Must define tournament name and teams in order to continue";
                 source.deleteTournament(tournament);
             }
-        }
-
-        private void initializeMatchups(ITournament newTournament)
-        {
-            var numberList = Enumerable.Range(0, newTournament.Participants.Count).ToList();
-
-            for (int i = 0; i < newTournament.Rounds.Count; i++)
-            {
-                //Create a Round
-                IRound round = source.createRound(new Round()
-                {
-                    RoundNum = i + 1,
-                    TournamentId = newTournament.TournamentId
-                });
-
-                for (int j = 0; j < newTournament.Rounds[i].Pairings.Count; j+=2)
-                {
-                    //Create a Matchup and two MatchEntries
-                    IMatchup matchup = source.createMatchup(new Matchup());
-
-                    source.createRoundMatchup(new RoundMatchup()
-                    {
-                        MatchupId = matchup.MatchupId,
-                        RoundId = round.RoundId,
-                    });
-
-                    IMatchupEntry matchupEntry1 = source.createMatchupEntry(new MatchupEntry()
-                    {
-                        MatchupId = matchup.MatchupId,
-                        TournamentEntryId = newTournament.Participants[numberList[0]].TournamentEntryId,
-                        Score = 0
-                    });
-                    IMatchupEntry matchupEntry2 = source.createMatchupEntry(new MatchupEntry()
-                    {
-                        MatchupId = matchup.MatchupId,
-                        TournamentEntryId = newTournament.Participants[numberList[1]].TournamentEntryId,
-                        Score = 0
-                    });
-                }
-
-                numberList.RemoveAt(0);
-                numberList.RemoveAt(0);
-            }
-
-
         }
     }
 }

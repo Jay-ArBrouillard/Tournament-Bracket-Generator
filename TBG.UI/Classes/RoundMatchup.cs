@@ -12,5 +12,10 @@ namespace TBG.UI.Classes
         public int RoundMatchupId { get; set; }
         public int RoundId { get; set; }
         public int MatchupId { get; set; }
+
+        public RoundMatchup(int roundId)
+        {
+            RoundId = roundId;
+        }
     }
 }

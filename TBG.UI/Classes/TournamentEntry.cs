@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TBG.Core.Interfaces;
 
-namespace TBG.UI.Models
+namespace TBG.UI.Classes
 {
     public class TournamentEntry : ITournamentEntry
     {
@@ -15,5 +15,17 @@ namespace TBG.UI.Models
         public int TeamId { get; set; }
         public int Seed { get; set; }
         public ObservableCollection<IPerson> Members { get; set; }
+        //Need for XAML
+        public string TeamName { get; set; }
+
+        public TournamentEntry()
+        {
+        }
+
+        public TournamentEntry(int tournamentId, int teamId)
+        {
+            TournamentId = tournamentId;
+            TeamId = teamId;
+        }
     }
 }

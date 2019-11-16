@@ -18,9 +18,9 @@ namespace TBG.Business
             }
         }
 
-        private static SingleEliminationTournament ConvertToSingleElimination(ITournament tournament)
+        public static SingleEliminationTournament ConvertToSingleElimination(ITournament tournament)
         {
-            var converted = new SingleEliminationTournament()
+            SingleEliminationTournament converted = new SingleEliminationTournament()
             {
                 TournamentId = tournament.TournamentId,
                 UserId = tournament.UserId,

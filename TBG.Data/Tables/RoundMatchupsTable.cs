@@ -56,7 +56,7 @@ namespace TBG.Data.Tables
             return result;
         }
 
-        public static List<IRoundMatchup> GetByRoundId(IRound entity, MySqlConnection dbConn)
+        public static List<IRoundMatchup> GetByRoundId(IRoundMatchup entity, MySqlConnection dbConn)
         {
             List<IRoundMatchup> result = new List<IRoundMatchup>();
             string query = "SELECT * FROM RoundMatchups WHERE round_id = @id";

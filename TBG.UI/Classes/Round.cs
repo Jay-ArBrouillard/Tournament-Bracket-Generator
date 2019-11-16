@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TBG.Core.Interfaces;
 
-namespace TBG.UI.Models
+namespace TBG.UI.Classes
 {
     public class Round : IRound
     {
@@ -13,5 +13,13 @@ namespace TBG.UI.Models
         public int RoundNum { get; set; }
         public int TournamentId { get; set; }
         public List<IMatchup> Pairings { get; set; }
+        public Round()
+        {
+        }
+        public Round(int tournamentId, int roundNum)
+        {
+            TournamentId = tournamentId;
+            RoundNum = roundNum;
+        }
     }
 }

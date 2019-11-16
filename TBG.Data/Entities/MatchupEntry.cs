@@ -14,5 +14,15 @@ namespace TBG.Data.Entities
         public ITournamentEntry TheTeam { get; set; }
         public double Score { get; set; }
         public int TournamentEntryId { get; set; }
+
+        public MatchupEntry()
+        {
+        }
+
+        public MatchupEntry(int matchupId, int tournamentEntryId)
+        {
+            MatchupId = matchupId;
+            TournamentEntryId = tournamentEntryId;
+        }
     }
 }

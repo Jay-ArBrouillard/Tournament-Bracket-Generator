@@ -30,12 +30,32 @@ namespace TBG.Data.Classes
         #region TOURNAMENT METHODS
         public ITournament createTournament(ITournament entry)
         {
-            //Create Tournament Record
-            //Create Cross Reference Records For Tournament/Team/Player
             ITournament tournament = TournamentTable.Create(entry, dbConn);
             if (tournament == null) { return null; }
 
             return tournament;
+        }
+
+        public void setupTournamentData(ITournament tournament)
+        {
+            if (tournament.TournamentTypeId == 1)
+            {
+                List<ITournamentEntry> tournamentEntries = createTournamentEntries(tournament.Participants);
+                List<IRound> tournamentRounds = createRounds(tournament.Rounds);
+
+                int numberOfMatchups = tournament.Participants.Count / 2;
+                int roundId = tournamentRounds[0].RoundId;
+
+                for (int i = 0; i < numberOfMatchups; i++)
+                {
+                    IMatchup newMatchup = createMatchup(new Matchup());
+                    IRoundMatchup newRoundMatchup = createRoundMatchup(new RoundMatchup(roundId, newMatchup.MatchupId));
+                    createMatchupEntry(new MatchupEntry(newRoundMatchup.MatchupId, tournamentEntries[0].TournamentEntryId));
+                    createMatchupEntry(new MatchupEntry(newRoundMatchup.MatchupId, tournamentEntries[1].TournamentEntryId));
+                    tournamentEntries.RemoveAt(0);
+                    tournamentEntries.RemoveAt(0);
+                }
+            }
         }
 
         public ITournament deleteTournament (ITournament entry)
@@ -70,6 +90,14 @@ namespace TBG.Data.Classes
             return results;
         }
 
+        public ITournamentEntry getTournamentEntry(ITournamentEntry entry)
+        {
+            ITournamentEntry tournament = TournamentEntryTable.GetByTournamentIdAndTeamId(entry, dbConn);
+            if (tournament == null) { return null; }
+
+            return tournament;
+        }
+
         public List<ITournamentEntry> getTournamentEntriesByTournamentId (int id)
         {
             List<ITournamentEntry> tournamentEntries = TournamentEntryTable.GetByTournamentId(id, dbConn);
@@ -86,6 +114,18 @@ namespace TBG.Data.Classes
             if (round == null) { return null; }
 
             return round;
+        }
+
+        public List<IRound> createRounds(List<IRound> entries)
+        {
+            List<IRound> results = new List<IRound>();
+            foreach (IRound round in entries)
+            {
+                IRound currRound = RoundsTable.Create(round, dbConn);
+                results.Add(currRound);
+            }
+
+            return results;
         }
 
         public IRound getRoundByTournamentIdandRoundNum(IRound entry)
@@ -106,7 +146,7 @@ namespace TBG.Data.Classes
             return roundMatchup;
         }
 
-        public List<IRoundMatchup> getRoundMatchupsByRoundId(IRound entry)
+        public List<IRoundMatchup> getRoundMatchupsByRoundId(IRoundMatchup entry)
         {
             List<IRoundMatchup> roundMatchups = RoundMatchupsTable.GetByRoundId(entry, dbConn);
             if (roundMatchups == null) { return null; }

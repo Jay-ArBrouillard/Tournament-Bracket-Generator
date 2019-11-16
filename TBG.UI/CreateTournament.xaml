@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TBG.UI"
-        xmlns:self="clr-namespace:TBG.UI.Models"
+        xmlns:self="clr-namespace:TBG.UI.Classes"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
         Title="Tournament" Height="550" Width="820">
@@ -52,7 +52,7 @@
             <StackPanel Orientation="Horizontal">
                 <TreeView Name="participantsTreeView" Width="220" Height="200">
                     <TreeView.Resources>
-                        <HierarchicalDataTemplate DataType="{x:Type self:TournamentEntryView}" ItemsSource="{Binding Members}">
+                        <HierarchicalDataTemplate DataType="{x:Type self:TournamentEntry}" ItemsSource="{Binding Members}">
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="Assets/group.png" Width="15" Height="15" Margin="3"/>
                                 <TextBlock x:Name="teamName" Text="{Binding TeamName}" VerticalAlignment="Center"/>
@@ -64,7 +64,7 @@
                                 <TextBlock Text="]" Foreground="Purple" VerticalAlignment="Center"/>
                             </StackPanel>
                         </HierarchicalDataTemplate>
-                        <DataTemplate DataType="{x:Type self:TeamMember}">
+                        <DataTemplate DataType="{x:Type self:Person}">
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="Assets/person.png" Width="15" Height="15" Margin="3"/>
                                 <TextBlock Text="{Binding FirstName}" Foreground="Green" VerticalAlignment="Center"/>
@@ -123,7 +123,7 @@
                    FontSize="18">
             </TextBlock>
 
-            <ComboBox x:Name="tournamentTypesComboBox">
+            <ComboBox x:Name="tournamentTypesComboBox" SelectedIndex="0">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding TournamentTypeName}"/>
