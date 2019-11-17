@@ -41,15 +41,15 @@ namespace TBG.Data.Classes
             if (tournament.TournamentTypeId == 1)
             {
                 List<ITournamentEntry> tournamentEntries = createTournamentEntries(tournament.Participants);
-                List<IRound> tournamentRounds = createRounds(tournament.Rounds);
+                IRound roundOne = createRound(new Round(tournament.TournamentId, 1));
 
-                int numberOfMatchups = tournament.Participants.Count / 2;
-                int roundId = tournamentRounds[0].RoundId;
+                int numMatchupsRoundOne = tournament.Participants.Count / 2;
+                int roundOneId = roundOne.RoundId;
 
-                for (int i = 0; i < numberOfMatchups; i++)
+                for (int i = 0; i < numMatchupsRoundOne; i++)
                 {
                     IMatchup newMatchup = createMatchup(new Matchup());
-                    IRoundMatchup newRoundMatchup = createRoundMatchup(new RoundMatchup(roundId, newMatchup.MatchupId));
+                    IRoundMatchup newRoundMatchup = createRoundMatchup(new RoundMatchup(roundOneId, newMatchup.MatchupId, i));
                     createMatchupEntry(new MatchupEntry(newRoundMatchup.MatchupId, tournamentEntries[0].TournamentEntryId));
                     createMatchupEntry(new MatchupEntry(newRoundMatchup.MatchupId, tournamentEntries[1].TournamentEntryId));
                     tournamentEntries.RemoveAt(0);
@@ -116,16 +116,12 @@ namespace TBG.Data.Classes
             return round;
         }
 
-        public List<IRound> createRounds(List<IRound> entries)
+        public List<IRound> getRoundsByTournamentId(int tournamentId)
         {
-            List<IRound> results = new List<IRound>();
-            foreach (IRound round in entries)
-            {
-                IRound currRound = RoundsTable.Create(round, dbConn);
-                results.Add(currRound);
-            }
+            List<IRound> rounds = RoundsTable.GetByTournamentId(tournamentId, dbConn);
+            if (rounds == null) { return null; }
 
-            return results;
+            return rounds;
         }
 
         public IRound getRoundByTournamentIdandRoundNum(IRound entry)

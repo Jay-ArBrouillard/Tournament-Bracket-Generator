@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using TBG.Core.Interfaces;
@@ -162,13 +163,13 @@ namespace TBG.UI
 
                 //IMatchupEntry has a ITournamentEntry which has a teamId
                 //Will call database to get their teamName
-                String team1Name = source.getTeam(team1.TheTeam.TeamId).TeamName;
-                String team2Name = source.getTeam(team2.TheTeam.TeamId).TeamName;
+                ITeam team1Details = source.getTeam(team1.TheTeam.TeamId);
+                ITeam team2Details = source.getTeam(team2.TheTeam.TeamId);
 
                 TournamentViewListBoxItem matchupsItem = new TournamentViewListBoxItem()
                 {
-                    Team1Name = team1Name,
-                    Team2Name = team2Name,
+                    Team1Name = team1Details.TeamName,
+                    Team2Name = team2Details.TeamName,
                     imageURL = "Assets/x-button.png"
                 };
 
@@ -190,27 +191,118 @@ namespace TBG.UI
             tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[0].Score = score1;
             tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[1].Score = score2;
 
-            source.updateMatchupEntryScore(tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[0].Score, score1);
-            source.updateMatchupEntryScore(tournament.Rounds[selectedRound].Pairings[selectedPairing].MatchupId, score2);
-            if (score1 > score2)
+            foreach (IMatchup m in tournament.Rounds[selectedRound].Pairings)
             {
+                System.Console.WriteLine(m.Teams[0].TheTeam.TournamentEntryId + " vs " + m.Teams[1].TheTeam.TournamentEntryId);
+            }
+
+            //The next round and next pairing
+            int nextRoundNumber = selectedRound + 2;
+            int nextPairingNumber = selectedPairing / 2;
+
+            if (tournament.Rounds[selectedRound].Pairings[selectedPairing].NextRound != null)
+            {
+                source.createRound(new Round(tournament.TournamentId, nextRoundNumber));
+            }
+
+            //Check if the nextRound Matchup exist in the database
+            IRound nextRound = source.getRoundByTournamentIdandRoundNum(new Round(tournament.TournamentId, nextRoundNumber));
+
+            if (nextRound != null)
+            {
+                //check if the nextPairing exist in the database
+                List<IRoundMatchup> nextRoundMatchup = source.getRoundMatchupsByRoundId(new RoundMatchup(nextRound.RoundId));
+                if (nextRoundMatchup == null)   //No roundMatchups were scored for the nextRound
+                {
+                    IMatchup newMatchup = source.createMatchup(new Matchup());
+                    IRoundMatchup newRoundMatch = source.createRoundMatchup(new RoundMatchup(nextRound.RoundId, newMatchup.MatchupId, nextPairingNumber));
+                    if (score1 > score2)
+                    {
+                        source.createMatchupEntry(new MatchupEntry()
+                        {
+                            MatchupId = newMatchup.MatchupId,
+                            TournamentEntryId = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[0].TheTeam.TournamentEntryId
+                        });
+                    }
+                    else
+                    {
+                        source.createMatchupEntry(new MatchupEntry()
+                        {
+                            MatchupId = newMatchup.MatchupId,
+                            TournamentEntryId = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[1].TheTeam.TournamentEntryId
+                        }); 
+                    }
+                }
+                else //Atleast 1 roundMatchup was scored for the nextRound
+                {
+                    //Check if the the correct matchup was created
+                    List<IRoundMatchup> temp = new List<IRoundMatchup>();
+                    foreach (IRoundMatchup r in nextRoundMatchup)
+                    {
+                        if (r.MatchupNumber == nextPairingNumber)
+                        {
+                            temp.Add(r);
+                        }
+                    }
+
+                    if (temp != null)
+                    {
+                        IRoundMatchup newRoundMatch = source.createRoundMatchup(new RoundMatchup(nextRound.RoundId, temp[0].MatchupId, nextPairingNumber));
+                        if (score1 > score2)
+                        {
+                            source.createMatchupEntry(new MatchupEntry()
+                            {
+                                MatchupId = temp[0].MatchupId,
+                                TournamentEntryId = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[0].TheTeam.TournamentEntryId
+                            });
+                        }
+                        else
+                        {
+                            source.createMatchupEntry(new MatchupEntry()
+                            {
+                                MatchupId = temp[0].MatchupId,
+                                TournamentEntryId = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[1].TheTeam.TournamentEntryId
+                            });
+                        }
+                    }
+                    else
+                    {
+                        IMatchup newMatchup = source.createMatchup(new Matchup());
+                        IRoundMatchup newRoundMatch = source.createRoundMatchup(new RoundMatchup(nextRound.RoundId, newMatchup.MatchupId, nextPairingNumber));
+                        if (score1 > score2)
+                        {
+                            source.createMatchupEntry(new MatchupEntry()
+                            {
+                                MatchupId = newMatchup.MatchupId,
+                                TournamentEntryId = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[0].TheTeam.TournamentEntryId
+                            });
+                        }
+                        else
+                        {
+                            source.createMatchupEntry(new MatchupEntry()
+                            {
+                                MatchupId = newMatchup.MatchupId,
+                                TournamentEntryId = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[1].TheTeam.TournamentEntryId
+                            });
+                        }
+                    }
+
+                }
 
             }
             else
             {
-
+                //Tournie is over and/or next round doesnt exist
             }
 
-
-
-            /*bool valid = tournament.RecordResult(tournament.Rounds[selectedRound].Pairings[selectedPairing]);
+            bool valid = tournament.RecordResult(tournament.Rounds[selectedRound].Pairings[selectedPairing]);
 
             if (valid)
             {
                 TournamentViewListBoxItem currItem = (TournamentViewListBoxItem)matchupsListBox.Items[selectedPairing];
                 currItem.imageURL = "Assets/confirm.png";
                 matchupsListBox.Items.Refresh();
-            }*/
+            }
             
 
         }

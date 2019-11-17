@@ -71,16 +71,30 @@ namespace TBG.UI
             };
             newTournament.Participants = source.getTournamentEntriesByTournamentId(selectedTournament.TournamentId);
             newTournament = tournamentControl.createTournament(newTournament);
-            for (int i = 0; i < newTournament.Rounds.Count; i++)
+            List<IRound> existingRounds = source.getRoundsByTournamentId(newTournament.TournamentId);
+            for (int i = 0; i < existingRounds.Count; i++)
             {
-                IRound currRound = source.getRoundByTournamentIdandRoundNum(new Round(newTournament.TournamentId, i+1));
-
-                List<IRoundMatchup> roundMatchups = source.getRoundMatchupsByRoundId(new RoundMatchup(currRound.RoundId));
+                List<IRoundMatchup> roundMatchups = source.getRoundMatchupsByRoundId(new RoundMatchup(existingRounds[i].RoundId));
                 if (roundMatchups.Count > 0)
                 {
                     for (int j = 0; j < roundMatchups.Count; j++)
                     {
                         List<IMatchupEntry> matchupEntries = source.getMatchupEntriesByMatchupId(roundMatchups[j].MatchupId);
+
+                        if (i != 0)
+                        {
+                            IMatchup matchup = source.getMatchup(matchupEntries[j].MatchupId);
+                            List<IMatchupEntry> matchEntries = source.getMatchupEntriesByMatchupId(matchup.MatchupId);
+                            foreach (IMatchupEntry matchupEntry in matchEntries)
+                            {
+                                matchupEntry.TheTeam = source.getTournamentEntry(new TournamentEntry()
+                                {
+                                    TournamentEntryId = matchupEntry.TournamentEntryId,
+                                    TournamentId = newTournament.TournamentId
+                                });
+                            }
+                            newTournament.Rounds[i].Pairings[j].Teams = matchEntries;
+                        }
 
                         if (matchupEntries.Count == 1)
                         {

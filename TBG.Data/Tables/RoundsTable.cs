@@ -56,6 +56,24 @@ namespace TBG.Data.Tables
             return result;
         }
 
+        public static List<IRound> GetByTournamentId(int tournamentId, MySqlConnection dbConn)
+        {
+            List<IRound> result = new List<IRound>();
+
+            string query = "SELECT * FROM Rounds WHERE tournament_id = @tournamentId";
+            Dictionary<string, string> param = new Dictionary<string, string>();
+            param.Add("@tournamentId", tournamentId.ToString());
+
+            using (var reader = DatabaseHelper.GetReader(query, dbConn, param))
+            {
+                while (reader.Read())
+                {
+                    result.Add(ConvertReader(reader));
+                }
+            }
+            return result;
+        }
+
         public static IRound GetByTournamentIdAndRoundNum(IRound entity, MySqlConnection dbConn)
         {
             string query = "SELECT * FROM Rounds WHERE tournament_id = @tournamentId AND round_num = @roundNum";

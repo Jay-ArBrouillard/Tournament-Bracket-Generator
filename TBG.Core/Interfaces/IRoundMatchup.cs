@@ -11,5 +11,6 @@ namespace TBG.Core.Interfaces
         int RoundMatchupId { get; set; }
         int RoundId { get; set; }
         int MatchupId { get; set; }
+        int MatchupNumber { get; set; }
     }
 }

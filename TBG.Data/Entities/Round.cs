@@ -13,5 +13,13 @@ namespace TBG.Data.Entities
         public int RoundNum { get; set; }
         public int TournamentId { get; set; }
         public List<IMatchup> Pairings { get; set; }
+        public Round()
+        {
+        }
+        public Round(int tournamentId, int roundNum)
+        {
+            TournamentId = tournamentId;
+            RoundNum = roundNum;
+        }
     }
 }

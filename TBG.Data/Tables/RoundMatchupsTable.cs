@@ -14,10 +14,11 @@ namespace TBG.Data.Tables
     {
         public static IRoundMatchup Create(IRoundMatchup entity, MySqlConnection dbConn)
         {
-            string query = "INSERT INTO RoundMatchups (round_id, matchup_id) VALUES (@round, @matchup)";
+            string query = "INSERT INTO RoundMatchups (round_id, matchup_id, matchup_number) VALUES (@round, @matchup, @number)";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@round", entity.RoundId.ToString());
             param.Add("@matchup", entity.MatchupId.ToString());
+            param.Add("@number", entity.MatchupNumber.ToString());
 
             var resultsPK = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
             entity.RoundId = resultsPK;
@@ -80,6 +81,7 @@ namespace TBG.Data.Tables
                 RoundMatchupId = int.Parse(reader["round_matchup_id"].ToString()),
                 RoundId = int.Parse(reader["round_id"].ToString()),
                 MatchupId = int.Parse(reader["matchup_id"].ToString()),
+                MatchupNumber = int.Parse(reader["matchup_number"].ToString())
             };
         }
     }

@@ -38,5 +38,6 @@ namespace TBG.Core.Interfaces
         List<IMatchupEntry> getTournamentEntryIdFromPreviousMatchup(IMatchupEntry matchupEntry);
         void setupTournamentData(ITournament newTournament);
         ITournamentEntry getTournamentEntry(ITournamentEntry tournamentEntry);
+        List<IRound> getRoundsByTournamentId(int tournamentId);
     }
 }
