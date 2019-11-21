@@ -92,14 +92,22 @@ namespace TBG.UI
                             newTournament.Rounds[i].Pairings[j].Teams = matchEntries;
                         }
 
+                        newTournament.Rounds[i].Pairings[j].MatchupId = roundMatchups[j].MatchupId;
+
                         if (matchupEntries.Count == 1)
                         {
                             newTournament.Rounds[i].Pairings[j].Teams[0].Score = matchupEntries[0].Score;
+                            newTournament.Rounds[i].Pairings[j].Teams[0].MatchupId = matchupEntries[0].MatchupId;
+                            newTournament.Rounds[i].Pairings[j].Teams[0].TournamentEntryId = matchupEntries[0].TournamentEntryId;
                         }
                         else if (matchupEntries.Count == 2)
                         {
                             newTournament.Rounds[i].Pairings[j].Teams[0].Score = matchupEntries[0].Score;
                             newTournament.Rounds[i].Pairings[j].Teams[1].Score = matchupEntries[1].Score;
+                            newTournament.Rounds[i].Pairings[j].Teams[0].MatchupId = matchupEntries[0].MatchupId;
+                            newTournament.Rounds[i].Pairings[j].Teams[1].MatchupId = matchupEntries[1].MatchupId;
+                            newTournament.Rounds[i].Pairings[j].Teams[0].TournamentEntryId = matchupEntries[0].TournamentEntryId;
+                            newTournament.Rounds[i].Pairings[j].Teams[1].TournamentEntryId = matchupEntries[1].TournamentEntryId;
                         }
                     }
                 }

@@ -33,13 +33,11 @@ namespace TBG.Core.Interfaces
         IRound getRoundByTournamentIdandRoundNum(IRound round);
         List<IRoundMatchup> getRoundMatchupsByRoundId(IRoundMatchup currRound);
         List<IMatchupEntry> getMatchupEntriesByMatchupId(int matchupId);
-        IMatchupEntry updateMatchupEntryScore(int matchupEntryId, int score);
-        int getMatchupEntryCount(int matchupId);
-        List<IMatchupEntry> getTournamentEntryIdFromPreviousMatchup(IMatchupEntry matchupEntry);
+        IMatchupEntry updateMatchupEntryScore(int matchupId, int tournamentEntryId, int score);
         void setupTournamentData(ITournament newTournament);
         ITournamentEntry getTournamentEntry(int tournamentEntryId);
         List<IRound> getRoundsByTournamentId(int tournamentId);
-        IMatchupEntry getMatchupEntryByMatchupIdAndTournamentEntryId(int matchupId, int tournamentEntryId);
         IRoundMatchup getRoundMatchupByRoundIdAndMatchupNumber(IRoundMatchup roundMatchup);
+        ITournament updateTournamentName(ITournament entry);
     }
 }

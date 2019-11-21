@@ -107,8 +107,10 @@
     <Content Include="SQL\Tables\RoundMatchups.sql" />
     <Content Include="SQL\Tables\Rounds.sql" />
     <Content Include="SQL\Tables\TeamMembers.sql" />
+    <Content Include="SQL\Tables\Teams.sql" />
     <Content Include="SQL\Tables\TournamentEntries.sql" />
     <Content Include="SQL\Tables\TournamentPrizes.sql" />
+    <Content Include="SQL\Tables\Tournaments.sql" />
     <Content Include="SQL\Tables\TournamentTypes.sql" />
     <Content Include="SQL\Tables\Users.sql" />
   </ItemGroup>

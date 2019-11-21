@@ -78,11 +78,12 @@ namespace TBG.Data.Tables
             return null;
         }
 
-        public static IMatchupEntry UpdateScore(int Id, int score, MySqlConnection dbConn)
+        public static IMatchupEntry UpdateScore(int matchupId, int tournamentEntryId, int score, MySqlConnection dbConn)
         {
-            string query = "UPDATE MatchupEntries SET score = @score WHERE matchup_entry_id = @id";
+            string query = "UPDATE MatchupEntries SET score = @score WHERE matchup_id = @id AND tournament_entry_id = @entryId";
             Dictionary<string, string> param = new Dictionary<string, string>();
-            param.Add("@Id", Id.ToString());
+            param.Add("@Id", matchupId.ToString());
+            param.Add("@entryId", tournamentEntryId.ToString());
             param.Add("@score", score.ToString());
 
             using (var reader = DatabaseHelper.GetReader(query, dbConn, param))

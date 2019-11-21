@@ -40,12 +40,12 @@
             <ColumnDefinition Width="30*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="86*"/>
+            <RowDefinition Height="100*"/>
             <RowDefinition Height="98*"/>
             <RowDefinition Height="20*"/>
             <RowDefinition Height="113*"/>
         </Grid.RowDefinitions>
-        <Rectangle Height="634" VerticalAlignment="Top" Grid.RowSpan="4" Grid.ColumnSpan="5">
+        <Rectangle Height="659" VerticalAlignment="Top" Grid.RowSpan="4" Grid.ColumnSpan="5" Margin="0,0,0,-25">
             <Rectangle.Fill>
                 <SolidColorBrush Color="#E5E4E9"></SolidColorBrush>
             </Rectangle.Fill>
@@ -54,8 +54,8 @@
         <Label Content="Round: " HorizontalAlignment="Left" VerticalAlignment="Top" Width="81" FontSize="20" Margin="37,74,0,0" Grid.ColumnSpan="2"/>
         <Label x:Name="errorMsgLbl" Content="There was an error with your entries. Please check and try again." HorizontalAlignment="Left" Margin="37,131,0,0" VerticalAlignment="Top" Width="348" Foreground="#FFF70000" Height="32" Visibility="Hidden" Grid.ColumnSpan="3" Grid.Row="1"/>
         <ComboBox x:Name="roundDropDown" HorizontalAlignment="Left" Margin="79.955,74,0,0" VerticalAlignment="Top" Width="156" Height="37" Grid.Column="1" SelectionChanged="RoundDropDown_SelectionChanged"/>
-        <Label Content="Matchups:" HorizontalAlignment="Left" Margin="103,126,0,0" VerticalAlignment="Top" Width="133" FontSize="22" Grid.Column="1"/>
-        <StackPanel HorizontalAlignment="Left" Height="200" Margin="37,170,0,0" VerticalAlignment="Top" Width="325" Grid.RowSpan="3" Grid.ColumnSpan="2">
+        <Label Content="Matchups:" HorizontalAlignment="Left" Margin="103,150,0,0" VerticalAlignment="Top" Width="133" FontSize="22" Grid.Column="1"/>
+        <StackPanel HorizontalAlignment="Left" Height="200" Margin="37,200,0,0" VerticalAlignment="Top" Width="325" Grid.RowSpan="3" Grid.ColumnSpan="2">
             <ListBox x:Name="matchupsListBox" HorizontalAlignment="Left" Height="180" VerticalAlignment="Top" Width="326" Margin="0,0,-1,0" SelectionMode="Single" SelectionChanged="MatchupsListBox_SelectionChanged">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -98,5 +98,6 @@
                 <DataGridTextColumn Header="Losses" Binding="{Binding Losses}"/>
             </DataGrid.Columns>
         </DataGrid>
+        <CheckBox x:Name="unplayedCheckbox" Content="Display Unplayed Only" Grid.Column="1" HorizontalAlignment="Left" Margin="27,137,0,0" VerticalAlignment="Top" Checked="UnplayedCheckbox_Checked" Unchecked="UnplayedCheckbox_Unchecked"/>
     </Grid>
 </Window>

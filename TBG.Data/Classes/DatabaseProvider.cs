@@ -36,6 +36,14 @@ namespace TBG.Data.Classes
             return tournament;
         }
 
+        public ITournament updateTournamentName(ITournament entry)
+        {
+            ITournament tournament = TournamentTable.UpdateName(entry, dbConn);
+            if (tournament == null) { return null; }
+
+            return tournament;
+        }
+
         public void setupTournamentData(ITournament tournament)
         {
             if (tournament.TournamentTypeId == 1)
@@ -322,33 +330,9 @@ namespace TBG.Data.Classes
             return matchupEntries;
         }
 
-        public IMatchupEntry updateMatchupEntryScore(int matchupEntryId, int score)
+        public IMatchupEntry updateMatchupEntryScore(int matchupId, int tournamentEntryId, int score)
         {
-            IMatchupEntry matchupEntry = MatchupEntriesTable.UpdateScore(matchupEntryId, score, dbConn);
-            if (matchupEntry == null) return null;
-
-            return matchupEntry;
-        }
-
-        public int getMatchupEntryCount(int matchupId)
-        {
-            List<IMatchupEntry> results =  MatchupEntriesTable.GetByMatchupId(matchupId, dbConn);
-            if (results == null) { return -1; }
-
-            return results.Count;
-        }
-
-        public List<IMatchupEntry> getTournamentEntryIdFromPreviousMatchup(IMatchupEntry matchupEntry)
-        {
-            List<IMatchupEntry> matchupEntries = MatchupEntriesTable.GetByMatchupId(matchupEntry.MatchupId, dbConn);
-            if (matchupEntries == null) { return null; }
-
-            return matchupEntries;
-        }
-
-        public IMatchupEntry getMatchupEntryByMatchupIdAndTournamentEntryId(int matchupId, int tournamentEntryId)
-        {
-            IMatchupEntry matchupEntry = MatchupEntriesTable.GetByMatchupIdAndTournamentEntryId(matchupId, tournamentEntryId, dbConn);
+            IMatchupEntry matchupEntry = MatchupEntriesTable.UpdateScore(matchupId, tournamentEntryId, score, dbConn);
             if (matchupEntry == null) return null;
 
             return matchupEntry;

@@ -74,6 +74,22 @@ namespace TBG.Data.Tables
             return result;
         }
 
+        public static ITournament UpdateName(ITournament entity, MySqlConnection dbConn)
+        {
+            string query = "UPDATE Tournaments SET tournament_name = @name WHERE tournament_id = @id";
+            Dictionary<string, string> param = new Dictionary<string, string>();
+            param.Add("@name", entity.TournamentName.ToString());
+            param.Add("@id", entity.TournamentId.ToString());
+
+            var result = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
+            if (result != 0)
+            {
+                return entity;
+            }
+
+            return null;
+        }
+
         public static ITournament Update(ITournament entity, MySqlConnection dbConn)
         {
             string query = "UPDATE Tournaments SET user_id = @user, tournament_name = @name, entry_fee = @fee, total_prize_pool = @pool, tournament_type_id = @type  WHERE tournament_id = @id";
