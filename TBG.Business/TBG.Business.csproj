@@ -42,7 +42,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BusinessController.cs" />
     <Compile Include="Dashboard.cs" />
     <Compile Include="LoginController.cs" />
     <Compile Include="Matchup.cs" />

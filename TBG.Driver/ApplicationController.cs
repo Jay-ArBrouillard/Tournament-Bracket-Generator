@@ -11,11 +11,6 @@ namespace TBG.Driver
             return new DatabaseProvider();
         }
 
-        public static IController getController()
-        {
-            return new BusinessController();
-        }
-
         public static ILoginController getLoginController()
         {
             return new LoginController();
