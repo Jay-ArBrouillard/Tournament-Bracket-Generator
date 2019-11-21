@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using TBG.Core.Interfaces;
 
-namespace TBG.Business
+namespace TBG.Business.Controllers
 {
-    public class Dashboard
+    public class DashboardController
     {
 
         /// <summary>

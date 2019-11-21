@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TBG.Business.Models;
 using TBG.Core.Interfaces;
 
-namespace TBG.Business
+namespace TBG.Business.Tournaments
 {
     public class SingleEliminationTournament : ITournament
     {

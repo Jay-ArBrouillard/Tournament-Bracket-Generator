@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TBG.Core.Interfaces;
 
-namespace TBG.Business
+namespace TBG.Business.Controllers
 {
     public class PersonController : IPersonController
     {
