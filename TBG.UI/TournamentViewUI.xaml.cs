@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows;
 using TBG.Core.Interfaces;
 using TBG.Driver;

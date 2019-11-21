@@ -14,7 +14,7 @@ namespace TBG.UI
     public partial class Dashboard : Window
     {
         private IProvider source;
-        private ITournamentController tournamentControl;
+        private ITournamentController tournamentController;
         private IUser user;
 
         public Dashboard(User user)
@@ -22,7 +22,7 @@ namespace TBG.UI
             InitializeComponent();
             this.user = user;
             this.source = ApplicationController.getProvider();
-            tournamentControl = ApplicationController.getTournamentController();
+            tournamentController = ApplicationController.getTournamentController();
 
             var tournaments = source.getAllTournaments();
             var tournamentTypes = source.getTournamentTypes();
@@ -70,7 +70,7 @@ namespace TBG.UI
                 TournamentTypeId = selectedTournament.TournamentTypeId
             };
             newTournament.Participants = source.getTournamentEntriesByTournamentId(selectedTournament.TournamentId);
-            newTournament = tournamentControl.createTournament(newTournament);
+            newTournament = tournamentController.createTournament(newTournament);
             List<IRound> existingRounds = source.getRoundsByTournamentId(newTournament.TournamentId);
             for (int i = 0; i < existingRounds.Count; i++)
             {
