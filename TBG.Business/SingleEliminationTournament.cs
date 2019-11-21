@@ -96,7 +96,10 @@ namespace TBG.Business
         public bool RecordResult(IMatchup matchup)
         {
             var winner = CreateWinnerMatchupEntry(matchup.Teams.OrderByDescending(x => x.Score).First());
-            matchup.NextRound.Teams.Add(winner);
+            if (matchup.NextRound != null)
+            {
+                matchup.NextRound.Teams.Add(winner);
+            }
             return true;
         }
 

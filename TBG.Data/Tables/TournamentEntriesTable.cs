@@ -60,24 +60,6 @@ namespace TBG.Data.Tables
             }
         }
 
-        public static ITournamentEntry GetByTournamentIdAndTeamId(ITournamentEntry entity, MySqlConnection dbConn)
-        {
-            string query = "SELECT * FROM `TournamentEntries` WHERE `tournament_id` = @Id AND `team_id` = @team";
-            Dictionary<string, string> param = new Dictionary<string, string>();
-            param.Add("@Id", entity.TournamentId.ToString());
-            param.Add("@team", entity.TeamId.ToString());
-
-            using (var reader = DatabaseHelper.GetReader(query, dbConn, param))
-            {
-                if (reader.HasRows)
-                {
-                    reader.Read();
-                    return ConvertReader(reader);
-                }
-            }
-            return null;
-        }
-
         public static List<ITournamentEntry> GetAll(MySqlConnection dbConn)
         {
             List<ITournamentEntry> result = new List<ITournamentEntry>();

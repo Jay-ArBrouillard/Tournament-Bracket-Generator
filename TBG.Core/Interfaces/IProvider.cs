@@ -37,7 +37,9 @@ namespace TBG.Core.Interfaces
         int getMatchupEntryCount(int matchupId);
         List<IMatchupEntry> getTournamentEntryIdFromPreviousMatchup(IMatchupEntry matchupEntry);
         void setupTournamentData(ITournament newTournament);
-        ITournamentEntry getTournamentEntry(ITournamentEntry tournamentEntry);
+        ITournamentEntry getTournamentEntry(int tournamentEntryId);
         List<IRound> getRoundsByTournamentId(int tournamentId);
+        IMatchupEntry getMatchupEntryByMatchupIdAndTournamentEntryId(int matchupId, int tournamentEntryId);
+        IRoundMatchup getRoundMatchupByRoundIdAndMatchupNumber(IRoundMatchup roundMatchup);
     }
 }

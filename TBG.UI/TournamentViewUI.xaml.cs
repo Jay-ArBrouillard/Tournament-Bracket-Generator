@@ -4,6 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 using TBG.Core.Interfaces;
 using TBG.Driver;
 using TBG.UI.Classes;
@@ -35,40 +36,11 @@ namespace TBG.UI
 
             roundDropDown.SelectedItem = null;
             roundDropDown.SelectedIndex = 0;
-            displayRound1();
-        }
-        private void displayRound1()
-        {
-            int selectedRound = roundDropDown.SelectedIndex;
-
-            if (selectedRound == -1) return; 
-
-            foreach (IMatchup matchup in tournament.Rounds[selectedRound].Pairings)
-            {
-                IMatchupEntry team1 = matchup.Teams[0];
-                IMatchupEntry team2 = matchup.Teams[1];
-
-                //IMatchupEntry has a ITournamentEntry which has a teamId
-                //Will call database to get their teamName
-                String team1Name = source.getTeam(team1.TheTeam.TeamId).TeamName;
-                String team2Name = source.getTeam(team2.TheTeam.TeamId).TeamName;
-
-                TournamentViewListBoxItem matchupsItem = new TournamentViewListBoxItem()
-                {
-                    Team1Name = team1Name,
-                    Team2Name = team2Name,
-                    imageURL = "Assets/x-button.png"
-                };
-
-                matchupsListBox.Items.Add(matchupsItem);
-
-                //Add the matchups to roundMatchups
-            }
-
+            populateMatchupListBox(0);
             initialization = false;
         }
 
-        private void MatchupsListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void MatchupsListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int selectedRound = roundDropDown.SelectedIndex;
             int selectedPairing = matchupsListBox.SelectedIndex;
@@ -77,14 +49,11 @@ namespace TBG.UI
 
             List<IMatchupEntry> teams = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams;
 
-            IMatchupEntry team1 = teams[0];
-            IMatchupEntry team2 = teams[1];
+            ITeam theTeam1 = source.getTeam(teams[0].TheTeam.TeamId);
+            ITeam theTeam2 = source.getTeam(teams[1].TheTeam.TeamId);
 
-            ITeam theTeam1 = source.getTeam(team1.TheTeam.TeamId);
-            ITeam theTeam2 = source.getTeam(team2.TheTeam.TeamId);
-
-            List<ITeamMember> team1Ids = source.getTeamMembersByTeamId(team1.TheTeam.TeamId);
-            List<ITeamMember> team2Ids = source.getTeamMembersByTeamId(team2.TheTeam.TeamId);
+            List<ITeamMember> team1Ids = source.getTeamMembersByTeamId(teams[0].TheTeam.TeamId);
+            List<ITeamMember> team2Ids = source.getTeamMembersByTeamId(teams[1].TheTeam.TeamId);
 
             List<IPerson> team1TeamMembers = new List<IPerson>();
             List<IPerson> team2TeamMembers = new List<IPerson>();
@@ -152,28 +121,43 @@ namespace TBG.UI
 
         private void populateMatchupListBox(int selectedRound)
         {
-            IRound thisRound = tournament.Rounds[selectedRound];
+            IRound thisRound = source.getRoundByTournamentIdandRoundNum(new Round(tournament.TournamentId, selectedRound + 1));
 
-            foreach (IMatchup m in thisRound.Pairings)
+            if (thisRound != null)
             {
-                if (m.Teams != null && m.Teams.Count != 2) continue;
+                List<IRoundMatchup> roundMatchups = source.getRoundMatchupsByRoundId(new RoundMatchup(thisRound.RoundId));
 
-                IMatchupEntry team1 = m.Teams[0];
-                IMatchupEntry team2 = m.Teams[1];
-
-                //IMatchupEntry has a ITournamentEntry which has a teamId
-                //Will call database to get their teamName
-                ITeam team1Details = source.getTeam(team1.TheTeam.TeamId);
-                ITeam team2Details = source.getTeam(team2.TheTeam.TeamId);
-
-                TournamentViewListBoxItem matchupsItem = new TournamentViewListBoxItem()
+                foreach (IRoundMatchup roundMatchup in roundMatchups)
                 {
-                    Team1Name = team1Details.TeamName,
-                    Team2Name = team2Details.TeamName,
-                    imageURL = "Assets/x-button.png"
-                };
+                    List<IMatchupEntry> matchupEntries = source.getMatchupEntriesByMatchupId(roundMatchup.MatchupId);
 
-                matchupsListBox.Items.Add(matchupsItem);
+                    if (matchupEntries != null && matchupEntries.Count == 2)
+                    {
+                        ITournamentEntry tournamentEntry1 = source.getTournamentEntry(matchupEntries[0].TournamentEntryId);
+                        ITournamentEntry tournamentEntry2 = source.getTournamentEntry(matchupEntries[1].TournamentEntryId);
+
+                        String imageURLString = "Assets/x-button.png";
+                        if (matchupEntries[0].Score != 0 || matchupEntries[1].Score != 0)
+                        {
+                            imageURLString = "Assets/confirm.png";
+                        }
+
+                        TournamentViewListBoxItem matchupsItem = new TournamentViewListBoxItem()
+                        {
+                            Team1Name = source.getTeam(tournamentEntry1.TeamId).TeamName,
+                            Team2Name = source.getTeam(tournamentEntry2.TeamId).TeamName,
+                            imageURL = imageURLString
+                        };
+
+                        firstTeamScoreTxtBox.Text = matchupEntries[0].Score.ToString();
+                        firstTeamScoreTxtBox.Text = matchupEntries[1].Score.ToString();
+                        matchupsListBox.Items.Add(matchupsItem);
+                    }
+                }
+            }
+            else
+            {
+                //There are no Teams in the next round yet
             }
         }
 
@@ -187,113 +171,12 @@ namespace TBG.UI
 
             int selectedRound = roundDropDown.SelectedIndex;
             int selectedPairing = matchupsListBox.SelectedIndex;
-
-            tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[0].Score = score1;
-            tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[1].Score = score2;
-
-            foreach (IMatchup m in tournament.Rounds[selectedRound].Pairings)
-            {
-                System.Console.WriteLine(m.Teams[0].TheTeam.TournamentEntryId + " vs " + m.Teams[1].TheTeam.TournamentEntryId);
-            }
-
-            //The next round and next pairing
             int nextRoundNumber = selectedRound + 2;
             int nextPairingNumber = selectedPairing / 2;
 
-            if (tournament.Rounds[selectedRound].Pairings[selectedPairing].NextRound != null)
-            {
-                source.createRound(new Round(tournament.TournamentId, nextRoundNumber));
-            }
-
-            //Check if the nextRound Matchup exist in the database
-            IRound nextRound = source.getRoundByTournamentIdandRoundNum(new Round(tournament.TournamentId, nextRoundNumber));
-
-            if (nextRound != null)
-            {
-                //check if the nextPairing exist in the database
-                List<IRoundMatchup> nextRoundMatchup = source.getRoundMatchupsByRoundId(new RoundMatchup(nextRound.RoundId));
-                if (nextRoundMatchup == null)   //No roundMatchups were scored for the nextRound
-                {
-                    IMatchup newMatchup = source.createMatchup(new Matchup());
-                    IRoundMatchup newRoundMatch = source.createRoundMatchup(new RoundMatchup(nextRound.RoundId, newMatchup.MatchupId, nextPairingNumber));
-                    if (score1 > score2)
-                    {
-                        source.createMatchupEntry(new MatchupEntry()
-                        {
-                            MatchupId = newMatchup.MatchupId,
-                            TournamentEntryId = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[0].TheTeam.TournamentEntryId
-                        });
-                    }
-                    else
-                    {
-                        source.createMatchupEntry(new MatchupEntry()
-                        {
-                            MatchupId = newMatchup.MatchupId,
-                            TournamentEntryId = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[1].TheTeam.TournamentEntryId
-                        }); 
-                    }
-                }
-                else //Atleast 1 roundMatchup was scored for the nextRound
-                {
-                    //Check if the the correct matchup was created
-                    List<IRoundMatchup> temp = new List<IRoundMatchup>();
-                    foreach (IRoundMatchup r in nextRoundMatchup)
-                    {
-                        if (r.MatchupNumber == nextPairingNumber)
-                        {
-                            temp.Add(r);
-                        }
-                    }
-
-                    if (temp != null)
-                    {
-                        IRoundMatchup newRoundMatch = source.createRoundMatchup(new RoundMatchup(nextRound.RoundId, temp[0].MatchupId, nextPairingNumber));
-                        if (score1 > score2)
-                        {
-                            source.createMatchupEntry(new MatchupEntry()
-                            {
-                                MatchupId = temp[0].MatchupId,
-                                TournamentEntryId = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[0].TheTeam.TournamentEntryId
-                            });
-                        }
-                        else
-                        {
-                            source.createMatchupEntry(new MatchupEntry()
-                            {
-                                MatchupId = temp[0].MatchupId,
-                                TournamentEntryId = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[1].TheTeam.TournamentEntryId
-                            });
-                        }
-                    }
-                    else
-                    {
-                        IMatchup newMatchup = source.createMatchup(new Matchup());
-                        IRoundMatchup newRoundMatch = source.createRoundMatchup(new RoundMatchup(nextRound.RoundId, newMatchup.MatchupId, nextPairingNumber));
-                        if (score1 > score2)
-                        {
-                            source.createMatchupEntry(new MatchupEntry()
-                            {
-                                MatchupId = newMatchup.MatchupId,
-                                TournamentEntryId = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[0].TheTeam.TournamentEntryId
-                            });
-                        }
-                        else
-                        {
-                            source.createMatchupEntry(new MatchupEntry()
-                            {
-                                MatchupId = newMatchup.MatchupId,
-                                TournamentEntryId = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[1].TheTeam.TournamentEntryId
-                            });
-                        }
-                    }
-
-                }
-
-            }
-            else
-            {
-                //Tournie is over and/or next round doesnt exist
-            }
+            //Set the local Data structure
+            tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[0].Score = score1;
+            tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[1].Score = score2;
 
             bool valid = tournament.RecordResult(tournament.Rounds[selectedRound].Pairings[selectedPairing]);
 
@@ -303,7 +186,98 @@ namespace TBG.UI
                 currItem.imageURL = "Assets/confirm.png";
                 matchupsListBox.Items.Refresh();
             }
-            
+
+            if (tournament.Rounds[selectedRound].Pairings[selectedPairing].NextRound != null)
+            {
+
+
+                IRound nextRound = source.getRoundByTournamentIdandRoundNum(new Round(tournament.TournamentId, nextRoundNumber));
+                if (nextRound == null)
+                {
+                    nextRound = source.createRound(new Round(tournament.TournamentId, nextRoundNumber));
+                }
+                //Only create a new matchup if a matchup with the correct round_id and matchup_number doesn't exist
+                IRoundMatchup roundMatchup = source.getRoundMatchupByRoundIdAndMatchupNumber(new RoundMatchup(nextRound.RoundId, nextPairingNumber));
+                IMatchup newMatchup = null;
+
+                if (roundMatchup == null)
+                {
+                    newMatchup = source.createMatchup(new Matchup());
+                }
+
+                IRoundMatchup newRoundMatchup = null;
+                if (roundMatchup == null)
+                {
+                    newRoundMatchup = source.createRoundMatchup(new RoundMatchup(nextRound.RoundId, newMatchup.MatchupId, nextPairingNumber));
+                }
+
+                if (score1 > score2)
+                {
+                    int temp;
+                    if (newMatchup == null)
+                    {
+                        temp = roundMatchup.MatchupId;
+                    }
+                    else
+                    {
+                        temp = newMatchup.MatchupId;
+                    }
+
+
+                    IMatchupEntry newMatchupEntry = source.createMatchupEntry(new MatchupEntry()
+                    {
+                        MatchupId = temp,
+                        TournamentEntryId = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[0].TheTeam.TournamentEntryId
+                    });
+                    tournament.Rounds[selectedRound + 1].Pairings[nextPairingNumber].MatchupId = temp;
+                    tournament.Rounds[selectedRound + 1].Pairings[nextPairingNumber].Teams[0].TournamentEntryId =  newMatchupEntry.TournamentEntryId;
+                    tournament.Rounds[selectedRound + 1].Pairings[nextPairingNumber].Teams[0].MatchupId = temp;
+                }
+                else
+                {
+                    int temp;
+                    if (newMatchup == null)
+                    {
+                        temp = roundMatchup.MatchupId;
+                    }
+                    else
+                    {
+                        temp = newMatchup.MatchupId;
+                    }
+
+                    IMatchupEntry newMatchupEntry = source.createMatchupEntry(new MatchupEntry()
+                    {
+                        MatchupId = temp,
+                        TournamentEntryId = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[1].TheTeam.TournamentEntryId
+                    });
+
+                    tournament.Rounds[selectedRound + 1].Pairings[nextPairingNumber].MatchupId = temp;
+                    tournament.Rounds[selectedRound + 1].Pairings[nextPairingNumber].Teams[0].TournamentEntryId = newMatchupEntry.TournamentEntryId;
+                    tournament.Rounds[selectedRound + 1].Pairings[nextPairingNumber].Teams[0].MatchupId = temp;
+                }
+            }
+            else //Final Matchup
+            {
+                /*int matchupId = tournament.Rounds[selectedRound].Pairings[selectedPairing].MatchupId;
+
+                if (score1 > score2)
+                {
+                    int tournamentEntryId = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[0].TheTeam.TournamentEntryId;
+                    IMatchupEntry winner = source.getMatchupEntryByMatchupIdAndTournamentEntryId(matchupId, tournamentEntryId);
+                }
+                else
+                {
+                    int tournamentEntryId = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[1].TheTeam.TournamentEntryId;
+
+                    IMatchupEntry winner = source.getMatchupEntryByMatchupIdAndTournamentEntryId(matchupId, tournamentEntryId);
+                }*/
+                tournamentNameLbl.Content += " (Completed)";
+
+                TournamentViewListBoxItem currItem = (TournamentViewListBoxItem)matchupsListBox.Items[selectedPairing];
+                currItem.imageURL = "Assets/confirm.png";
+                matchupsListBox.Items.Refresh();
+            }
+
 
         }
     }

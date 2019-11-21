@@ -60,10 +60,22 @@ namespace TBG.Data.Tables
             return results;
         }
 
-        public static int GetByMatchupIdCount(int matchupId, MySqlConnection dbConn)
+        public static IMatchupEntry GetByMatchupIdAndTournamentEntryId(int matchupId, int tournamentEntryId, MySqlConnection dbConn)
         {
-            List<IMatchupEntry> results = GetByMatchupId(matchupId, dbConn);
-            return results.Count;
+            string query = "SELECT * FROM MatchupEntries WHERE matchup_id = @match AND tournament_entry_id = @entryId";
+            Dictionary<string, string> param = new Dictionary<string, string>();
+            param.Add("@match", matchupId.ToString());
+            param.Add("@entryId", tournamentEntryId.ToString());
+
+            using (var reader = DatabaseHelper.GetReader(query, dbConn, param))
+            {
+                if (reader.HasRows)
+                {
+                    reader.Read();
+                    return ConvertReader(reader);
+                }
+            }
+            return null;
         }
 
         public static IMatchupEntry UpdateScore(int Id, int score, MySqlConnection dbConn)

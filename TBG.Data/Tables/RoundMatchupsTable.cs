@@ -42,20 +42,7 @@ namespace TBG.Data.Tables
             return null;
         }
 
-        public static List<IRoundMatchup> GetAll(MySqlConnection dbConn)
-        {
-            List<IRoundMatchup> result = new List<IRoundMatchup>();
 
-            string query = "SELECT * FROM RoundMatchups";
-            using (var reader = DatabaseHelper.GetReader(query, dbConn))
-            {
-                while (reader.Read())
-                {
-                    result.Add(ConvertReader(reader));
-                }
-            }
-            return result;
-        }
 
         public static List<IRoundMatchup> GetByRoundId(IRoundMatchup entity, MySqlConnection dbConn)
         {
@@ -65,6 +52,39 @@ namespace TBG.Data.Tables
             param.Add("@Id", entity.RoundId.ToString());
 
             using (var reader = DatabaseHelper.GetReader(query, dbConn, param))
+            {
+                while (reader.Read())
+                {
+                    result.Add(ConvertReader(reader));
+                }
+            }
+            return result;
+        }
+
+        public static IRoundMatchup GetByRoundIdAndMatchupId(IRoundMatchup entity, MySqlConnection dbConn)
+        {
+            string query = "SELECT * FROM RoundMatchups WHERE round_id = @roundId AND matchup_number = @matchupNumber";
+            Dictionary<string, string> param = new Dictionary<string, string>();
+            param.Add("@roundId", entity.RoundId.ToString());
+            param.Add("@matchupNumber", entity.MatchupNumber.ToString());
+
+            using (var reader = DatabaseHelper.GetReader(query, dbConn, param))
+            {
+                if (reader.HasRows)
+                {
+                    reader.Read();
+                    return ConvertReader(reader);
+                }
+            }
+            return null;
+        }
+
+        public static List<IRoundMatchup> GetAll(MySqlConnection dbConn)
+        {
+            List<IRoundMatchup> result = new List<IRoundMatchup>();
+
+            string query = "SELECT * FROM RoundMatchups";
+            using (var reader = DatabaseHelper.GetReader(query, dbConn))
             {
                 while (reader.Read())
                 {

@@ -87,11 +87,7 @@ namespace TBG.UI
                             List<IMatchupEntry> matchEntries = source.getMatchupEntriesByMatchupId(matchup.MatchupId);
                             foreach (IMatchupEntry matchupEntry in matchEntries)
                             {
-                                matchupEntry.TheTeam = source.getTournamentEntry(new TournamentEntry()
-                                {
-                                    TournamentEntryId = matchupEntry.TournamentEntryId,
-                                    TournamentId = newTournament.TournamentId
-                                });
+                                matchupEntry.TheTeam = source.getTournamentEntry(matchupEntry.TournamentEntryId);
                             }
                             newTournament.Rounds[i].Pairings[j].Teams = matchEntries;
                         }

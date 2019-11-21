@@ -16,6 +16,7 @@ namespace TBG.UI.Classes
         public Round()
         {
         }
+
         public Round(int tournamentId, int roundNum)
         {
             TournamentId = tournamentId;

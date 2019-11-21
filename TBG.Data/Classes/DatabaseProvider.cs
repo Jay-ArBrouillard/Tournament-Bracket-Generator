@@ -90,9 +90,9 @@ namespace TBG.Data.Classes
             return results;
         }
 
-        public ITournamentEntry getTournamentEntry(ITournamentEntry entry)
+        public ITournamentEntry getTournamentEntry(int id)
         {
-            ITournamentEntry tournament = TournamentEntryTable.GetByTournamentIdAndTeamId(entry, dbConn);
+            ITournamentEntry tournament = TournamentEntryTable.Get(id, dbConn);
             if (tournament == null) { return null; }
 
             return tournament;
@@ -148,6 +148,14 @@ namespace TBG.Data.Classes
             if (roundMatchups == null) { return null; }
 
             return roundMatchups;
+        }
+
+        public IRoundMatchup getRoundMatchupByRoundIdAndMatchupNumber(IRoundMatchup entry)
+        {
+            IRoundMatchup roundMatchup = RoundMatchupsTable.GetByRoundIdAndMatchupId(entry, dbConn);
+            if (roundMatchup == null) { return null; }
+
+            return roundMatchup;
         }
         #endregion
 
@@ -324,7 +332,10 @@ namespace TBG.Data.Classes
 
         public int getMatchupEntryCount(int matchupId)
         {
-            return MatchupEntriesTable.GetByMatchupIdCount(matchupId, dbConn);
+            List<IMatchupEntry> results =  MatchupEntriesTable.GetByMatchupId(matchupId, dbConn);
+            if (results == null) { return -1; }
+
+            return results.Count;
         }
 
         public List<IMatchupEntry> getTournamentEntryIdFromPreviousMatchup(IMatchupEntry matchupEntry)
@@ -333,6 +344,14 @@ namespace TBG.Data.Classes
             if (matchupEntries == null) { return null; }
 
             return matchupEntries;
+        }
+
+        public IMatchupEntry getMatchupEntryByMatchupIdAndTournamentEntryId(int matchupId, int tournamentEntryId)
+        {
+            IMatchupEntry matchupEntry = MatchupEntriesTable.GetByMatchupIdAndTournamentEntryId(matchupId, tournamentEntryId, dbConn);
+            if (matchupEntry == null) return null;
+
+            return matchupEntry;
         }
         #endregion
     }
