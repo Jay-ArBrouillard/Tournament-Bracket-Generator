@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using TBG.Core.Interfaces;
 
-namespace TBG.Business
+namespace TBG.Business.Controllers
 {
-    public class Dashboard
+    public class DashboardController
     {
 
         /// <summary>

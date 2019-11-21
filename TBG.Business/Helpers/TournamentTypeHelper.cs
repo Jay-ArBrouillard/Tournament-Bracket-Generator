@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using TBG.Business.Tournaments;
 using TBG.Core.Interfaces;
 
-namespace TBG.Business
+namespace TBG.Business.Helpers
 {
     public static class TournamentTypeHelper
     {

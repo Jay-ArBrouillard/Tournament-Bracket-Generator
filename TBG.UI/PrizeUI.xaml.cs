@@ -17,7 +17,7 @@ namespace TBG.UI
     public partial class PrizeUI : Window
     {
 
-        private IPrizeController controller;
+        private IPrizeController prizeController;
         private IProvider source;
         private List<IPrize> allPrizes;
         private CreateTournament tournament;
@@ -25,7 +25,7 @@ namespace TBG.UI
         public PrizeUI(CreateTournament tournament)
         {
             InitializeComponent();
-            controller = ApplicationController.getPrizeController();
+            prizeController = ApplicationController.getPrizeController();
             source = ApplicationController.getProvider();
             allPrizes = new List<IPrize>();
             readPrizes();
@@ -34,7 +34,7 @@ namespace TBG.UI
 
         private void createPrizeBtn_Click(object sender, RoutedEventArgs e)
         {
-            IPrize prize = controller.ValidatePrize(placeNameTxtBox.Text, prizeAmtTxtBox.Text);
+            IPrize prize = prizeController.ValidatePrize(placeNameTxtBox.Text, prizeAmtTxtBox.Text);
 
             if (prize != null)
             {

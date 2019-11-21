@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using TBG.Core.Interfaces;
 
-namespace TBG.Business
+namespace TBG.Business.Models
 {
     public class Matchup : IMatchup
     {

@@ -25,14 +25,13 @@ namespace TBG.UI
     public partial class MainWindow : Window
     {
         private IProvider source;
-        private ILoginController business;
-        private IController app;
+        private ILoginController loginController;
+
         public MainWindow()
         {
             InitializeComponent();
             source = ApplicationController.getProvider();
-            business = ApplicationController.getLoginController();
-            app = ApplicationController.getController();
+            loginController = ApplicationController.getLoginController();
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
@@ -54,7 +53,7 @@ namespace TBG.UI
             string pass = passwordTextBox.Password;
             User thisUser = new User(user, pass);
             var userExisting = source.getUser(user);
-            bool validate = business.validateLogin(thisUser, userExisting);
+            bool validate = loginController.validateLogin(thisUser, userExisting);
 
             if (validate)
             {
@@ -88,7 +87,7 @@ namespace TBG.UI
             string pass = passwordTextBox.Password;
             User thisUser = new User(user, pass);
             var userExisting = source.getUser(user);
-            bool validate = business.validateRegister(thisUser, userExisting);
+            bool validate = loginController.validateRegister(thisUser, userExisting);
 
             if (validate)
             {

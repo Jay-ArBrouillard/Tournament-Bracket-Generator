@@ -16,7 +16,7 @@ namespace TBG.UI
     public partial class CreateTournament : Window
     {
         private IProvider source;
-        private ITournamentController tournamentControl;
+        private ITournamentController tournamentController;
         public List<ITeam> teams;   //All existing teams
         public List<ITournamentEntry> teamsInTournament;    //Selected teams. Implements ITournamentEntry
         public List<IPrize> prizes; //All existing prizes
@@ -28,7 +28,7 @@ namespace TBG.UI
         {
             InitializeComponent();
             this.user = user;
-            tournamentControl = ApplicationController.getTournamentController();
+            tournamentController = ApplicationController.getTournamentController();
             source = ApplicationController.getProvider();
             tournamentTypesComboBox.ItemsSource = source.getTournamentTypes();
             teams = source.getAllTeams();
@@ -47,7 +47,7 @@ namespace TBG.UI
         private void SetEntryFee_Click(object sender, RoutedEventArgs e)
         {
             string entryFeeInput = entryFeeTextBox.Text;
-            bool validate = tournamentControl.validateEntryFee(entryFeeInput);
+            bool validate = tournamentController.validateEntryFee(entryFeeInput);
 
             if (validate)
             {
@@ -195,8 +195,8 @@ namespace TBG.UI
 
         private void Create_Tournament_Click(object sender, RoutedEventArgs e)
         {
-            bool validateEntryFee = tournamentControl.validateEntryFee(entryFeeTextBox.Text);
-            bool validateTournamentTypeId = tournamentControl.validateTournamentType((ITournamentType)tournamentTypesComboBox.SelectedItem);
+            bool validateEntryFee = tournamentController.validateEntryFee(entryFeeTextBox.Text);
+            bool validateTournamentTypeId = tournamentController.validateTournamentType((ITournamentType)tournamentTypesComboBox.SelectedItem);
 
             if (!validateEntryFee)
             {
@@ -237,8 +237,8 @@ namespace TBG.UI
             }
 
             tournament.TournamentId = source.createTournament(tournament).TournamentId;    //Add a tournament to TournamentTable
-            tournament.Participants = tournamentControl.ConvertITournmentEntries(teamsInTournament, tournament);  //Convert TournamentEntryView objects to ITournmentEntries
-            ITournament newTournament = tournamentControl.createTournament(tournament);
+            tournament.Participants = tournamentController.ConvertITournmentEntries(teamsInTournament, tournament);  //Convert TournamentEntryView objects to ITournmentEntries
+            ITournament newTournament = tournamentController.createTournament(tournament);
 
             if (newTournament != null)
             {
