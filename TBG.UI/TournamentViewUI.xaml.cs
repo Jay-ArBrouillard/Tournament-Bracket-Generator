@@ -161,11 +161,29 @@ namespace TBG.UI
 
         private void FinalScoreBtn_Click(object sender, RoutedEventArgs e)
         {
-            String teamScore1 = firstTeamScoreTxtBox.Text;
-            String teamScore2 = secondTeamScoreTxtBox.Text;
+            int score1 = -1;
+            int score2 = -1;
 
-            int score1 = int.Parse(teamScore1);
-            int score2 = int.Parse(teamScore2);
+            //Validates score before saving
+            if (validateScore(firstTeamScoreTxtBox.Text) && validateScore(secondTeamScoreTxtBox.Text))
+            {
+                score1 = int.Parse(firstTeamScoreTxtBox.Text);
+                score2 = int.Parse(secondTeamScoreTxtBox.Text);
+            }
+            else
+            {
+                //Gives appropriate error message if one score isn't valid.
+                if (!validateScore(firstTeamScoreTxtBox.Text))
+                {
+                    teamOneInvalidScoreLbl.Content = "Score is not valid";
+                    return;
+                }
+                else
+                {
+                    teamTwoInvalidScoreLbl.Content = "Score is not valid";
+                    return;
+                }
+            }
 
             int selectedRound = roundDropDown.SelectedIndex;
             int selectedPairing = matchupsListBox.SelectedIndex;
@@ -191,9 +209,7 @@ namespace TBG.UI
                                                    tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[1].TheTeam.TournamentEntryId,
                                                    score2);
                 }
-
             }
-
 
 
             //Create next round in local
@@ -241,9 +257,6 @@ namespace TBG.UI
                     TournamentEntryId = theTeams[teamIndex].TheTeam.TournamentEntryId
                 });
 
-                System.Console.WriteLine("Winning team Entry Id: " + tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[teamIndex].TheTeam.TournamentEntryId);
-
-
                 tournament.Rounds[selectedRound + 1].Pairings[nextPairingNumber].MatchupId = nextMatchupId;
 
                 if (tournament.Rounds[selectedRound + 1].Pairings[nextPairingNumber].Teams.Count != 2)
@@ -271,6 +284,11 @@ namespace TBG.UI
             }
 
 
+        }
+
+        private bool validateScore(string score)
+        {
+            return Regex.Match(score, @"^\d+$").Success;
         }
 
         private void UnplayedCheckbox_Checked(object sender, RoutedEventArgs e)
