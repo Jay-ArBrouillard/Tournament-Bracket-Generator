@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.ObjectModel;
 
 namespace TBG.Core.Interfaces
 {
@@ -11,6 +7,7 @@ namespace TBG.Core.Interfaces
         int TournamentEntryId { get; set; }
         int TournamentId { get; set; }
         int TeamId { get; set; }
-        int Seed { get; set; }
+        double Seed { get; set; }
+        ObservableCollection<IPerson> Members { get; set; }
     }
 }

@@ -1,9 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TBG.Core.Interfaces;
 using TBG.Data.Classes;
 using TBG.Data.Entities;
@@ -20,9 +16,9 @@ namespace TBG.Data.Tables
             param.Add("@wins", entity.Wins.ToString());
             param.Add("@losses", entity.Losses.ToString());
 
-            var results = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
-            if (results > 0) { return entity; }
-            return null;
+            var resultsPK = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
+            entity.TeamId = resultsPK;
+            return entity;
         }
 
         public static ITeam Get(int Id, MySqlConnection dbConn)

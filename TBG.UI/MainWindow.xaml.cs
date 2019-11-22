@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TBG.Core.Interfaces;
 using TBG.Driver;
+using TBG.UI.Classes;
 using TBG.UI.Models;
 
 namespace TBG.UI
@@ -24,13 +25,15 @@ namespace TBG.UI
     public partial class MainWindow : Window
     {
         private IProvider source;
-        private ILoginController business;
+        private ILoginController loginController;
+
         public MainWindow()
         {
             InitializeComponent();
             source = ApplicationController.getProvider();
-            business = ApplicationController.getLoginController();
+            loginController = ApplicationController.getLoginController();
         }
+
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
@@ -50,7 +53,7 @@ namespace TBG.UI
             string pass = passwordTextBox.Password;
             User thisUser = new User(user, pass);
             var userExisting = source.getUser(user);
-            bool validate = business.validateLogin(thisUser, userExisting);
+            bool validate = loginController.validateLogin(thisUser, userExisting);
 
             if (validate)
             {
@@ -84,7 +87,7 @@ namespace TBG.UI
             string pass = passwordTextBox.Password;
             User thisUser = new User(user, pass);
             var userExisting = source.getUser(user);
-            bool validate = business.validateRegister(thisUser, userExisting);
+            bool validate = loginController.validateRegister(thisUser, userExisting);
 
             if (validate)
             {

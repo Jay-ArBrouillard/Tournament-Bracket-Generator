@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TBG.UI"
-        xmlns:self="clr-namespace:TBG.UI.Models"
+        xmlns:self="clr-namespace:TBG.UI.Classes"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
         Title="Tournament" Height="550" Width="820">
@@ -31,19 +31,18 @@
         </Grid.RowDefinitions>
 
         <!-- Title -->
-        <TextBlock Grid.Row="1" 
-                   Grid.Column="2" 
-                   Text="Create Tournament" 
+        <TextBlock Grid.Row="1"
+                   Grid.Column="2"
+                   Text="Create Tournament"
                    FontSize="22">
         </TextBlock>
 
         <!-- Tournament Name -->
         <StackPanel Grid.Row="2" Grid.Column="1"  Orientation="Vertical">
-            <TextBlock Text="Tournament Name" 
+            <TextBlock Text="Tournament Name"
                    FontSize="18">
             </TextBlock>
-            <TextBox Text="" 
-                     BorderThickness="2">
+            <TextBox x:Name="tournamentNameTextBox" BorderThickness="2">
             </TextBox>
         </StackPanel>
 
@@ -53,20 +52,8 @@
             <StackPanel Orientation="Horizontal">
                 <TreeView Name="participantsTreeView" Width="220" Height="200">
                     <TreeView.Resources>
-                        <HierarchicalDataTemplate DataType="{x:Type self:TournamentEntryView}" ItemsSource="{Binding Members}">
-                            <StackPanel Orientation="Horizontal" >
-                                <StackPanel.ContextMenu>
-                                    <ContextMenu>
-                                        <MenuItem Header="Edit Seed" >
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="Seed: " VerticalAlignment="Center"/>
-                                                <TextBox x:Name="menuItem_Seed" Text="{Binding Seed, RelativeSource={RelativeSource AncestorType=self:TournamentEntryView}}" Width="60" 
-                                                         Height="30" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" KeyDown="menuItem_Seed_KeyDown"/>
-                                            </StackPanel>
-                                        </MenuItem>
-                                    </ContextMenu>
-                                </StackPanel.ContextMenu>
-                                
+                        <HierarchicalDataTemplate DataType="{x:Type self:TournamentEntry}" ItemsSource="{Binding Members}">
+                            <StackPanel Orientation="Horizontal">
                                 <Image Source="Assets/group.png" Width="15" Height="15" Margin="3"/>
                                 <TextBlock x:Name="teamName" Text="{Binding TeamName}" VerticalAlignment="Center"/>
                                 <TextBlock Text=" [Count: " Foreground="Blue" VerticalAlignment="Center"/>
@@ -77,7 +64,7 @@
                                 <TextBlock Text="]" Foreground="Purple" VerticalAlignment="Center"/>
                             </StackPanel>
                         </HierarchicalDataTemplate>
-                        <DataTemplate DataType="{x:Type self:TeamMember}">
+                        <DataTemplate DataType="{x:Type self:Person}">
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="Assets/person.png" Width="15" Height="15" Margin="3"/>
                                 <TextBlock Text="{Binding FirstName}" Foreground="Green" VerticalAlignment="Center"/>
@@ -127,16 +114,16 @@
                 <ToggleButton x:Name="SeedToggle" Content="Enable Seeding" Width="100" Margin="10,0,0,0" Checked="SeedToggle_Checked" Unchecked="SeedToggle_Unchecked"/>
             </StackPanel>
 
-            <TextBox x:Name="entryFeeTextBox" Text="" BorderThickness="2" Margin="0,5,0,0"/>
+            <TextBox x:Name="entryFeeTextBox" Text="0" BorderThickness="2" Margin="0,5,0,0"/>
         </StackPanel>
 
         <!-- Tournament Type -->
         <StackPanel Grid.Row="4" Grid.Column="1"  Orientation="Vertical" Margin="0,10,0,0">
-            <TextBlock Text="Tournament Type" 
+            <TextBlock Text="Tournament Type"
                    FontSize="18">
             </TextBlock>
 
-            <ComboBox x:Name="tournamentTypesComboBox">
+            <ComboBox x:Name="tournamentTypesComboBox" SelectedIndex="0">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding TournamentTypeName}"/>
@@ -148,7 +135,7 @@
         <!-- Select Team -->
         <StackPanel Grid.Row="5" Grid.Column="1"  Orientation="Vertical" Margin="0,10,0,0">
             <StackPanel Orientation="Horizontal">
-                <TextBlock Text="Select Teams" 
+                <TextBlock Text="Select Teams"
                    FontSize="18">
                 </TextBlock>
                 <Button Content="Create New Team" Click="Create_New_Team_Click" Margin="10,0,0,0"></Button>
@@ -173,12 +160,15 @@
 
         <!-- Select Prizes -->
         <StackPanel Grid.Row="6" Grid.Column="1"  Height="20" Orientation="Horizontal" Margin="0,20,0,0" VerticalAlignment="Top">
-            <TextBlock Text="Select Prizes" 
+            <TextBlock Text="Select Prizes"
                    FontSize="18">
             </TextBlock>
             <Button Content="Create New Prize" Click="Create_New_Prize_Click" Margin="10,0,0,0" Height="20" Width="100"/>
         </StackPanel>
-        
+
+        <!-- Error Messages -->
+        <TextBlock x:Name="errorMessages" Grid.Row="6" Grid.Column="2" Grid.ColumnSpan="2" Foreground="Red" HorizontalAlignment="Right"></TextBlock>
+
         <!-- Prizes ComboBox -->
         <ComboBox x:Name="prizeComboBox" Grid.Row="7" Grid.Column="1" Margin="0,5,0,0" SelectionChanged="PrizeComboBox_Selected">
             <ComboBox.ItemTemplate>

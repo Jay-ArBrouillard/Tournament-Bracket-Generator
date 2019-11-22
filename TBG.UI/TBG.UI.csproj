@@ -65,12 +65,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Models\Person.cs" />
-    <Compile Include="Models\Prize.cs" />
-    <Compile Include="Models\Team.cs" />
-    <Compile Include="Models\TeamMember.cs" />
-    <Compile Include="Models\Tournament.cs" />
-    <Compile Include="Models\TournamentEntryView.cs" />
+    <Compile Include="Classes\Matchup.cs" />
+    <Compile Include="Classes\MatchupEntry.cs" />
+    <Compile Include="Classes\Person.cs" />
+    <Compile Include="Classes\Prize.cs" />
+    <Compile Include="Classes\Round.cs" />
+    <Compile Include="Classes\RoundMatchup.cs" />
+    <Compile Include="Classes\Team.cs" />
+    <Compile Include="Classes\Tournament.cs" />
+    <Compile Include="Classes\TournamentEntry.cs" />
+    <Compile Include="Classes\TournamentPrize.cs" />
+    <Compile Include="Models\TournamentViewDataGridItem.cs" />
+    <Compile Include="Models\TournamentViewListBoxItem.cs" />
     <Compile Include="PrizeUI.xaml.cs">
       <DependentUpon>PrizeUI.xaml</DependentUpon>
     </Compile>
@@ -79,6 +85,9 @@
     </Compile>
     <Compile Include="CreateTournament.xaml.cs">
       <DependentUpon>CreateTournament.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TournamentViewUI.xaml.cs">
+      <DependentUpon>TournamentViewUI.xaml</DependentUpon>
     </Compile>
     <Page Include="Dashboard.xaml">
       <SubType>Designer</SubType>
@@ -111,10 +120,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="TournamentViewUI.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\TournamentListBoxItem.cs" />
-    <Compile Include="Models\User.cs" />
+    <Compile Include="Classes\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -165,6 +178,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Assets\trophy.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\x-button.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\confirm.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

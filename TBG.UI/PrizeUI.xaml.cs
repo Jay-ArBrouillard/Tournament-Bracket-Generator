@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using TBG.Core.Interfaces;
 using TBG.Driver;
+using TBG.UI.Classes;
 using TBG.UI.Models;
 
 namespace TBG.UI
@@ -16,7 +17,7 @@ namespace TBG.UI
     public partial class PrizeUI : Window
     {
 
-        private IPrizeController controller;
+        private IPrizeController prizeController;
         private IProvider source;
         private List<IPrize> allPrizes;
         private CreateTournament tournament;
@@ -24,7 +25,7 @@ namespace TBG.UI
         public PrizeUI(CreateTournament tournament)
         {
             InitializeComponent();
-            controller = ApplicationController.getPrizeController();
+            prizeController = ApplicationController.getPrizeController();
             source = ApplicationController.getProvider();
             allPrizes = new List<IPrize>();
             readPrizes();
@@ -33,17 +34,20 @@ namespace TBG.UI
 
         private void createPrizeBtn_Click(object sender, RoutedEventArgs e)
         {
-            IPrize prize = controller.ValidatePrize(placeNameTxtBox.Text,  prizeAmtTxtBox.Text);
+            IPrize prize = prizeController.ValidatePrize(placeNameTxtBox.Text, prizeAmtTxtBox.Text);
 
             if (prize != null)
             {
                 //Creates a new prize with valid information
                 IPrize newPrize = source.createPrize(prize);
                 readPrizes();
-                List<IPrize> prizesInTournment = tournament.prizesInTournament;
+                List<ITournamentPrize> prizesInTournment = tournament.prizesInTournament;
                 List<IPrize> allPrizes = tournament.prizes;
                 allPrizes.Add(newPrize);
-                prizesInTournment.Add(newPrize);
+                prizesInTournment.Add(new TournamentPrize()
+                {
+                    
+                });
                 tournament.prizeComboBox.ItemsSource = allPrizes;
                 tournament.prizesListBox.ItemsSource = prizesInTournment;
                 tournament.prizeComboBox.Items.Refresh();

@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace TBG.Core.Interfaces
 {
     public interface IProvider
     {
-        bool createTournament(ITournament entry);
+        ITournament createTournament(ITournament entry);
+        ITournament deleteTournament(ITournament entry);
+        ITournament getTournamentByName(string entry);
+        List<ITournamentEntry> createTournamentEntries(List<ITournamentEntry> entry);
+        IRound createRound(IRound entry);
         ITeam createTeam(ITeam entry);
         ITeam getTeam(string teamName);
+        ITeam getTeam(int teamId);
         List<ITeam> getAllTeams();
         IPerson createPerson(IPerson entry);
         IPerson getPerson(int personId);
@@ -24,5 +25,19 @@ namespace TBG.Core.Interfaces
         IPrize createPrize(IPrize prize);
         List<ITeamMember> getTeamMembersByTeamId(int teamId);
         List<IPrize> getAllPrizes();
+        List<ITournamentEntry> getTournamentEntriesByTournamentId(int tournamentId);
+        IMatchup createMatchup(IMatchup entry);
+        IMatchupEntry createMatchupEntry(IMatchupEntry matchupEntry);
+        IRoundMatchup createRoundMatchup(IRoundMatchup roundMatchup);
+        IMatchup getMatchup(int matchupId);
+        IRound getRoundByTournamentIdandRoundNum(IRound round);
+        List<IRoundMatchup> getRoundMatchupsByRoundId(IRoundMatchup currRound);
+        List<IMatchupEntry> getMatchupEntriesByMatchupId(int matchupId);
+        IMatchupEntry updateMatchupEntryScore(int matchupId, int tournamentEntryId, int score);
+        void setupTournamentData(ITournament newTournament);
+        ITournamentEntry getTournamentEntry(int tournamentEntryId);
+        List<IRound> getRoundsByTournamentId(int tournamentId);
+        IRoundMatchup getRoundMatchupByRoundIdAndMatchupNumber(IRoundMatchup roundMatchup);
+        ITournament updateTournamentName(ITournament entry);
     }
 }

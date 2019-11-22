@@ -1,10 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
 using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TBG.Core.Interfaces;
 using TBG.Data.Classes;
 using TBG.Data.Entities;
@@ -21,10 +16,9 @@ namespace TBG.Data.Tables
             param.Add("@amount", entity.PrizeAmount.ToString());
             param.Add("@percent", entity.PrizePercent.ToString());
 
-            var results = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
-
-            if (results > 0) { return entity; }
-            return null;
+            var resultsPK = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
+            entity.PrizeId = resultsPK;
+            return entity;
         }
 
         public static IPrize Get(int Id, MySqlConnection dbConn)
