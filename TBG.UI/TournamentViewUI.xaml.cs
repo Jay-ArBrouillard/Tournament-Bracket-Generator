@@ -20,7 +20,6 @@ namespace TBG.UI
         private IProvider source;
         private ITournament tournament;
         private Boolean initialization = true;
-        private List<TournamentViewListBoxItem> allMatchupItems = new List<TournamentViewListBoxItem>();
 
         public TournamentViewUI(ITournament inTourney)
         {
@@ -123,7 +122,6 @@ namespace TBG.UI
 
         private void populateMatchupListBox(int selectedRound)
         {
-            allMatchupItems.Clear();
             IRound thisRound = source.getRoundByTournamentIdandRoundNum(new Round(tournament.TournamentId, selectedRound + 1));
 
             if (thisRound != null)
@@ -151,10 +149,6 @@ namespace TBG.UI
                             Team2Name = source.getTeam(tournamentEntry2.TeamId).TeamName,
                             imageURL = imageURLString
                         };
-                        allMatchupItems.Add(matchupsItem);
-
-                        firstTeamScoreTxtBox.Text = matchupEntries[0].Score.ToString();
-                        firstTeamScoreTxtBox.Text = matchupEntries[1].Score.ToString();
                         matchupsListBox.Items.Add(matchupsItem);
                     }
                 }
@@ -182,13 +176,24 @@ namespace TBG.UI
             tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[0].Score = score1;
             tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[1].Score = score2;
 
-            //Set database scores
-            source.updateMatchupEntryScore(tournament.Rounds[selectedRound].Pairings[selectedPairing].MatchupId,
-                                           tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[0].TournamentEntryId,
-                                           score1);
-            source.updateMatchupEntryScore(tournament.Rounds[selectedRound].Pairings[selectedPairing].MatchupId,
-                                           tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[1].TournamentEntryId,
-                                           score2);
+            IRound thisRound = source.getRoundByTournamentIdandRoundNum(new Round(tournament.TournamentId, selectedRound + 1));
+            if (thisRound != null)
+            {
+                IRoundMatchup thisRoundMatchup = source.getRoundMatchupByRoundIdAndMatchupNumber(new RoundMatchup(thisRound.RoundId, selectedPairing));
+
+                if (thisRoundMatchup != null)
+                {
+                    //Set database scores
+                    source.updateMatchupEntryScore(thisRoundMatchup.MatchupId,
+                                                   tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[0].TheTeam.TournamentEntryId,
+                                                   score1);
+                    source.updateMatchupEntryScore(thisRoundMatchup.MatchupId,
+                                                   tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[1].TheTeam.TournamentEntryId,
+                                                   score2);
+                }
+
+            }
+
 
 
             //Create next round in local
