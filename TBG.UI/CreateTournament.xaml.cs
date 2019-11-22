@@ -90,7 +90,7 @@ namespace TBG.UI
                         Phone = person.Phone,
                         Wins = person.Wins,
                         Losses = person.Losses
-                    }); 
+                    });
                 }
 
                 results.Add(new TournamentEntry() {

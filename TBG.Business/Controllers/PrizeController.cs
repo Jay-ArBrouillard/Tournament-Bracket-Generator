@@ -9,7 +9,6 @@ namespace TBG.Business.Controllers
     {
         public IPrize ValidatePrize(String inName, String inPerc)
         {
-
             if (inName == null || inPerc == null)
                 return null;
 
@@ -19,19 +18,20 @@ namespace TBG.Business.Controllers
             if (!isValidPercent(inPerc))
                 return null;
 
-
             IPrize prize = buildPrize(inName, inPerc);
             return prize;
         }
 
         private IPrize buildPrize(String inName, String inPerc)
         {
-            IPrize prize = new Prize();
-            prize.PrizeAmount = 0;
-            prize.PrizeName = inName;
+            IPrize prize = new Prize
+            {
+                PrizeAmount = 0,
+                PrizeName = inName
+            };
 
-             //Converts prize percent to a double
-            decimal prizePerc = 0;
+            //Converts prize percent to a double
+            decimal prizePerc;
             if (inPerc.Contains("%"))
             {
                 string temp = inPerc.Substring(0, inPerc.Length - 1);
