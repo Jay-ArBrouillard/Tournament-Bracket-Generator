@@ -8,7 +8,7 @@ namespace TBG.Business.Models
         public int TournamentEntryId { get; set; }
         public int TournamentId { get; set; }
         public int TeamId { get; set; }
-        public int Seed { get; set; }
+        public double Seed { get; set; }
         public ObservableCollection<IPerson> Members { get; set; }
     }
 }

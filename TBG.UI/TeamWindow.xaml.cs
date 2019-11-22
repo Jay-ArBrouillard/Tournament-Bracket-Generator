@@ -182,7 +182,7 @@ namespace TBG.UI
                 List<ITournamentEntry> teams = tournament.teamsInTournament;
                 ITournamentEntry convertedTeam = convertToTeam(new List<ITeam>() { createdTeam })[0];
                 ObservableCollection<IPerson> teamMembers = new ObservableCollection<IPerson>();
-                foreach (IPerson teamMember in source.getTeamMembersByTeamId(createdTeam.TeamId))
+                foreach (ITeamMember teamMember in source.getTeamMembersByTeamId(createdTeam.TeamId))
                 {
                     IPerson person = source.getPerson(teamMember.PersonId);
                     teamMembers.Add(new Person()
@@ -216,7 +216,7 @@ namespace TBG.UI
             {
                 ObservableCollection<IPerson> teamMembers = new ObservableCollection<IPerson>();
                 int teamId = team.TeamId;
-                foreach (IPerson teamMember in source.getTeamMembersByTeamId(teamId))
+                foreach (ITeamMember teamMember in source.getTeamMembersByTeamId(teamId))
                 {
                     IPerson person = source.getPerson(teamMember.PersonId);
                     teamMembers.Add(new Person()

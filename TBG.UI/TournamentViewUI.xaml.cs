@@ -208,6 +208,7 @@ namespace TBG.UI
                     source.updateMatchupEntryScore(thisRoundMatchup.MatchupId,
                                                    tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[1].TheTeam.TournamentEntryId,
                                                    score2);
+                    scoreRecordedLbl.Content = "Score recorded successfully";
                 }
             }
 

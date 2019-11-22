@@ -52,23 +52,6 @@ namespace TBG.Business.Controllers
             if (!tournamentName.Equals("Single Elimination")) { return false; }
             return true;
         }
-
-        public List<ITournamentEntry> ConvertITournmentEntries(List<ITournamentEntry> tournmentEntries, ITournament tournament)
-        {
-            List<ITournamentEntry> results = new List<ITournamentEntry>();
-            foreach (ITournamentEntry entry in tournmentEntries)
-            {
-                ITournamentEntry tournamentEntry = new TournamentEntry()
-                {
-                    TournamentId = tournament.TournamentId,
-                    TeamId = entry.TeamId,
-                    Seed = 0    //CHANGE later when seeding is implemented
-                };
-                results.Add(tournamentEntry);
-            }
-
-            return results;
-        }
     
     }
 }

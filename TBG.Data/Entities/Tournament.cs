@@ -12,6 +12,7 @@ namespace TBG.Data.Entities
         public double EntryFee { get; set; }
         public double TotalPrizePool { get; set; }
         public int TournamentTypeId { get; set; }
+        public List<ITeam> Teams { get; set; }
         public List<ITeam> Participants { get; set; }
         public List<ITournamentPrize> Prizes { get; set; }
         public List<IRound> Rounds { get; set; }

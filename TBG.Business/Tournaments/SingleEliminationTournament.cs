@@ -14,12 +14,22 @@ namespace TBG.Business.Tournaments
         public double EntryFee { get; set; }
         public double TotalPrizePool { get; set; }
         public int TournamentTypeId { get; set; }
+        public List<ITeam> Teams { get; set; }
         public List<ITournamentEntry> Participants { get; set; } 
         public List<IPrize> Prizes { get; set; }
         public List<IRound> Rounds { get; set; } 
         
         public ITournament BuildTournament()
         {
+            Participants = Participants.OrderByDescending(x => x.Seed).ToList();
+            List<ITournamentEntry> seededParticipants = new List<ITournamentEntry>();
+            for (int i = 0; i < Participants.Count / 2; i++)
+            {
+                seededParticipants.Add(Participants[i]);
+                seededParticipants.Add(Participants[Participants.Count-1-i]);
+            }
+            Participants = seededParticipants;
+
             var teamQueue = BuildTeamQueue();
 
             AddRounds();

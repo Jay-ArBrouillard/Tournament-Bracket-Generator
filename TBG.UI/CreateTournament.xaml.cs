@@ -23,6 +23,7 @@ namespace TBG.UI
         public List<ITournamentPrize> prizesInTournament;  //Selected prizes
         public double prizePool;
         private IUser user;
+        private ITournament tournament;
 
         public CreateTournament(IUser user)
         {
@@ -34,6 +35,7 @@ namespace TBG.UI
             teams = source.getAllTeams();
             teamsInTournament = new List<ITournamentEntry>();
             selectionListBox.ItemsSource = teams;
+            tournament = new Tournament();
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -114,6 +116,7 @@ namespace TBG.UI
                     selectedTeams.Add(team);
                 }
             }
+            tournament.Teams.AddRange(selectedTeams);
             //Add selected teams to TreeView and Tournaments list
             teamsInTournament.AddRange(convertToTeam(selectedTeams));
             participantsTreeView.ItemsSource = teamsInTournament;
@@ -214,30 +217,23 @@ namespace TBG.UI
             errorMessages.Text = "";
             entryFeeTextBox.BorderBrush = new SolidColorBrush(Colors.DarkGray);
 
-            ITournament tournament = null;
-            if (!string.IsNullOrEmpty(entryFeeTextBox.Text) && !string.IsNullOrEmpty(totalPrizePool.Text))
-            {
-                tournament = new Tournament()
-                {
-                    TournamentName = tournamentNameTextBox.Text,
-                    EntryFee = int.Parse(entryFeeTextBox.Text),
-                    TournamentTypeId = ((ITournamentType)tournamentTypesComboBox.SelectedItem).TournamentTypeId,
-                    TotalPrizePool = int.Parse(totalPrizePool.Text),
-                    UserId = user.UserId,
-                };
-            }
-            else
-            {
-                tournament = new Tournament()
-                {
-                    TournamentName = tournamentNameTextBox.Text,
-                    TournamentTypeId = ((ITournamentType)tournamentTypesComboBox.SelectedItem).TournamentTypeId,
-                    UserId = user.UserId,
-                };
-            }
+            tournament.TournamentName = tournamentNameTextBox.Text;
+            tournament.TournamentTypeId = ((ITournamentType)tournamentTypesComboBox.SelectedItem).TournamentTypeId;
+            tournament.UserId = user.UserId;
+            tournament.EntryFee = int.Parse(entryFeeTextBox.Text);
+            tournament.TotalPrizePool = int.Parse(totalPrizePool.Text);
 
             tournament.TournamentId = source.createTournament(tournament).TournamentId;    //Add a tournament to TournamentTable
-            tournament.Participants = tournamentController.ConvertITournmentEntries(teamsInTournament, tournament);  //Convert TournamentEntryView objects to ITournmentEntries
+            teamsInTournament.ForEach(x => x.TournamentId = tournament.TournamentId);
+            tournament.Participants = teamsInTournament;
+
+            foreach (var p in tournament.Participants)
+            {
+                var team = tournament.Teams.Where(x => x.TeamId == p.TeamId).First();
+                p.Seed = calculateWinPercentage(team.Wins, team.Losses);
+            }
+
+
             ITournament newTournament = tournamentController.createTournament(tournament);
 
             if (newTournament != null)
@@ -251,6 +247,16 @@ namespace TBG.UI
                 errorMessages.Text = "Must define tournament name and teams in order to continue";
                 source.deleteTournament(tournament);
             }
+        }
+
+        private double calculateWinPercentage(int wins, int losses)
+        {
+            if (wins + losses == 0)
+            {
+                return 1;
+            }
+
+            return (double) wins /  (wins + losses);
         }
     }
 }
