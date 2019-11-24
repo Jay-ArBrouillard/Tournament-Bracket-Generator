@@ -15,9 +15,17 @@ namespace TBG.Business.Tournaments
         public double TotalPrizePool { get; set; }
         public int TournamentTypeId { get; set; }
         public List<ITeam> Teams { get; set; }
-        public List<ITournamentEntry> Participants { get; set; } 
+        public List<ITournamentEntry> Participants { get; set; }
         public List<IPrize> Prizes { get; set; }
-        public List<IRound> Rounds { get; set; } 
+        public List<IRound> Rounds { get; set; }
+
+        public SingleEliminationTournament()
+        {
+            Teams = new List<ITeam>();
+            Participants = new List<ITournamentEntry>();
+            Prizes = new List<IPrize>();
+            Rounds = new List<IRound>();
+        }
         
         public ITournament BuildTournament()
         {
@@ -48,6 +56,12 @@ namespace TBG.Business.Tournaments
             return this;
         }
 
+        public ITournament RebuildTournament()
+        {
+            //Look at data in the tournament, and build the object from what exists
+            return this;
+        }
+
         public bool RecordResult(IMatchup matchup)
         {
             var winner = CreateWinnerMatchupEntry(matchup.Teams.OrderByDescending(x => x.Score).First());
@@ -75,8 +89,7 @@ namespace TBG.Business.Tournaments
             {
                 Rounds.Add(new Round()
                 {
-                    RoundNum = i,
-                    TournamentId = TournamentId
+                    RoundNum = i
                 });
             }
         }

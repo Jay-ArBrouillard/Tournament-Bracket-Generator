@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Linq;
 using TBG.Core.Interfaces;
 using TBG.Data.Entities;
 using TBG.Data.Tables;
@@ -30,8 +31,13 @@ namespace TBG.Data.Classes
         public ITournament createTournament(ITournament entry)
         {
             ITournament tournament = TournamentTable.Create(entry, dbConn);
+
             if (tournament == null) { return null; }
 
+            entry.Participants.ForEach(x => x.TournamentId = tournament.TournamentId);
+            entry.Rounds.ForEach(x => x.TournamentId = tournament.TournamentId);
+            setupTournamentData(tournament);
+            
             return tournament;
         }
 
@@ -75,10 +81,32 @@ namespace TBG.Data.Classes
 
         public ITournament getTournamentByName(string entry)
         {
-            //Create Tournament Record
-            //Create Cross Reference Records For Tournament/Team/Player
             ITournament tournament = TournamentTable.GetTournamentByName(entry, dbConn);
             if (tournament == null) { return null; }
+
+            var tournamentEntries = TournamentEntryTable.GetAll(dbConn);
+            var rounds = RoundsTable.GetAll(dbConn);
+            var roundMatchups = RoundMatchupsTable.GetAll(dbConn);
+            var matchups = MatchupsTable.GetAll(dbConn);
+            var matchupEntries = MatchupEntriesTable.GetAll(dbConn);
+
+
+            tournament.Participants = tournamentEntries.Where(x => x.TournamentId == tournament.TournamentId).ToList();
+            tournament.Rounds = rounds.Where(x => x.TournamentId == tournament.TournamentId).ToList();
+
+            foreach(var round in tournament.Rounds)
+            {
+                var xref = roundMatchups.Where(x => x.RoundId == round.RoundId).ToList();
+                round.Pairings = matchups.Where(x => xref.Select(y => y.MatchupId).ToList().Contains(x.MatchupId)).ToList();
+                foreach(var matchup in round.Pairings)
+                {
+                    matchup.Teams = matchupEntries.Where(x => x.MatchupId == matchup.MatchupId).ToList();
+                    foreach(var team in matchup.Teams)
+                    {
+                        team.TheTeam = tournamentEntries.Where(x => x.TournamentEntryId == team.TournamentEntryId).First();
+                    }
+                }
+            }
 
             return tournament;
         }

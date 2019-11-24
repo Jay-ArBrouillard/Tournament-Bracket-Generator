@@ -50,9 +50,9 @@ namespace TBG.UI
         private void SetEntryFee_Click(object sender, RoutedEventArgs e)
         {
             string entryFeeInput = entryFeeTextBox.Text;
-            bool validate = tournamentController.validateEntryFee(entryFeeInput);
+            var validate = tournamentController.validateEntryFee(entryFeeInput);
 
-            if (validate)
+            if (validate != -1)
             {
                 if (int.TryParse(entryFeeInput, out int value))
                 {
@@ -112,7 +112,7 @@ namespace TBG.UI
             {
                 bool isDuplicate = teamsInTournament.Where(t => t.TeamId == team.TeamId).Any();
 
-                if (isDuplicate == false)
+                if (!isDuplicate)
                 {
                     selectedTeams.Add(team);
                 }
@@ -202,51 +202,62 @@ namespace TBG.UI
 
         private void Create_Tournament_Click(object sender, RoutedEventArgs e)
         {
-            bool validateEntryFee = tournamentController.validateEntryFee(entryFeeTextBox.Text);
-            bool validateTournamentTypeId = tournamentController.validateTournamentType((ITournamentType)tournamentTypesComboBox.SelectedItem);
+            var tournamentName = tournamentNameTextBox.Text;
+            var entryFee = entryFeeTextBox.Text;
+            var TournamentType = (ITournamentType)tournamentTypesComboBox.SelectedItem;
+            var prizePool = totalPrizePool.Text;
+            var numParticipants = teamsInTournament.Count;
 
-            if (!validateEntryFee)
+            var validTournamentName = tournamentController.validateTournamentName(tournamentName);
+            var validEntryFee = tournamentController.validateEntryFee(entryFee);
+            var validTournamentTypeId = tournamentController.validateTournamentType(TournamentType);
+            var validParticipantCount = tournamentController.validateParticipantCount(numParticipants);
+            var validTotalPrizePool = tournamentController.validateTotalPrizePool(prizePool, numParticipants, validEntryFee);
+
+            if (!validTournamentName)
+            {
+                errorMessages.Text = "Please enter a tournament name";
+                return;
+            }           
+
+            if (validEntryFee == -1)
             {
                 errorMessages.Text = "Entry Fee must be an number (ex: 100 or 100.0)";
                 entryFeeTextBox.BorderBrush = new SolidColorBrush(Colors.Red);
                 return;
             }
 
-            if (!validateTournamentTypeId)
+            if (!validTournamentTypeId)
             {
                 errorMessages.Text = "Please select a Tournament Type";
+                return;
+            }
+
+            if (!validParticipantCount)
+            {
+                errorMessages.Text = "Please add a valid amount of teams to the tournament";
+                return;
+            }
+
+            if (validTotalPrizePool == -1)
+            {
+                errorMessages.Text = "Prize pool is not valid";
                 return;
             }
 
             errorMessages.Text = "";
             entryFeeTextBox.BorderBrush = new SolidColorBrush(Colors.DarkGray);
 
-            tournament.TournamentName = tournamentNameTextBox.Text;
-            tournament.TournamentTypeId = ((ITournamentType)tournamentTypesComboBox.SelectedItem).TournamentTypeId;
-            tournament.UserId = user.UserId;
-            tournament.EntryFee = int.Parse(entryFeeTextBox.Text);
-            tournament.TotalPrizePool = int.Parse(totalPrizePool.Text);
-
-            tournament.TournamentId = source.createTournament(tournament).TournamentId;    //Add a tournament to TournamentTable
-            teamsInTournament.ForEach(x => x.TournamentId = tournament.TournamentId);
-            tournament.Participants = teamsInTournament;
-
-            bool useHiLoSeeding = tournament.Participants.Any(x => x.Seed > 0);
-            if (useHiLoSeeding)
-            {
-                foreach (var p in tournament.Participants)
-                {
-                    var team = tournament.Teams.Where(x => x.TeamId == p.TeamId).First();
-                    p.Seed = calculateWinPercentage(team.Wins, team.Losses);
-                }
-            }
-
-
-            ITournament newTournament = tournamentController.createTournament(tournament);
+            ITournament newTournament = tournamentController.createTournament(tournamentName, 
+                TournamentType, 
+                user.UserId, 
+                validEntryFee, 
+                validTotalPrizePool, 
+                teamsInTournament);
 
             if (newTournament != null)
             {
-                source.setupTournamentData(newTournament);
+                newTournament = source.createTournament(newTournament); //Create Entire Tournament, Set IDs Inside
                 TournamentViewUI viewUI = new TournamentViewUI(newTournament);
                 viewUI.Show();
                 this.Close();
@@ -254,7 +265,6 @@ namespace TBG.UI
             else //error
             {
                 errorMessages.Text = "Must define tournament name and teams in order to continue";
-                source.deleteTournament(tournament);
             }
         }
 

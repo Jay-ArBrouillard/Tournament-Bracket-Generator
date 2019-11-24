@@ -58,63 +58,9 @@ namespace TBG.UI
             //Only load tournament if one is selected
             if (tournamentList.SelectedIndex == -1) return;
 
-            //Look at selected item in tournamentList, pass that id to Tournament
-            ITournament selectedTournament = source.getTournamentByName(allTournaments[tournamentList.SelectedIndex].TournamentName);
-
-            ITournament newTournament = new Tournament()
-            {
-                TournamentId = selectedTournament.TournamentId,
-                UserId = selectedTournament.UserId,
-                TournamentName = selectedTournament.TournamentName,
-                EntryFee = selectedTournament.EntryFee,
-                TotalPrizePool = selectedTournament.TotalPrizePool,
-                TournamentTypeId = selectedTournament.TournamentTypeId
-            };
-            newTournament.Participants = source.getTournamentEntriesByTournamentId(selectedTournament.TournamentId);
-            newTournament = tournamentController.createTournament(newTournament);
-            List<IRound> existingRounds = source.getRoundsByTournamentId(newTournament.TournamentId);
-            for (int i = 0; i < existingRounds.Count; i++)
-            {
-                List<IRoundMatchup> roundMatchups = source.getRoundMatchupsByRoundId(new RoundMatchup(existingRounds[i].RoundId));
-                if (roundMatchups.Count > 0)
-                {
-                    for (int j = 0; j < roundMatchups.Count; j++)
-                    {
-                        List<IMatchupEntry> matchupEntries = source.getMatchupEntriesByMatchupId(roundMatchups[j].MatchupId);
-
-                        if (i != 0)
-                        {
-                            IMatchup matchup = source.getMatchup(matchupEntries[j].MatchupId);
-                            List<IMatchupEntry> matchEntries = source.getMatchupEntriesByMatchupId(matchup.MatchupId);
-                            foreach (IMatchupEntry matchupEntry in matchEntries)
-                            {
-                                matchupEntry.TheTeam = source.getTournamentEntry(matchupEntry.TournamentEntryId);
-                            }
-                            newTournament.Rounds[i].Pairings[j].Teams = matchEntries;
-                        }
-
-                        newTournament.Rounds[i].Pairings[j].MatchupId = roundMatchups[j].MatchupId;
-
-                        if (matchupEntries.Count == 1)
-                        {
-                            newTournament.Rounds[i].Pairings[j].Teams[0].Score = matchupEntries[0].Score;
-                            newTournament.Rounds[i].Pairings[j].Teams[0].MatchupId = matchupEntries[0].MatchupId;
-                            newTournament.Rounds[i].Pairings[j].Teams[0].TheTeam.TournamentEntryId = matchupEntries[0].TournamentEntryId;
-                        }
-                        else if (matchupEntries.Count == 2)
-                        {
-                            newTournament.Rounds[i].Pairings[j].Teams[0].Score = matchupEntries[0].Score;
-                            newTournament.Rounds[i].Pairings[j].Teams[1].Score = matchupEntries[1].Score;
-                            newTournament.Rounds[i].Pairings[j].Teams[0].MatchupId = matchupEntries[0].MatchupId;
-                            newTournament.Rounds[i].Pairings[j].Teams[1].MatchupId = matchupEntries[1].MatchupId;
-                            newTournament.Rounds[i].Pairings[j].Teams[0].TheTeam.TournamentEntryId = matchupEntries[0].TournamentEntryId;
-                            newTournament.Rounds[i].Pairings[j].Teams[1].TheTeam.TournamentEntryId = matchupEntries[1].TournamentEntryId;
-                        }
-                    }
-                }
-            }
-
-            TournamentViewUI viewUI = new TournamentViewUI(newTournament);
+            var selectedTournament = source.getTournamentByName(allTournaments[tournamentList.SelectedIndex].TournamentName);
+            selectedTournament = tournamentController.rebuildTournament(selectedTournament);
+            TournamentViewUI viewUI = new TournamentViewUI(selectedTournament);
             viewUI.Show();
         }
 

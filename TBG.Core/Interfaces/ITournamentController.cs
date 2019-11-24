@@ -4,8 +4,19 @@ namespace TBG.Core.Interfaces
 {
     public interface ITournamentController
     {
-        bool validateEntryFee(string number);
-        ITournament createTournament(ITournament tournament);
+        double validateEntryFee(string number);
         bool validateTournamentType(ITournamentType tournamentType);
+        bool validateTournamentName(string name);
+        bool validateParticipantCount(int count);
+        double validateTotalPrizePool(string pool, int numParticipants, double EntryFee);
+        ITournament createTournament(
+            string tournamentName, 
+            ITournamentType tournamentTypeId, 
+            int userId, 
+            double entryFee, 
+            double totalPrizePool,
+            List<ITournamentEntry> participants
+        );
+        ITournament rebuildTournament(ITournament savedTournament);
     }
 }

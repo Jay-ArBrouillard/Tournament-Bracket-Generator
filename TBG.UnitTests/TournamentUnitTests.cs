@@ -20,7 +20,7 @@ namespace TBG.UnitTests
             TournamentController tournamentController = new TournamentController();
 
             //Act
-            bool valid = tournamentController.validateEntryFee("abc");
+            bool valid = tournamentController.validateEntryFee("abc") != -1;
 
             //Assert
             Assert.IsFalse(valid);
@@ -33,7 +33,7 @@ namespace TBG.UnitTests
             TournamentController tournamentController = new TournamentController();
 
             //Act
-            bool valid = tournamentController.validateEntryFee("!0");
+            bool valid = tournamentController.validateEntryFee("!0") != -1;
 
             //Assert
             Assert.IsFalse(valid);
@@ -46,7 +46,7 @@ namespace TBG.UnitTests
             TournamentController tournamentController = new TournamentController();
 
             //Act
-            bool valid = tournamentController.validateEntryFee("100");
+            bool valid = tournamentController.validateEntryFee("100") != -1;
 
             //Assert
             Assert.IsTrue(valid);

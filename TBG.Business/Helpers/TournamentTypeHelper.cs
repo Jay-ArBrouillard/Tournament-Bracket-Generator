@@ -5,6 +5,26 @@ namespace TBG.Business.Helpers
 {
     public static class TournamentTypeHelper
     {
+        public static ITournament GetNewTournament(ITournamentType type)
+        {
+            ITournament newTournament;
+            switch (type?.TournamentTypeId)
+            {
+                case 1:
+                    newTournament = NewSingleEliminationTournament();
+                    break;
+                default:
+                    newTournament = null;
+                    break;
+            }
+
+            if (newTournament != null)
+            {
+                newTournament.TournamentTypeId = type.TournamentTypeId;
+            }
+
+            return newTournament;
+        }
         public static ITournament ConvertTournamentType(ITournament tournament)
         {
             switch (tournament.TournamentTypeId)
@@ -14,7 +34,7 @@ namespace TBG.Business.Helpers
             }
         }
 
-        public static SingleEliminationTournament ConvertToSingleElimination(ITournament tournament)
+        private static SingleEliminationTournament ConvertToSingleElimination(ITournament tournament)
         {
             SingleEliminationTournament converted = new SingleEliminationTournament()
             {
@@ -32,5 +52,9 @@ namespace TBG.Business.Helpers
             return converted;
         }
 
+        private static SingleEliminationTournament NewSingleEliminationTournament()
+        {
+            return new SingleEliminationTournament();
+        }
     }
 }

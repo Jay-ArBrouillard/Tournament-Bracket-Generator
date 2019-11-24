@@ -38,6 +38,20 @@ namespace TBG.Data.Tables
             return null;
         }
 
+        public static List<IMatchupEntry> GetAll(MySqlConnection dbConn)
+        {
+            List<IMatchupEntry> result = new List<IMatchupEntry>();
+            string query = "SELECT * FROM MatchupEntries";
+            using (var reader = DatabaseHelper.GetReader(query, dbConn, new Dictionary<string, string>()))
+            {
+                while (reader.Read())
+                {
+                    result.Add(ConvertReader(reader));
+                }
+            }
+            return result;
+        }
+
         public static List<IMatchupEntry> GetByMatchupId(int matchupId, MySqlConnection dbConn)
         {
             List<IMatchupEntry> results = new List<IMatchupEntry>();

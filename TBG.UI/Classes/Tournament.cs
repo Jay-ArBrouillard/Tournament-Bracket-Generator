@@ -42,5 +42,10 @@ namespace TBG.UI.Classes
         {
             throw new NotImplementedException();
         }
+
+        public ITournament RebuildTournament()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -16,5 +16,6 @@ namespace TBG.Core.Interfaces
         List<IRound> Rounds { get; set; }
         bool RecordResult(IMatchup matchup);
         ITournament BuildTournament();
+        ITournament RebuildTournament();
     }
 }
