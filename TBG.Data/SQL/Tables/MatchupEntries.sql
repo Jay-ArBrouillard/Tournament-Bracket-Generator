@@ -5,7 +5,9 @@ CREATE TABLE MatchupEntries (
 	score						int(5) NOT NULL DEFAULT '0',
     PRIMARY KEY (matchup_entry_id),
     FOREIGN KEY (matchup_id)
-        REFERENCES Matchups (matchup_id),
+        REFERENCES Matchups (matchup_id)
+		ON DELETE CASCADE,
     FOREIGN KEY (tournament_entry_id)
         REFERENCES TournamentEntries (tournament_entry_id)
+		ON DELETE CASCADE
 );

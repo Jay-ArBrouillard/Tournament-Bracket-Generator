@@ -5,7 +5,9 @@ CREATE TABLE RoundMatchups (
 	matchup_number      int(11) NOT NULL,
     PRIMARY KEY (round_matchup_id),
     FOREIGN KEY (round_id)
-        REFERENCES Rounds (round_id),
+        REFERENCES Rounds (round_id)
+		ON DELETE CASCADE,
     FOREIGN KEY (matchup_id)
         REFERENCES Matchups (matchup_id)
+		ON DELETE CASCADE
 );

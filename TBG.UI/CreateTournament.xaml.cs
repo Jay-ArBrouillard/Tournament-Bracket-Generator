@@ -44,6 +44,7 @@ namespace TBG.UI
             prizes = source.getAllPrizes();
             prizeComboBox.ItemsSource = prizes;
             prizePool = 0;
+            SeedToggle_Unchecked(sender, e);
         }
 
         private void SetEntryFee_Click(object sender, RoutedEventArgs e)
@@ -128,8 +129,9 @@ namespace TBG.UI
 
         private void Create_New_Team_Click(object sender, RoutedEventArgs e)
         {
-            TeamWindow teamWindow = new TeamWindow(this);
+            TeamWindow teamWindow = new TeamWindow(user);
             teamWindow.Show();
+            this.Close();
         }
 
         private void Create_New_Prize_Click(object sender, RoutedEventArgs e)
@@ -182,8 +184,10 @@ namespace TBG.UI
         {
             for (int i = 0; i < teamsInTournament.Count; i++)
             {
-                teamsInTournament[i].Seed = i + 1;
+                var team = teams.Where(x => x.TeamId == teamsInTournament[i].TeamId).First();
+                teamsInTournament[i].Seed = Math.Round(calculateWinPercentage(team.Wins, team.Losses), 3);
             }
+
             participantsTreeView.Items.Refresh();
         }
 
@@ -227,10 +231,14 @@ namespace TBG.UI
             teamsInTournament.ForEach(x => x.TournamentId = tournament.TournamentId);
             tournament.Participants = teamsInTournament;
 
-            foreach (var p in tournament.Participants)
+            bool useHiLoSeeding = tournament.Participants.Any(x => x.Seed > 0);
+            if (useHiLoSeeding)
             {
-                var team = tournament.Teams.Where(x => x.TeamId == p.TeamId).First();
-                p.Seed = calculateWinPercentage(team.Wins, team.Losses);
+                foreach (var p in tournament.Participants)
+                {
+                    var team = tournament.Teams.Where(x => x.TeamId == p.TeamId).First();
+                    p.Seed = calculateWinPercentage(team.Wins, team.Losses);
+                }
             }
 
 
@@ -241,6 +249,7 @@ namespace TBG.UI
                 source.setupTournamentData(newTournament);
                 TournamentViewUI viewUI = new TournamentViewUI(newTournament);
                 viewUI.Show();
+                this.Close();
             }
             else //error
             {

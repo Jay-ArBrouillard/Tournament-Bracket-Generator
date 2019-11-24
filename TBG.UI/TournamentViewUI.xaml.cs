@@ -127,6 +127,7 @@ namespace TBG.UI
             if (thisRound != null)
             {
                 List<IRoundMatchup> roundMatchups = source.getRoundMatchupsByRoundId(new RoundMatchup(thisRound.RoundId));
+                roundMatchups = roundMatchups.OrderBy(x => x.MatchupNumber).ToList();
 
                 foreach (IRoundMatchup roundMatchup in roundMatchups)
                 {
@@ -267,8 +268,8 @@ namespace TBG.UI
                 }
                 else
                 {
-                    tournament.Rounds[selectedRound + 1].Pairings[nextPairingNumber].Teams[teamIndex].TheTeam.TournamentEntryId = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[teamIndex].TheTeam.TournamentEntryId;
-                    tournament.Rounds[selectedRound + 1].Pairings[nextPairingNumber].Teams[teamIndex].MatchupId = nextMatchupId;
+                    tournament.Rounds[selectedRound + 1].Pairings[nextPairingNumber].Teams[1].TheTeam.TournamentEntryId = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[teamIndex].TheTeam.TournamentEntryId;
+                    tournament.Rounds[selectedRound + 1].Pairings[nextPairingNumber].Teams[1].MatchupId = nextMatchupId;
                 }
 
 

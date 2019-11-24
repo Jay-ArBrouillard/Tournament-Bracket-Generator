@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using TBG.Core.Interfaces;
@@ -16,6 +17,7 @@ namespace TBG.UI
         private IProvider source;
         private ITournamentController tournamentController;
         private IUser user;
+        private List<ITournament> allTournaments;
 
         public Dashboard(User user)
         {
@@ -24,10 +26,10 @@ namespace TBG.UI
             this.source = ApplicationController.getProvider();
             tournamentController = ApplicationController.getTournamentController();
 
-            var tournaments = source.getAllTournaments();
+            allTournaments = source.getAllTournaments();
             var tournamentTypes = source.getTournamentTypes();
 
-            foreach (var tournament in tournaments)
+            foreach (var tournament in allTournaments)
             {
                 var item = new TournamentListBoxItem(tournament.TournamentName);
                 this.tournamentList.Items.Add(new ListBoxItem {
@@ -57,8 +59,7 @@ namespace TBG.UI
             if (tournamentList.SelectedIndex == -1) return;
 
             //Look at selected item in tournamentList, pass that id to Tournament
-            List<ITournament> tournaments = source.getAllTournaments();
-            ITournament selectedTournament = source.getTournamentByName(tournaments[tournamentList.SelectedIndex].TournamentName);
+            ITournament selectedTournament = source.getTournamentByName(allTournaments[tournamentList.SelectedIndex].TournamentName);
 
             ITournament newTournament = new Tournament()
             {
@@ -98,7 +99,7 @@ namespace TBG.UI
                         {
                             newTournament.Rounds[i].Pairings[j].Teams[0].Score = matchupEntries[0].Score;
                             newTournament.Rounds[i].Pairings[j].Teams[0].MatchupId = matchupEntries[0].MatchupId;
-                            newTournament.Rounds[i].Pairings[j].Teams[0].TournamentEntryId = matchupEntries[0].TournamentEntryId;
+                            newTournament.Rounds[i].Pairings[j].Teams[0].TheTeam.TournamentEntryId = matchupEntries[0].TournamentEntryId;
                         }
                         else if (matchupEntries.Count == 2)
                         {
@@ -106,8 +107,8 @@ namespace TBG.UI
                             newTournament.Rounds[i].Pairings[j].Teams[1].Score = matchupEntries[1].Score;
                             newTournament.Rounds[i].Pairings[j].Teams[0].MatchupId = matchupEntries[0].MatchupId;
                             newTournament.Rounds[i].Pairings[j].Teams[1].MatchupId = matchupEntries[1].MatchupId;
-                            newTournament.Rounds[i].Pairings[j].Teams[0].TournamentEntryId = matchupEntries[0].TournamentEntryId;
-                            newTournament.Rounds[i].Pairings[j].Teams[1].TournamentEntryId = matchupEntries[1].TournamentEntryId;
+                            newTournament.Rounds[i].Pairings[j].Teams[0].TheTeam.TournamentEntryId = matchupEntries[0].TournamentEntryId;
+                            newTournament.Rounds[i].Pairings[j].Teams[1].TheTeam.TournamentEntryId = matchupEntries[1].TournamentEntryId;
                         }
                     }
                 }
@@ -115,6 +116,65 @@ namespace TBG.UI
 
             TournamentViewUI viewUI = new TournamentViewUI(newTournament);
             viewUI.Show();
+        }
+
+        public void Delete_Tournament(object sender, RoutedEventArgs e)
+        {
+
+            Console.WriteLine("Temp: " + tournamentList.SelectedIndex);
+            Console.WriteLine(tournamentList.SelectedIndex == -1);
+            if (tournamentList.SelectedIndex == -1)
+            {
+                messageBox.Text = "Please select a tournament";
+                return;
+            }
+
+            ITournament selectedTournament = source.getTournamentByName(allTournaments[tournamentList.SelectedIndex].TournamentName);
+            ITournament tournament = source.deleteTournament(new Tournament(selectedTournament.TournamentId));
+
+            if (tournament != null)
+            {
+                //Delete from Matchups Table if it doesn't have any matchupEntries since it isn't effected by the cascade from deleting tournament
+                foreach (var matchup in source.getAllMatchups())
+                {
+                    if (source.getMatchupEntriesByMatchupId(matchup.MatchupId) != null)
+                    {
+                        IMatchup currMatchup = source.deleteMatchup(new Matchup(matchup.MatchupId));
+                    }
+                }
+
+                tournamentList.Items.Clear();
+
+                allTournaments = source.getAllTournaments();
+                foreach (var t in allTournaments)
+                {
+                    var item = new TournamentListBoxItem(t.TournamentName);
+                    this.tournamentList.Items.Add(new ListBoxItem
+                    {
+                        Content = item.Name
+                    });
+                }
+
+                var tournamentTypes = source.getTournamentTypes();
+
+                foreach (var tournamentType in tournamentTypes)
+                {
+                    this.typeFilter.Items.Add(new ListBoxItem
+                    {
+                        Content = new Label
+                        {
+                            Content = tournamentType.TournamentTypeName
+                        }
+                    });
+                }
+
+                tournamentList.Items.Refresh();
+                messageBox.Text = "Successfully deleted tournament";
+            }
+            else
+            {
+                messageBox.Text = "Couldn't delete the selected Tournament";
+            }
         }
 
         private void CreateTournament_Click(object sender, RoutedEventArgs e)
