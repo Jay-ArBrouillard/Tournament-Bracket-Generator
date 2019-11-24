@@ -126,7 +126,6 @@ namespace TBG.UI
 
             ITournament selectedTournament = source.getTournamentByName(allTournaments[tournamentList.SelectedIndex].TournamentName);
             ITournament tournament = source.deleteTournament(new Tournament(selectedTournament.TournamentId));
-            
 
             if (tournament != null)
             {

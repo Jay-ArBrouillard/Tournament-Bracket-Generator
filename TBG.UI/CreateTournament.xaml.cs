@@ -128,8 +128,9 @@ namespace TBG.UI
 
         private void Create_New_Team_Click(object sender, RoutedEventArgs e)
         {
-            TeamWindow teamWindow = new TeamWindow(this);
+            TeamWindow teamWindow = new TeamWindow(user);
             teamWindow.Show();
+            this.Close();
         }
 
         private void Create_New_Prize_Click(object sender, RoutedEventArgs e)

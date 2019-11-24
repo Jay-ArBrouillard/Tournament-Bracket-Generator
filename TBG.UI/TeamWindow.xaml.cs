@@ -30,19 +30,19 @@ namespace TBG.UI
         private ITeamController teamController;
         private List<IPerson> personList;   //List of people in database
         private List<IPerson> selectedPersons; //List of people to create a new team with
-        private CreateTournament tournament;
+        private IUser user;
 
-        public TeamWindow(CreateTournament tournament)
+        public TeamWindow(IUser user)
         {
             InitializeComponent();
             source = ApplicationController.getProvider();
             personController = ApplicationController.getPersonController();
             teamController = ApplicationController.getTeamController();
-            this.tournament = tournament;
             personList = source.getPeople();
             personList.Sort((x,y) =>x.FirstName.CompareTo(y.FirstName));
             selectedPersons = new List<IPerson>();
             selectionListBox.ItemsSource = personList;
+            this.user = user;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -69,8 +69,6 @@ namespace TBG.UI
                         selectedPersons.Add(p);
                     }
                 }
-                //if (selectedPersons != null && selectedPersons.Count > 0)
-                //selectedPersons.Sort();
                 selectionListBox.ItemsSource = selectedPersons;
             }
             else if (searchBox.Text == "")
@@ -176,33 +174,9 @@ namespace TBG.UI
             if (validate)
             {
                 ITeam createdTeam = source.createTeam(newTeam);
-
-                //Update Teams/Players on tournament Screen
-                List<ITournamentEntry> teams = tournament.teamsInTournament;
-                ITournamentEntry convertedTeam = convertToTeam(new List<ITeam>() { createdTeam })[0];
-                ObservableCollection<IPerson> teamMembers = new ObservableCollection<IPerson>();
-                foreach (ITeamMember teamMember in source.getTeamMembersByTeamId(createdTeam.TeamId))
-                {
-                    IPerson person = source.getPerson(teamMember.PersonId);
-                    teamMembers.Add(new Person()
-                    {
-                        PersonId = person.PersonId,
-                        FirstName = person.FirstName,
-                        LastName = person.LastName
-                    });
-                }
-
-                teams.Add(convertedTeam);
-                teams[teams.Count - 1].Members = teamMembers;
-                
-                tournament.participantsTreeView.ItemsSource = teams;
-                tournament.participantsTreeView.Items.Refresh();
-
-                //Update Select Teams
-                List<ITeam> allTeams = tournament.teams;
-                allTeams.Add(createdTeam);
-                tournament.selectionListBox.ItemsSource = allTeams;
-                tournament.selectionListBox.Items.Refresh();
+                CreateTournament createTournament = new CreateTournament(user);
+                createTournament.Show();
+                this.Close();
             }
 
         }
