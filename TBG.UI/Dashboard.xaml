@@ -54,9 +54,14 @@
             </StackPanel>
             <StackPanel Width="500" Margin="50,0,0,0">
                 <ListBox x:Name="tournamentList" Height="250" Width="400" Background="#FFFFFF" Margin="0,60,0,0" HorizontalAlignment="Center"/>
-                <Button Width="200" HorizontalAlignment="center" VerticalAlignment="Bottom" Margin="0,10,0,0" Content="Select Tournament" Click="Load_Tournament"/>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="center">
+                    <Button Width="150" HorizontalAlignment="center" VerticalAlignment="Bottom" Margin="0,10,10,0" Content="Select Tournament" Click="Load_Tournament"/>
+                    <Button Width="150" HorizontalAlignment="center" VerticalAlignment="Bottom" Margin="0,10,10,0" Content="Delete Tournament" Click="Delete_Tournament"/>
+                </StackPanel>
             </StackPanel>
         </StackPanel>
+        
+        <TextBlock x:Name="messageBox" HorizontalAlignment="Left" Margin="393,369,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="28" Width="307"/>
 
     </Grid>
 </Window>

@@ -5,7 +5,9 @@ CREATE TABLE TournamentEntries (
     seed                    decimal(11,10) NOT NULL,
     PRIMARY KEY (tournament_entry_id),
     FOREIGN KEY (tournament_id)
-        REFERENCES Tournaments (tournament_id),
+        REFERENCES Tournaments (tournament_id)
+		ON DELETE CASCADE,
     FOREIGN KEY (team_id)
         REFERENCES Teams (team_id)
+		ON DELETE CASCADE
 );

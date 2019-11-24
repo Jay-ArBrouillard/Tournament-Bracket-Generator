@@ -34,6 +34,36 @@ namespace TBG.Data.Tables
             return null;
         }
 
+        public static IMatchup Delete(IMatchup entity, MySqlConnection dbConn)
+        {
+            string query = "DELETE FROM Matchups WHERE matchup_id = @id";
+            Dictionary<string, string> param = new Dictionary<string, string>();
+            param.Add("@id", entity.MatchupId.ToString());
+
+            var result = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
+            if (result != 0)
+            {
+                return entity;
+            }
+
+            return null;
+        }
+
+        public static List<IMatchup> GetAll(MySqlConnection dbConn)
+        {
+            List<IMatchup> result = new List<IMatchup>();
+
+            string query = "SELECT * FROM Matchups";
+            using (var reader = DatabaseHelper.GetReader(query, dbConn))
+            {
+                while (reader.Read())
+                {
+                    result.Add(ConvertReader(reader));
+                }
+            }
+            return result;
+        }
+
         private static IMatchup ConvertReader(MySqlDataReader reader)
         {
             return new Matchup()

@@ -12,5 +12,14 @@ namespace TBG.UI.Classes
         public int MatchupId { get; set; }
         public List<IMatchupEntry> Teams { get; set; }
         public IMatchup NextRound { get; set; }
+
+        public Matchup()
+        {
+        }
+
+        public Matchup(int matchupId)
+        {
+            MatchupId = matchupId;
+        }
     }
 }

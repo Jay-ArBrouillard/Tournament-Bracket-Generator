@@ -313,9 +313,25 @@ namespace TBG.Data.Classes
 
             return matchup;
         }
+
+        public List<IMatchup> getAllMatchups()
+        {
+            List<IMatchup> matchup = MatchupsTable.GetAll(dbConn);
+            if (matchup == null) { return null; }
+
+            return matchup;
+        }
         public IMatchup createMatchup(IMatchup entry)
         {
             IMatchup matchup = MatchupsTable.Create(entry, dbConn);
+            if (matchup == null) return null;
+
+            return matchup;
+        }
+
+        public IMatchup deleteMatchup(IMatchup entry)
+        {
+            IMatchup matchup = MatchupsTable.Delete(entry, dbConn);
             if (matchup == null) return null;
 
             return matchup;

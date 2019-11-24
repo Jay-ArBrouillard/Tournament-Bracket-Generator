@@ -28,6 +28,11 @@ namespace TBG.UI.Classes
             Rounds = new List<IRound>();
         }
 
+        public Tournament(int tournamentId)
+        {
+            TournamentId = tournamentId;
+        }
+
         public ITournament BuildTournament()
         {
             throw new NotImplementedException();
