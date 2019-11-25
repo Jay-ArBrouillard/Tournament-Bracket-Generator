@@ -41,5 +41,6 @@ namespace TBG.Core.Interfaces
         ITournament updateTournamentName(ITournament entry);
         List<IMatchup> getAllMatchups();
         IMatchup deleteMatchup(IMatchup matchup);
+        IMatchup saveMatchupScore(IMatchup matchup);
     }
 }

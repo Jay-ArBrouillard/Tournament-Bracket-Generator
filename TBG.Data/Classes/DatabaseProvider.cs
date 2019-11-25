@@ -334,6 +334,17 @@ namespace TBG.Data.Classes
         #endregion
 
         #region MATCHUP METHODS
+        public IMatchup saveMatchupScore(IMatchup matchup)
+        {
+            MatchupsTable.Update(matchup, dbConn);
+            foreach(var entity in matchup.Teams)
+            {
+                MatchupEntriesTable.Update(entity, dbConn);
+            }
+
+            return matchup;
+        }
+
         public IMatchup getMatchup(int matchupId)
         {
             IMatchup matchup = MatchupsTable.Get(matchupId, dbConn);

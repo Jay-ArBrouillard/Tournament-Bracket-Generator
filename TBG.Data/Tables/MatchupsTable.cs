@@ -10,7 +10,7 @@ namespace TBG.Data.Tables
     {
         public static IMatchup Create(IMatchup entity, MySqlConnection dbConn)
         {
-            string query = "INSERT INTO Matchups (matchup_id, winner_id, loser_id) VALUES (NULL, NULL, NULL)";
+            string query = "INSERT INTO Matchups (matchup_id) VALUES (NULL)";
 
             var resultsPK = DatabaseHelper.GetNonQueryCount(query, dbConn);
             entity.MatchupId = resultsPK;
@@ -31,6 +31,22 @@ namespace TBG.Data.Tables
                     return ConvertReader(reader);
                 }
             }
+            return null;
+        }
+
+        public static IMatchup Update(IMatchup entity, MySqlConnection dbConn)
+        {
+            string query = "UPDATE Matchups SET completed = @status WHERE matchup_id = @id";
+            Dictionary<string, string> param = new Dictionary<string, string>();
+            param.Add("@status", DatabaseHelper.BoolToString(entity.Completed));
+            param.Add("@id", entity.MatchupId.ToString());
+
+            var result = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
+            if (result != 0)
+            {
+                return entity;
+            }
+
             return null;
         }
 
@@ -68,7 +84,8 @@ namespace TBG.Data.Tables
         {
             return new Matchup()
             {
-                MatchupId = int.Parse(reader["matchup_id"].ToString())
+                MatchupId = int.Parse(reader["matchup_id"].ToString()),
+                Completed = bool.Parse(reader["completed"].ToString())
             };
         }
     }

@@ -52,6 +52,24 @@ namespace TBG.Data.Tables
             return result;
         }
 
+        public static IMatchupEntry Update(IMatchupEntry entity, MySqlConnection dbConn)
+        {
+            string query = "UPDATE MatchupEntries SET matchup_id = @matchupId, tournament_entry_id = @teId, score = @score WHERE matchup_entry_id = @id";
+            Dictionary<string, string> param = new Dictionary<string, string>();
+            param.Add("@matchupId", entity.MatchupId.ToString());
+            param.Add("@teId", entity.TournamentEntryId.ToString());
+            param.Add("@id", entity.MatchupEntryId.ToString());
+            param.Add("@score", entity.Score.ToString());
+
+            var result = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
+            if (result != 0)
+            {
+                return entity;
+            }
+
+            return null;
+        }
+
         public static List<IMatchupEntry> GetByMatchupId(int matchupId, MySqlConnection dbConn)
         {
             List<IMatchupEntry> results = new List<IMatchupEntry>();

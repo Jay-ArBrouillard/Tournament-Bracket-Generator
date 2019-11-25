@@ -20,11 +20,13 @@ namespace TBG.UI
         private IProvider source;
         private ITournament tournament;
         private Boolean initialization = true;
+        private ITournamentController tournamentController;
 
         public TournamentViewUI(ITournament inTourney)
         {
             InitializeComponent();
             source = ApplicationController.getProvider();
+            tournamentController = ApplicationController.getTournamentController();
             tournament = inTourney;
 
             //Add all the rounds to the Rounds view
@@ -162,135 +164,41 @@ namespace TBG.UI
 
         private void FinalScoreBtn_Click(object sender, RoutedEventArgs e)
         {
-            int score1 = -1;
-            int score2 = -1;
+            var validatedTeam1Score = tournamentController.validateScore(firstTeamScoreTxtBox.Text);
+            var validatedTeam2Score = tournamentController.validateScore(secondTeamScoreTxtBox.Text);
+            bool invalidTeamScore = false;
 
             //Validates score before saving
-            if (validateScore(firstTeamScoreTxtBox.Text) && validateScore(secondTeamScoreTxtBox.Text))
+            if (validatedTeam1Score == -1)
             {
-                score1 = int.Parse(firstTeamScoreTxtBox.Text);
-                score2 = int.Parse(secondTeamScoreTxtBox.Text);
+                teamOneInvalidScoreLbl.Content = "Score is not valid";
+                invalidTeamScore = true;
             }
             else
             {
-                //Gives appropriate error message if one score isn't valid.
-                if (!validateScore(firstTeamScoreTxtBox.Text))
-                {
-                    teamOneInvalidScoreLbl.Content = "Score is not valid";
-                    return;
-                }
-                else
-                {
-                    teamTwoInvalidScoreLbl.Content = "Score is not valid";
-                    return;
-                }
+                teamOneInvalidScoreLbl.Content = "";
             }
 
-            int selectedRound = roundDropDown.SelectedIndex;
-            int selectedPairing = matchupsListBox.SelectedIndex;
-            int nextRoundNumber = selectedRound + 2;
-            int nextPairingNumber = selectedPairing / 2;
-
-            //Set the local scores
-            tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[0].Score = score1;
-            tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[1].Score = score2;
-
-            IRound thisRound = source.getRoundByTournamentIdandRoundNum(new Round(tournament.TournamentId, selectedRound + 1));
-            if (thisRound != null)
+            if (validatedTeam2Score == -1)
             {
-                IRoundMatchup thisRoundMatchup = source.getRoundMatchupByRoundIdAndMatchupNumber(new RoundMatchup(thisRound.RoundId, selectedPairing));
-
-                if (thisRoundMatchup != null)
-                {
-                    //Set database scores
-                    source.updateMatchupEntryScore(thisRoundMatchup.MatchupId,
-                                                   tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[0].TheTeam.TournamentEntryId,
-                                                   score1);
-                    source.updateMatchupEntryScore(thisRoundMatchup.MatchupId,
-                                                   tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[1].TheTeam.TournamentEntryId,
-                                                   score2);
-                    scoreRecordedLbl.Content = "Score recorded successfully";
-                }
+                teamTwoInvalidScoreLbl.Content = "Score is not valid";
+                invalidTeamScore = true;
             }
-
-
-            //Create next round in local
-            bool valid = tournament.RecordResult(tournament.Rounds[selectedRound].Pairings[selectedPairing]);
-
-            if (valid)
+            else
             {
-                TournamentViewListBoxItem currItem = (TournamentViewListBoxItem)matchupsListBox.Items[selectedPairing];
-                currItem.imageURL = "Assets/confirm.png";
-                matchupsListBox.Items.Refresh();
+                teamTwoInvalidScoreLbl.Content = "";
             }
 
-            if (tournament.Rounds[selectedRound].Pairings[selectedPairing].NextRound != null) //Not final matchup
-            {
-                IRound nextRound = source.getRoundByTournamentIdandRoundNum(new Round(tournament.TournamentId, nextRoundNumber));
-                if (nextRound == null)
-                {
-                    nextRound = source.createRound(new Round(tournament.TournamentId, nextRoundNumber));
-                }
-                //Only create a new matchup if a matchup with the correct round_id and matchup_number doesn't exist
-                IRoundMatchup roundMatchup = source.getRoundMatchupByRoundIdAndMatchupNumber(new RoundMatchup(nextRound.RoundId, nextPairingNumber));
-                IMatchup newMatchup = null;
+            if(invalidTeamScore) { return; }
 
-                if (roundMatchup == null)
-                {
-                    newMatchup = source.createMatchup(new Matchup());
-                    source.createRoundMatchup(new RoundMatchup(nextRound.RoundId, newMatchup.MatchupId, nextPairingNumber));
-                }
+            var matchup = tournament.Rounds[roundDropDown.SelectedIndex].Pairings[matchupsListBox.SelectedIndex];
+            var scoreValid = tournamentController.ScoreMatchup(matchup, validatedTeam1Score, validatedTeam2Score);
 
-                int nextMatchupId = -1;
-                if (newMatchup == null)
-                {
-                    nextMatchupId = roundMatchup.MatchupId;
-                }
-                else
-                {
-                    nextMatchupId = newMatchup.MatchupId;
-                }
+            if(!scoreValid) { return; } //Error Message?
 
-                int teamIndex = score1 > score2 ? 0 : 1;
-                List<IMatchupEntry> theTeams = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams;
-                IMatchupEntry newMatchupEntry = source.createMatchupEntry(new MatchupEntry()
-                {
-                    MatchupId = nextMatchupId,
-                    TournamentEntryId = theTeams[teamIndex].TheTeam.TournamentEntryId
-                });
+            source.saveMatchupScore(matchup);
 
-                tournament.Rounds[selectedRound + 1].Pairings[nextPairingNumber].MatchupId = nextMatchupId;
-
-                if (tournament.Rounds[selectedRound + 1].Pairings[nextPairingNumber].Teams.Count != 2)
-                {
-                    tournament.Rounds[selectedRound + 1].Pairings[nextPairingNumber].Teams[0].TheTeam.TournamentEntryId = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[teamIndex].TheTeam.TournamentEntryId;
-                    tournament.Rounds[selectedRound + 1].Pairings[nextPairingNumber].Teams[0].MatchupId = nextMatchupId;
-                }
-                else
-                {
-                    tournament.Rounds[selectedRound + 1].Pairings[nextPairingNumber].Teams[1].TheTeam.TournamentEntryId = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[teamIndex].TheTeam.TournamentEntryId;
-                    tournament.Rounds[selectedRound + 1].Pairings[nextPairingNumber].Teams[1].MatchupId = nextMatchupId;
-                }
-
-
-            }
-            else //Final Matchup
-            {
-                tournamentNameLbl.Content += " (Completed)";
-                source.updateTournamentName(new Tournament()
-                {
-                    TournamentId = tournament.TournamentId,
-                    TournamentName = tournamentNameLbl.Content.ToString()
-                });
-                //Add code here to open Results Page
-            }
-
-
-        }
-
-        private bool validateScore(string score)
-        {
-            return Regex.Match(score, @"^\d+$").Success;
+            scoreRecordedLbl.Content = "Score recorded successfully";
         }
 
         private void UnplayedCheckbox_Checked(object sender, RoutedEventArgs e)

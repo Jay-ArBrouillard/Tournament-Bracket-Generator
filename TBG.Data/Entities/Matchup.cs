@@ -8,5 +8,6 @@ namespace TBG.Data.Entities
         public int MatchupId { get; set; }
         public List<IMatchupEntry> Teams { get; set; }
         public IMatchup NextRound { get; set; }
+        public bool Completed { get; set; }
     }
 }

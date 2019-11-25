@@ -7,5 +7,6 @@ namespace TBG.Core.Interfaces
         int MatchupId { get; set; }
         List<IMatchupEntry> Teams { get; set;}
         IMatchup NextRound { get; set; }
+        bool Completed { get; set; }
     }
 }

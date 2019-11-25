@@ -59,6 +59,7 @@ namespace TBG.Business.Tournaments
         public ITournament RebuildTournament()
         {
             //Look at data in the tournament, and build the object from what exists
+            AddRounds();
             return this;
         }
 
@@ -85,7 +86,8 @@ namespace TBG.Business.Tournaments
 
         private void AddRounds()
         {
-            for (int i = 1; i <= CalculateRoundTotal(Participants.Count); i++)
+            var roundCount = Rounds.Count() + 1;
+            for (int i = roundCount; i <= CalculateRoundTotal(Participants.Count); i++)
             {
                 Rounds.Add(new Round()
                 {
