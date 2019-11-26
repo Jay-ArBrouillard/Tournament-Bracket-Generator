@@ -14,8 +14,10 @@ namespace TBG.Core.Interfaces
         List<ITournamentEntry> Participants { get; set; }
         List<IPrize> Prizes { get; set; }
         List<IRound> Rounds { get; set; }
+        int ActiveRound { get; set; }
         bool RecordResult(IMatchup matchup);
         ITournament BuildTournament();
         ITournament RebuildTournament();
+        ITournament AdvanceRound();
     }
 }

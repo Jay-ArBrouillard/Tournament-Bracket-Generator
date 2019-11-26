@@ -46,7 +46,8 @@ namespace TBG.Business.Helpers
                 TournamentTypeId = tournament.TournamentTypeId,
                 Participants = tournament.Participants,
                 Prizes = tournament.Prizes,
-                Rounds = tournament.Rounds
+                Rounds = tournament.Rounds,
+                ActiveRound = tournament.ActiveRound
             };
 
             return converted;

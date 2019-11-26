@@ -16,8 +16,14 @@ namespace TBG.Data.Entities
         public List<ITeam> Participants { get; set; }
         public List<ITournamentPrize> Prizes { get; set; }
         public List<IRound> Rounds { get; set; }
+        public int ActiveRound { get; set; }
         List<ITournamentEntry> ITournament.Participants { get; set; }
         List<IPrize> ITournament.Prizes { get; set; }
+
+        public ITournament AdvanceRound()
+        {
+            throw new NotImplementedException();
+        }
 
         public ITournament BuildTournament()
         {

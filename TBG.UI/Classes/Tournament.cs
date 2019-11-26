@@ -19,6 +19,7 @@ namespace TBG.UI.Classes
         public List<ITournamentEntry> Participants { get; set; }
         public List<IPrize> Prizes { get; set; }
         public List<IRound> Rounds { get; set; }
+        public int ActiveRound { get; set; }
 
         public Tournament()
         {
@@ -44,6 +45,11 @@ namespace TBG.UI.Classes
         }
 
         public ITournament RebuildTournament()
+        {
+            throw new NotImplementedException();
+        }
+
+        public ITournament AdvanceRound()
         {
             throw new NotImplementedException();
         }

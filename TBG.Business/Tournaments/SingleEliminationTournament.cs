@@ -18,6 +18,7 @@ namespace TBG.Business.Tournaments
         public List<ITournamentEntry> Participants { get; set; }
         public List<IPrize> Prizes { get; set; }
         public List<IRound> Rounds { get; set; }
+        public int ActiveRound { get; set; }
 
         public SingleEliminationTournament()
         {
@@ -50,16 +51,56 @@ namespace TBG.Business.Tournaments
             foreach (var round in Rounds)
             {
                 AddTeamsToPairings(teamQueue, round);
-                AddLinkedMatchupEntry(round);
             }
 
+            ActiveRound = 1;
             return this;
         }
 
         public ITournament RebuildTournament()
         {
-            //Look at data in the tournament, and build the object from what exists
             AddRounds();
+            return this;
+        }
+
+        public ITournament AdvanceRound()
+        {
+            Queue<ITournamentEntry> teamQueue = new Queue<ITournamentEntry>();
+            var activeRound = Rounds.Where(x => x.RoundNum == ActiveRound).First();
+            foreach (var pairing in activeRound.Pairings)
+            {
+                var winner = pairing.Teams.OrderByDescending(x => x.Score).First().TheTeam;
+                teamQueue.Enqueue(winner);
+            }
+
+            var nextRound = Rounds.Where(x => x.RoundNum == ActiveRound + 1).First();
+            if (nextRound != null)
+            {
+                for (int i = 0; i < teamQueue.Count / 2; i++)
+                {
+                    nextRound.Pairings.Add(new Matchup()
+                    {
+                        MatchupId = i,
+                        Teams = new List<IMatchupEntry>()
+                    });
+                }
+
+                foreach (var matchup in nextRound.Pairings)
+                {
+                    matchup.Teams.Add(new MatchupEntry()
+                    {
+                        TheTeam = teamQueue.Dequeue(),
+                        Score = 0
+                    });
+
+                    matchup.Teams.Add(new MatchupEntry()
+                    {
+                        TheTeam = teamQueue.Dequeue(),
+                        Score = 0
+                    });
+                }
+            }
+            ActiveRound++;
             return this;
         }
 
@@ -127,27 +168,6 @@ namespace TBG.Business.Tournaments
                         TheTeam = teamQueue.Dequeue(),
                         Score = 0
                     });
-                }
-            }
-        }
-
-        private void AddLinkedMatchupEntry(IRound round)
-        {
-            if (round.Pairings.Count > 1)
-            {
-                int count = 1;
-                Matchup nextRoundMatchup = new Matchup();
-                foreach (var matchup in round.Pairings)
-                {
-                    if (IsOdd(count))
-                    {
-                        nextRoundMatchup = new Matchup();
-                        var nextRound = Rounds.Find(x => x.RoundNum == round.RoundNum + 1);
-                        if (nextRound != null) { nextRound.Pairings.Add(nextRoundMatchup); } //Safety, but there should be a next round if Pairings.count > 1.
-                    }
-                    matchup.NextRound = nextRoundMatchup;
-
-                    count++;
                 }
             }
         }

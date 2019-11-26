@@ -41,6 +41,27 @@ namespace TBG.Data.Classes
             return tournament;
         }
 
+        public ITournament saveActiveRound (ITournament entry)
+        {
+            //Update tournamentId for Rounds
+            TournamentTable.Update(entry, dbConn);
+            entry.Rounds.ForEach(x => x.TournamentId = entry.TournamentId);
+            var activeRound = entry.Rounds.Where(x => x.RoundNum == entry.ActiveRound).First();
+
+            IRound newRound = createRound(new Round(entry.TournamentId, entry.ActiveRound));
+            //Create Matchups
+            var matchupCount = 1;
+            foreach (var matchup in activeRound.Pairings)
+            {
+                IMatchup newMatchup = createMatchup(new Matchup());
+                IRoundMatchup newRoundMatchup = createRoundMatchup(new RoundMatchup(newRound.RoundId, newMatchup.MatchupId, matchupCount));
+                createMatchupEntry(new MatchupEntry(newRoundMatchup.MatchupId, matchup.Teams[0].TheTeam.TournamentEntryId));
+                createMatchupEntry(new MatchupEntry(newRoundMatchup.MatchupId, matchup.Teams[1].TheTeam.TournamentEntryId));
+            }
+
+            return entry;
+        }
+
         public ITournament updateTournamentName(ITournament entry)
         {
             ITournament tournament = TournamentTable.UpdateName(entry, dbConn);
@@ -49,12 +70,12 @@ namespace TBG.Data.Classes
             return tournament;
         }
 
-        public void setupTournamentData(ITournament tournament)
+          public void setupTournamentData(ITournament tournament)
         {
             if (tournament.TournamentTypeId == 1)
             {
                 List<ITournamentEntry> tournamentEntries = createTournamentEntries(tournament.Participants);
-                IRound roundOne = createRound(new Round(tournament.TournamentId, 1));
+                IRound roundOne = createRound(new Round(tournament.TournamentId, tournament.ActiveRound));
 
                 int numMatchupsRoundOne = tournament.Participants.Count / 2;
                 int roundOneId = roundOne.RoundId;

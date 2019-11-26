@@ -10,6 +10,7 @@ namespace TBG.Core.Interfaces
         bool validateParticipantCount(int count);
         double validateTotalPrizePool(string pool, int numParticipants, double EntryFee);
         int validateScore(string score);
+        bool validateRoundCompletion(IRound round);
         ITournament createTournament(
             string tournamentName, 
             ITournamentType tournamentTypeId, 
@@ -20,5 +21,6 @@ namespace TBG.Core.Interfaces
         );
         ITournament rebuildTournament(ITournament savedTournament);
         bool ScoreMatchup(IMatchup matchup, int team1Score, int team2Score);
+        ITournament advanceRound(ITournament tournament);
     }
 }

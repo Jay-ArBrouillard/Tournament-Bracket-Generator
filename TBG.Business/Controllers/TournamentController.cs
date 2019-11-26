@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using TBG.Business.Helpers;
 using TBG.Business.Models;
@@ -92,6 +93,18 @@ namespace TBG.Business.Controllers
             matchup.Teams[1].Score = team2Score;
             matchup.Completed = true;
             return true;
+        }
+
+        public bool validateRoundCompletion(IRound round)
+        {
+            return !round.Pairings.Where(x => x.Completed == false).Any();
+        }
+
+        public ITournament advanceRound(ITournament tournament)
+        {
+            tournament = TournamentTypeHelper.ConvertTournamentType(tournament);
+            tournament.AdvanceRound();
+            return tournament;
         }
     }
 }

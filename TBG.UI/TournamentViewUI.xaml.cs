@@ -221,5 +221,19 @@ namespace TBG.UI
             return matchup.imageURL.Contains("x-button");
         }
 
+        private void FinalizeRoundBtn_Click(object sender, RoutedEventArgs e)
+        {
+            //Confirm that all matchups in active round are complete
+            //Build matchups for next round
+            var activeRound = tournament.Rounds.Where(x => x.RoundNum == tournament.ActiveRound).First();
+            var isRoundComplete = tournamentController.validateRoundCompletion(activeRound);
+            if (!isRoundComplete)
+            {
+                return; //Error Message somewhere
+            }
+
+            tournament = tournamentController.advanceRound(tournament);
+            source.saveActiveRound(tournament);
+        }
     }
 }
