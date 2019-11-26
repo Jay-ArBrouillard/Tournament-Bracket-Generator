@@ -48,15 +48,17 @@ namespace TBG.Data.Classes
             entry.Rounds.ForEach(x => x.TournamentId = entry.TournamentId);
             var activeRound = entry.Rounds.Where(x => x.RoundNum == entry.ActiveRound).First();
 
-            IRound newRound = createRound(new Round(entry.TournamentId, entry.ActiveRound));
+            activeRound.RoundId = createRound(activeRound).RoundId;
             //Create Matchups
-            var matchupCount = 1;
+
             foreach (var matchup in activeRound.Pairings)
             {
-                IMatchup newMatchup = createMatchup(new Matchup());
-                IRoundMatchup newRoundMatchup = createRoundMatchup(new RoundMatchup(newRound.RoundId, newMatchup.MatchupId, matchupCount));
-                createMatchupEntry(new MatchupEntry(newRoundMatchup.MatchupId, matchup.Teams[0].TheTeam.TournamentEntryId));
-                createMatchupEntry(new MatchupEntry(newRoundMatchup.MatchupId, matchup.Teams[1].TheTeam.TournamentEntryId));
+                matchup.MatchupId = createMatchup(matchup).MatchupId;
+                matchup.Teams.ForEach(x => x.MatchupId = matchup.MatchupId);
+                matchup.Teams.ForEach(x => x.TournamentEntryId = entry.Participants.Where(y => y.TeamId == x.TheTeam.TeamId).First().TournamentEntryId);
+                createRoundMatchup(new RoundMatchup(activeRound.RoundId, matchup.MatchupId, 0));
+                matchup.Teams[0].MatchupEntryId = createMatchupEntry(matchup.Teams[0]).MatchupEntryId;
+                matchup.Teams[1].MatchupEntryId = createMatchupEntry(matchup.Teams[1]).MatchupEntryId;
             }
 
             return entry;
@@ -72,6 +74,25 @@ namespace TBG.Data.Classes
 
           public void setupTournamentData(ITournament tournament)
         {
+            foreach (var round in tournament.Rounds)
+            {
+                if (round.Pairings.Count > 0)
+                {
+                    tournament.Participants = createTournamentEntries(tournament.Participants);
+                    round.RoundId = createRound(round).RoundId;
+                    foreach (var matchup in round.Pairings)
+                    {
+                        matchup.MatchupId = createMatchup(matchup).MatchupId;
+                        matchup.Teams.ForEach(x => x.MatchupId = matchup.MatchupId);
+                        matchup.Teams.ForEach(x => x.TournamentEntryId = tournament.Participants.Where(y => y.TeamId == x.TheTeam.TeamId).First().TournamentEntryId);
+                        createRoundMatchup(new RoundMatchup(round.RoundId, matchup.MatchupId, 0));
+                        matchup.Teams[0].MatchupEntryId = createMatchupEntry(matchup.Teams[0]).MatchupEntryId;
+                        matchup.Teams[1].MatchupEntryId = createMatchupEntry(matchup.Teams[1]).MatchupEntryId;
+                    }
+                }
+            }
+
+
             if (tournament.TournamentTypeId == 1)
             {
                 List<ITournamentEntry> tournamentEntries = createTournamentEntries(tournament.Participants);
