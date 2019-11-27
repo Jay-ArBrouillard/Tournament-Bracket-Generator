@@ -239,9 +239,20 @@ namespace TBG.UI
                 return; //Error Message somewhere
             }
 
-            tournament = tournamentController.advanceRound(tournament);
-            source.saveActiveRound(tournament);
-            lblFinalized.Content = "Round finalized";
+            var isActiveRoundValid = tournamentController.validateActiveRound(tournament);
+
+            if (isActiveRoundValid)
+            {
+                tournament = tournamentController.advanceRound(tournament);
+                source.saveActiveRound(tournament);
+                lblFinalized.Content = "Round finalized";
+            }
+            else
+            {
+                lblFinalized.Content = "Tournament is over";
+            }
+
+            
         }
     }
 }

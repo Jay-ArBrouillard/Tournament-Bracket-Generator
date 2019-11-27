@@ -103,8 +103,16 @@ namespace TBG.Business.Controllers
         public ITournament advanceRound(ITournament tournament)
         {
             var convertedTournament = TournamentTypeHelper.ConvertTournamentType(tournament);
+            var lastRound = convertedTournament.Rounds.Max(x => x.RoundNum);
             convertedTournament.AdvanceRound();
             return convertedTournament;
+        }
+
+        public bool validateActiveRound (ITournament tournament)
+        {
+            var lastround = tournament.Rounds.Max(x => x.RoundNum);
+            if (tournament.ActiveRound == lastround) { return false; }
+            return true;
         }
     }
 }
