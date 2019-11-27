@@ -31,6 +31,13 @@ namespace TBG.UI
         {
             InitializeComponent();
             source = ApplicationController.getProvider();
+
+            if (!source.sourceActive)
+            {
+                MessageBox.Show("Error Connecting to Data", "TBG", MessageBoxButton.OK, MessageBoxImage.Error);
+                Application.Current.Shutdown();
+            }
+
             loginController = ApplicationController.getLoginController();
         }
 
