@@ -8,11 +8,7 @@ namespace TBG.UI.Models
 {
     public class TournamentListBoxItem
     {
-        public TournamentListBoxItem (string name)
-        {
-            this.Name = name;
-        }
-
-        public string Name { get; private set; }
+        public string Name { get; set; }
+        public int Id { get; set; }
     }
 }

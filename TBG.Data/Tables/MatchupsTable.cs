@@ -10,16 +10,19 @@ namespace TBG.Data.Tables
     {
         public static IMatchup Create(IMatchup entity, MySqlConnection dbConn)
         {
-            string query = "INSERT INTO Matchups (matchup_id) VALUES (NULL)";
+            string query = "INSERT INTO MatchupsV2 (round_id, completed) VALUES (@round, @completed)";
+            Dictionary<string, string> param = new Dictionary<string, string>();
+            param.Add("@round", entity.RoundId.ToString());
+            param.Add("@completed", DatabaseHelper.BoolToString(entity.Completed));
 
-            var resultsPK = DatabaseHelper.GetNonQueryCount(query, dbConn);
+            var resultsPK = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
             entity.MatchupId = resultsPK;
             return entity;
         }
 
         public static IMatchup Get(int Id, MySqlConnection dbConn)
         {
-            string query = "SELECT * FROM Matchups WHERE matchup_id = @Id";
+            string query = "SELECT * FROM MatchupsV2 WHERE matchup_id = @Id";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@Id", Id.ToString());
 
@@ -36,7 +39,7 @@ namespace TBG.Data.Tables
 
         public static IMatchup Update(IMatchup entity, MySqlConnection dbConn)
         {
-            string query = "UPDATE Matchups SET completed = @status WHERE matchup_id = @id";
+            string query = "UPDATE MatchupsV2 SET completed = @status WHERE matchup_id = @id";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@status", DatabaseHelper.BoolToString(entity.Completed));
             param.Add("@id", entity.MatchupId.ToString());
@@ -52,7 +55,7 @@ namespace TBG.Data.Tables
 
         public static IMatchup Delete(IMatchup entity, MySqlConnection dbConn)
         {
-            string query = "DELETE FROM Matchups WHERE matchup_id = @id";
+            string query = "DELETE FROM MatchupsV2 WHERE matchup_id = @id";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@id", entity.MatchupId.ToString());
 
@@ -69,7 +72,7 @@ namespace TBG.Data.Tables
         {
             List<IMatchup> result = new List<IMatchup>();
 
-            string query = "SELECT * FROM Matchups";
+            string query = "SELECT * FROM MatchupsV2";
             using (var reader = DatabaseHelper.GetReader(query, dbConn))
             {
                 while (reader.Read())
@@ -85,6 +88,7 @@ namespace TBG.Data.Tables
             return new Matchup()
             {
                 MatchupId = int.Parse(reader["matchup_id"].ToString()),
+                RoundId = int.Parse(reader["round_id"].ToString()),
                 Completed = bool.Parse(reader["completed"].ToString())
             };
         }

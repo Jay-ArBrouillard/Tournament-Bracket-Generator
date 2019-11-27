@@ -6,13 +6,9 @@ namespace TBG.Business.Models
     public class Matchup : IMatchup
     {
         public int MatchupId { get; set; }
-        public List<IMatchupEntry> Teams { get; set; }
+        public List<IMatchupEntry> MatchupEntries { get; set; } = new List<IMatchupEntry>();
         public IMatchup NextRound { get; set; }
         public bool Completed { get; set; }
-
-        public Matchup()
-        {
-            Teams = new List<IMatchupEntry>();
-        }
+        public int RoundId { get; set; }
     }
 }

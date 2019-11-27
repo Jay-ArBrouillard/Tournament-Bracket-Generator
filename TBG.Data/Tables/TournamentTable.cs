@@ -11,7 +11,7 @@ namespace TBG.Data.Tables
     {
         public static ITournament Create(ITournament entity, MySqlConnection dbConn)
         {
-            string query = "INSERT INTO Tournaments (user_id, tournament_name, entry_fee, total_prize_pool, tournament_type_id, active_round) VALUES (@user, @name, @fee, @pool, @type, @active)";
+            string query = "INSERT INTO TournamentsV2 (user_id, tournament_name, entry_fee, total_prize_pool, tournament_type_id, active_round) VALUES (@user, @name, @fee, @pool, @type, @active)";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@user", entity.UserId.ToString());
             param.Add("@name", entity.TournamentName);
@@ -20,7 +20,6 @@ namespace TBG.Data.Tables
             param.Add("@type", entity.TournamentTypeId.ToString());
             param.Add("@active", entity.ActiveRound.ToString());
 
-
             var resultsPK = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
             entity.TournamentId = resultsPK;
             return entity;
@@ -28,26 +27,9 @@ namespace TBG.Data.Tables
 
         public static ITournament Get(int Id, MySqlConnection dbConn)
         {
-            string query = "SELECT * FROM `Tournaments` WHERE `tournament_id` = @Id";
+            string query = "SELECT * FROM TournamentsV2 WHERE tournament_id = @Id";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@Id", Id.ToString());
-
-            using (var reader = DatabaseHelper.GetReader(query, dbConn, param))
-            {
-                if (reader.HasRows)
-                {
-                    reader.Read();
-                    return ConvertReader(reader);
-                }
-            }
-            return null;
-        }
-
-        public static ITournament GetTournamentByName(string name, MySqlConnection dbConn)
-        {
-            string query = "SELECT * FROM `Tournaments` WHERE `tournament_name` = @name";
-            Dictionary<string, string> param = new Dictionary<string, string>();
-            param.Add("@name", name);
 
             using (var reader = DatabaseHelper.GetReader(query, dbConn, param))
             {
@@ -64,7 +46,7 @@ namespace TBG.Data.Tables
         {
             List<ITournament> result = new List<ITournament>();
 
-            string query = "SELECT * FROM Tournaments";
+            string query = "SELECT * FROM TournamentsV2";
             using (var reader = DatabaseHelper.GetReader(query, dbConn, new Dictionary<string, string>()))
             {
                 while (reader.Read())
@@ -75,25 +57,9 @@ namespace TBG.Data.Tables
             return result;
         }
 
-        public static ITournament UpdateName(ITournament entity, MySqlConnection dbConn)
-        {
-            string query = "UPDATE Tournaments SET tournament_name = @name WHERE tournament_id = @id";
-            Dictionary<string, string> param = new Dictionary<string, string>();
-            param.Add("@name", entity.TournamentName.ToString());
-            param.Add("@id", entity.TournamentId.ToString());
-
-            var result = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
-            if (result != 0)
-            {
-                return entity;
-            }
-
-            return null;
-        }
-
         public static ITournament Update(ITournament entity, MySqlConnection dbConn)
         {
-            string query = "UPDATE Tournaments SET user_id = @user, tournament_name = @name, entry_fee = @fee, total_prize_pool = @pool, " +
+            string query = "UPDATE TournamentsV2 SET user_id = @user, tournament_name = @name, entry_fee = @fee, total_prize_pool = @pool, " +
                 "tournament_type_id = @type, active_round = @active WHERE tournament_id = @id";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@user", entity.UserId.ToString());
@@ -115,7 +81,7 @@ namespace TBG.Data.Tables
 
         public static ITournament Delete(ITournament entity, MySqlConnection dbConn)
         {
-            string query = "DELETE FROM Tournaments WHERE tournament_id = @id";
+            string query = "DELETE FROM TournamentsV2 WHERE tournament_id = @id";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@id", entity.TournamentId.ToString());
 

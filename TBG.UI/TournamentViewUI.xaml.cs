@@ -30,16 +30,11 @@ namespace TBG.UI
             tournament = inTourney;
 
             //Add all the rounds to the Rounds view
-            for (int i = 1; i <= tournament.Rounds.Count; i++)
-            {
-                roundDropDown.Items.Add(i);
-            }
+            populateRoundList();
 
             //Set tournament Name
             tournamentNameLbl.Content = tournament.TournamentName;
 
-            roundDropDown.SelectedItem = null;
-            roundDropDown.SelectedIndex = 0;
             populateMatchupListBox(0);
             initialization = false;
         }
@@ -49,9 +44,13 @@ namespace TBG.UI
             int selectedRound = roundDropDown.SelectedIndex;
             int selectedPairing = matchupsListBox.SelectedIndex;
 
-            if (selectedPairing == -1 || selectedRound == -1) return;   //For some reason this method is getting called when changing the round so we need this check
+            if (selectedPairing == -1 || selectedRound == -1)
+            {
+                matchupGrid.Visibility = Visibility.Hidden;
+                return;   //For some reason this method is getting called when changing the round so we need this check
+            }
 
-            List<IMatchupEntry> teams = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams;
+            List<IMatchupEntry> teams = tournament.Rounds[selectedRound].Matchups[selectedPairing].MatchupEntries;
 
             ITeam theTeam1 = source.getTeam(teams[0].TheTeam.TeamId);
             ITeam theTeam2 = source.getTeam(teams[1].TheTeam.TeamId);
@@ -105,8 +104,9 @@ namespace TBG.UI
 
             firstTeamLabel.Content = theTeam1.TeamName;
             secondTeamLabel.Content = theTeam2.TeamName;
-            firstTeamScoreTxtBox.Text = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[0].Score.ToString();
-            secondTeamScoreTxtBox.Text = tournament.Rounds[selectedRound].Pairings[selectedPairing].Teams[1].Score.ToString();
+            firstTeamScoreTxtBox.Text = tournament.Rounds[selectedRound].Matchups[selectedPairing].MatchupEntries[0].Score.ToString();
+            secondTeamScoreTxtBox.Text = tournament.Rounds[selectedRound].Matchups[selectedPairing].MatchupEntries[1].Score.ToString();
+            matchupGrid.Visibility = Visibility.Visible;
         }
 
         private void RoundDropDown_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -114,51 +114,49 @@ namespace TBG.UI
             if (initialization == true) return; //Prevents this method getting called twice when switching round
 
             int selectedRound = roundDropDown.SelectedIndex;
-            matchupsListBox.SelectedItem = null;
-            matchupsListBox.Items.Clear();
             teamTwoDataGrid.Items.Clear();
             teamOneDataGrid.Items.Clear();
 
             populateMatchupListBox(selectedRound);
+            lblFinalized.Content = "";
         }
 
-        private void populateMatchupListBox(int selectedRound)
+        private void populateRoundList()
         {
-            IRound thisRound = source.getRoundByTournamentIdandRoundNum(new Round(tournament.TournamentId, selectedRound + 1));
-
-            if (thisRound != null)
+            for (int i = 1; i <= tournament.Rounds.Count; i++)
             {
-                List<IRoundMatchup> roundMatchups = source.getRoundMatchupsByRoundId(new RoundMatchup(thisRound.RoundId));
-                roundMatchups = roundMatchups.OrderBy(x => x.MatchupNumber).ToList();
-
-                foreach (IRoundMatchup roundMatchup in roundMatchups)
-                {
-                    List<IMatchupEntry> matchupEntries = source.getMatchupEntriesByMatchupId(roundMatchup.MatchupId);
-
-                    if (matchupEntries != null && matchupEntries.Count == 2)
-                    {
-                        ITournamentEntry tournamentEntry1 = source.getTournamentEntry(matchupEntries[0].TournamentEntryId);
-                        ITournamentEntry tournamentEntry2 = source.getTournamentEntry(matchupEntries[1].TournamentEntryId);
-
-                        String imageURLString = "Assets/x-button.png";
-                        if (matchupEntries[0].Score != 0 || matchupEntries[1].Score != 0)
-                        {
-                            imageURLString = "Assets/confirm.png";
-                        }
-
-                        TournamentViewListBoxItem matchupsItem = new TournamentViewListBoxItem()
-                        {
-                            Team1Name = source.getTeam(tournamentEntry1.TeamId).TeamName,
-                            Team2Name = source.getTeam(tournamentEntry2.TeamId).TeamName,
-                            imageURL = imageURLString
-                        };
-                        matchupsListBox.Items.Add(matchupsItem);
-                    }
-                }
+                roundDropDown.Items.Add(i);
             }
-            else
+
+            roundDropDown.SelectedItem = null;
+            roundDropDown.SelectedIndex = 0;
+        }
+
+        private void populateMatchupListBox(int selectedIndex)
+        {
+            matchupsListBox.SelectedItem = null;
+            matchupsListBox.Items.Clear();
+            var selectedRound = tournament.Rounds[selectedIndex];
+            foreach (var matchup in selectedRound.Matchups)
             {
-                //There are no Teams in the next round yet
+                if (matchup != null && matchup.MatchupEntries.Count == 2)
+                {
+
+                    String imageURLString = "Assets/x-button.png";
+                    if (matchup.Completed == true) { imageURLString = "Assets/confirm.png"; }
+
+                    var team1Name = tournament.Teams.Find(x => x.TeamId == matchup.MatchupEntries[0].TheTeam.TeamId).TeamName;
+                    var team2Name = tournament.Teams.Find(x => x.TeamId == matchup.MatchupEntries[1].TheTeam.TeamId).TeamName;
+
+                    TournamentViewListBoxItem matchupsItem = new TournamentViewListBoxItem()
+                    {
+                        Team1Name = team1Name,
+                        Team2Name = team2Name,
+                        imageURL = imageURLString,
+                        Completed = matchup.Completed
+                    };
+                    matchupsListBox.Items.Add(matchupsItem);
+                }
             }
         }
 
@@ -169,6 +167,12 @@ namespace TBG.UI
             bool invalidTeamScore = false;
 
             //Validates score before saving
+            if (validatedTeam1Score == 0 && validatedTeam2Score == 0)
+            {
+                scoreRecordedLbl.Content = "Scores are not valid";
+                return;
+            }
+
             if (validatedTeam1Score == -1)
             {
                 teamOneInvalidScoreLbl.Content = "Score is not valid";
@@ -189,14 +193,16 @@ namespace TBG.UI
                 teamTwoInvalidScoreLbl.Content = "";
             }
 
-            if(invalidTeamScore) { return; }
+            if (invalidTeamScore) { return; }
 
-            var matchup = tournament.Rounds[roundDropDown.SelectedIndex].Pairings[matchupsListBox.SelectedIndex];
+            var matchup = tournament.Rounds[roundDropDown.SelectedIndex].Matchups[matchupsListBox.SelectedIndex];
             var scoreValid = tournamentController.ScoreMatchup(matchup, validatedTeam1Score, validatedTeam2Score);
 
-            if(!scoreValid) { return; } //Error Message?
+            if (!scoreValid) { return; } //Error Message?
 
             source.saveMatchupScore(matchup);
+
+            populateMatchupListBox(roundDropDown.SelectedIndex);
 
             scoreRecordedLbl.Content = "Score recorded successfully";
         }
@@ -218,7 +224,7 @@ namespace TBG.UI
         private bool MatchupFilter(object item)
         {
             TournamentViewListBoxItem matchup = item as TournamentViewListBoxItem;
-            return matchup.imageURL.Contains("x-button");
+            return !matchup.Completed;
         }
 
         private void FinalizeRoundBtn_Click(object sender, RoutedEventArgs e)
@@ -229,11 +235,13 @@ namespace TBG.UI
             var isRoundComplete = tournamentController.validateRoundCompletion(activeRound);
             if (!isRoundComplete)
             {
+                lblFinalized.Content = "Active round not finished";
                 return; //Error Message somewhere
             }
 
             tournament = tournamentController.advanceRound(tournament);
             source.saveActiveRound(tournament);
+            lblFinalized.Content = "Round finalized";
         }
     }
 }

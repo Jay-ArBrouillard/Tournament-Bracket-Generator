@@ -23,7 +23,7 @@ namespace TBG.Business.Controllers
             tournament.EntryFee = entryFee;
             tournament.TotalPrizePool = totalPrizePool;
             tournament.UserId = userId;
-            tournament.Participants = participants;
+            tournament.TournamentEntries = participants;
 
             return tournament.BuildTournament();
         }
@@ -89,22 +89,22 @@ namespace TBG.Business.Controllers
 
         public bool ScoreMatchup(IMatchup matchup, int team1Score, int team2Score)
         {
-            matchup.Teams[0].Score = team1Score;
-            matchup.Teams[1].Score = team2Score;
+            matchup.MatchupEntries[0].Score = team1Score;
+            matchup.MatchupEntries[1].Score = team2Score;
             matchup.Completed = true;
             return true;
         }
 
         public bool validateRoundCompletion(IRound round)
         {
-            return !round.Pairings.Where(x => x.Completed == false).Any();
+            return !round.Matchups.Where(x => x.Completed == false).Any();
         }
 
         public ITournament advanceRound(ITournament tournament)
         {
-            tournament = TournamentTypeHelper.ConvertTournamentType(tournament);
-            tournament.AdvanceRound();
-            return tournament;
+            var convertedTournament = TournamentTypeHelper.ConvertTournamentType(tournament);
+            convertedTournament.AdvanceRound();
+            return convertedTournament;
         }
     }
 }

@@ -2,7 +2,8 @@
 {
     public interface ILoginController
     {
-        bool validateRegister(IUser thisUser, IUser thatUser);
-        bool validateLogin(IUser thisUser, IUser thatUser);
+        IUser validateRegister(string username, string password, IUser thatUser);
+        IUser validateLogin(string username, string password, IUser thatUser);
+        IUser setLoginTime(IUser thisUser);
     }
 }

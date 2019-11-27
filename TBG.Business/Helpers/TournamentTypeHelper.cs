@@ -1,13 +1,14 @@
-﻿using TBG.Business.Tournaments;
+﻿using TBG.Business.Interfaces;
+using TBG.Business.Tournaments;
 using TBG.Core.Interfaces;
 
 namespace TBG.Business.Helpers
 {
     public static class TournamentTypeHelper
     {
-        public static ITournament GetNewTournament(ITournamentType type)
+        public static ITournamentApplication GetNewTournament(ITournamentType type)
         {
-            ITournament newTournament;
+            ITournamentApplication newTournament;
             switch (type?.TournamentTypeId)
             {
                 case 1:
@@ -25,7 +26,7 @@ namespace TBG.Business.Helpers
 
             return newTournament;
         }
-        public static ITournament ConvertTournamentType(ITournament tournament)
+        public static ITournamentApplication ConvertTournamentType(ITournament tournament)
         {
             switch (tournament.TournamentTypeId)
             {
@@ -44,10 +45,11 @@ namespace TBG.Business.Helpers
                 EntryFee = tournament.EntryFee,
                 TotalPrizePool = tournament.TotalPrizePool,
                 TournamentTypeId = tournament.TournamentTypeId,
-                Participants = tournament.Participants,
-                Prizes = tournament.Prizes,
+                TournamentEntries = tournament.TournamentEntries,
+                Prizes = tournament.TournamentPrizes,
                 Rounds = tournament.Rounds,
-                ActiveRound = tournament.ActiveRound
+                ActiveRound = tournament.ActiveRound,
+                Teams = tournament.Teams
             };
 
             return converted;

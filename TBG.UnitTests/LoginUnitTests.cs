@@ -11,24 +11,25 @@ namespace TBG.UnitTests
     [TestClass]
     public class LoginControllerTests
     {
+        private const string LoginUser = "Username";
+        private const string LoginPassword = "Password";
+        private const string RegisterUser = "TestUser123456789";
+        private const string RegisterPassword = "Password123456789";
+
         [TestMethod]
         public void TestValidateLogin_ValidUser()
         {
             //Arrange
             LoginController loginController = new LoginController();
             DatabaseProvider databaseProvider = new DatabaseProvider();
-            IUser thisUser = new User()
-            {
-                UserName = "Username",
-                Password = "Password"
-            };
+
             IUser thatUser = databaseProvider.getUser("Username");
 
             //Act
-            bool valid = loginController.validateLogin(thisUser, thatUser);
+            var valid = loginController.validateLogin(LoginUser, LoginPassword, thatUser);
 
             //Assert
-            Assert.IsTrue(valid);
+            Assert.IsTrue(valid != null);
         }
 
         [TestMethod]
@@ -37,18 +38,13 @@ namespace TBG.UnitTests
             //Arrange
             LoginController loginController = new LoginController();
             DatabaseProvider databaseProvider = new DatabaseProvider();
-            IUser thisUser = new User()
-            {
-                UserName = "Username",
-                Password = "Password"
-            };
             IUser thatUser = databaseProvider.getUser("-1");
 
             //Act
-            bool valid = loginController.validateLogin(thisUser, thatUser);
+            var valid = loginController.validateLogin(LoginUser, LoginPassword, thatUser);
 
             //Assert
-            Assert.IsFalse(valid);
+            Assert.IsTrue(valid == null);
         }
 
         [TestMethod]
@@ -57,18 +53,13 @@ namespace TBG.UnitTests
             //Arrange
             LoginController loginController = new LoginController();
             DatabaseProvider databaseProvider = new DatabaseProvider();
-            IUser thisUser = new User()
-            {
-                UserName = "Username",
-                Password = "Password"
-            };
             IUser thatUser = databaseProvider.getUser("Username");
 
             //Act
-            bool valid = loginController.validateRegister(thisUser, thatUser);
+            var valid = loginController.validateRegister(LoginUser, LoginPassword, thatUser);
 
             //Assert
-            Assert.IsFalse(valid);
+            Assert.IsTrue(valid == null);
         }
 
         [TestMethod]
@@ -79,18 +70,14 @@ namespace TBG.UnitTests
             //Arrange
             LoginController loginController = new LoginController();
             DatabaseProvider databaseProvider = new DatabaseProvider();
-            IUser thisUser = new User()
-            {
-                UserName = "TestUser123456789",
-                Password = "Password123456789"
-            };
-            IUser thatUser = databaseProvider.getUser("TestUser123456789");
+
+            IUser thatUser = databaseProvider.getUser(RegisterUser);
 
             //Act
-            bool valid = loginController.validateRegister(thisUser, thatUser);
+            var valid = loginController.validateRegister(RegisterUser, RegisterPassword, thatUser);
 
             //Assert
-            Assert.IsTrue(valid);
+            Assert.IsTrue(valid != null);
 
             RemoveUser();
         }
@@ -103,45 +90,20 @@ namespace TBG.UnitTests
             //Arrange
             LoginController loginController = new LoginController();
             DatabaseProvider databaseProvider = new DatabaseProvider();
-            IUser thisUser = new User()
-            {
-                UserName = "",
-                Password = "Password123456789"
-            };
-            IUser thatUser = databaseProvider.getUser("TestUser123456789");
+
+            IUser thatUser = databaseProvider.getUser(RegisterUser);
 
             //Act
-            bool valid = loginController.validateRegister(thisUser, thatUser);
+            var valid = loginController.validateRegister("", RegisterPassword, thatUser);
 
             //Assert
-            Assert.IsFalse(valid);
-        }
-
-        [TestMethod]
-        public void TestValidateRegister_NullUser()
-        {
-            RemoveUser();
-
-            //Arrange
-            LoginController loginController = new LoginController();
-            DatabaseProvider databaseProvider = new DatabaseProvider();
-            IUser thisUser = new User()
-            {
-                Password = "Password123456789"
-            };
-            IUser thatUser = databaseProvider.getUser("TestUser123456789");
-
-            //Act
-            bool valid = loginController.validateRegister(thisUser, thatUser);
-
-            //Assert
-            Assert.IsFalse(valid);
+            Assert.IsTrue(valid == null);
         }
 
         private void RemoveUser()
         {
             DatabaseProvider databaseProvider = new DatabaseProvider();
-            IUser thisUser = databaseProvider.getUser("TestUser123456789");
+            IUser thisUser = databaseProvider.getUser(RegisterUser);
 
             if (thisUser != null)
             {

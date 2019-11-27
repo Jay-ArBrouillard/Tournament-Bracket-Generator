@@ -71,7 +71,7 @@ namespace TBG.UI
             }
         }
 
-        public List<ITournamentEntry> convertToTeam(List<ITeam> list)
+        public List<ITournamentEntry> convertToEntries(List<ITeam> list)
         {
             List<ITournamentEntry> results = new List<ITournamentEntry>();
 
@@ -79,26 +79,15 @@ namespace TBG.UI
             {
                 ObservableCollection<IPerson> teamMembers = new ObservableCollection<IPerson>();
                 int teamId = team.TeamId;
-                foreach (ITeamMember teamMember in source.getTeamMembersByTeamId(teamId))
+                foreach (var person in team.TeamMembers)
                 {
-                    IPerson person = source.getPerson(teamMember.PersonId);
-                    teamMembers.Add(new Person()
-                    {
-                        PersonId = person.PersonId,
-                        FirstName = person.FirstName,
-                        LastName = person.LastName,
-                        Email = person.Email,
-                        Phone = person.Phone,
-                        Wins = person.Wins,
-                        Losses = person.Losses
-                    });
+                    teamMembers.Add(person);
                 }
 
                 results.Add(new TournamentEntry() {
                     TeamId = teamId,
                     TeamName = team.TeamName,
-                    Members = teamMembers,
-                    Seed = 0 //change later
+                    Members = teamMembers
                 });
             }
 
@@ -119,7 +108,7 @@ namespace TBG.UI
             }
             tournament.Teams.AddRange(selectedTeams);
             //Add selected teams to TreeView and Tournaments list
-            teamsInTournament.AddRange(convertToTeam(selectedTeams));
+            teamsInTournament.AddRange(convertToEntries(selectedTeams));
             participantsTreeView.ItemsSource = teamsInTournament;
             participantsTreeView.Items.Refresh();
 
@@ -254,6 +243,8 @@ namespace TBG.UI
                 validEntryFee, 
                 validTotalPrizePool, 
                 teamsInTournament);
+
+            newTournament.Teams.AddRange(tournament.Teams);
 
             if (newTournament != null)
             {

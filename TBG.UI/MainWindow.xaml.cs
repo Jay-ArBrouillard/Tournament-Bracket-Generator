@@ -51,21 +51,19 @@ namespace TBG.UI
         {
             string user = userNameTextBox.Text;
             string pass = passwordTextBox.Password;
-            User thisUser = new User(user, pass);
+
             var userExisting = source.getUser(user);
-            bool validate = loginController.validateLogin(thisUser, userExisting);
+            var validatedUser = loginController.validateLogin(user, pass, userExisting);
 
-            if (validate)
+            if (validatedUser != null)
             {
-                //Update last login time them in
-                source.updateLoginTime(thisUser);
-
+                source.updateUser(validatedUser);
                 //Visuals
                 displayMessage.Text = String.Empty;
                 SetDisplayColors(new SolidColorBrush(Colors.Green));
                 
                 //Start Application 
-                Dashboard dB = new Dashboard(thisUser);
+                Dashboard dB = new Dashboard(validatedUser);
                 dB.Show();
                 this.Close();
             }
@@ -85,15 +83,15 @@ namespace TBG.UI
         {
             string user = userNameTextBox.Text;
             string pass = passwordTextBox.Password;
-            User thisUser = new User(user, pass);
-            var userExisting = source.getUser(user);
-            bool validate = loginController.validateRegister(thisUser, userExisting);
 
-            if (validate)
+            var userExisting = source.getUser(user);
+            var validatedUser = loginController.validateRegister(user, pass, userExisting);
+
+            if (validatedUser != null)
             {
                 SetDisplayColors(new SolidColorBrush(Colors.Green));
 
-                if (source.createUser(thisUser) != null)
+                if (source.createUser(validatedUser) != null)
                 {
                     displayMessage.Text = "Created new user " + user;
                 }

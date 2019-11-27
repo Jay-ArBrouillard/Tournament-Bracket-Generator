@@ -7,6 +7,6 @@ namespace TBG.Core.Interfaces
         int RoundId { get; set; }
         int RoundNum { get; set; }
         int TournamentId { get; set; }
-        List<IMatchup> Pairings { get; set; }
+        List<IMatchup> Matchups { get; set; }
     }
 }

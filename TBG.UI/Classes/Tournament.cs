@@ -15,43 +15,10 @@ namespace TBG.UI.Classes
         public double EntryFee { get; set; }
         public double TotalPrizePool { get; set; }
         public int TournamentTypeId { get; set; }
-        public List<ITeam> Teams { get; set; }
-        public List<ITournamentEntry> Participants { get; set; }
-        public List<IPrize> Prizes { get; set; }
-        public List<IRound> Rounds { get; set; }
+        public List<ITeam> Teams { get; set; } = new List<ITeam>();
+        public List<ITournamentEntry> TournamentEntries { get; set; } = new List<ITournamentEntry>();
+        public List<IPrize> TournamentPrizes { get; set; } = new List<IPrize>();
+        public List<IRound> Rounds { get; set; } = new List<IRound>();
         public int ActiveRound { get; set; }
-
-        public Tournament()
-        {
-            Teams = new List<ITeam>();
-            Participants = new List<ITournamentEntry>();
-            Prizes = new List<IPrize>();
-            Rounds = new List<IRound>();
-        }
-
-        public Tournament(int tournamentId)
-        {
-            TournamentId = tournamentId;
-        }
-
-        public ITournament BuildTournament()
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool RecordResult(IMatchup matchup)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ITournament RebuildTournament()
-        {
-            throw new NotImplementedException();
-        }
-
-        public ITournament AdvanceRound()
-        {
-            throw new NotImplementedException();
-        }
     }
 }

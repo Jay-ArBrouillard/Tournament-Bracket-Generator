@@ -7,7 +7,7 @@ namespace TBG.Data.Entities
     {
         public int TeamId { get; set; }
         public string TeamName { get; set; }
-        public List<IPerson> TeamMembers { get; set; }
+        public List<IPerson> TeamMembers { get; set; } = new List<IPerson>();
         public int Wins { get; set; }
         public int Losses { get; set; }
 
