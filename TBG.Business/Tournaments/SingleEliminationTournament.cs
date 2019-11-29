@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TBG.Business.Helpers;
 using TBG.Business.Interfaces;
 using TBG.Business.Models;
 using TBG.Core.Interfaces;
@@ -24,23 +25,11 @@ namespace TBG.Business.Tournaments
 
         public ITournament BuildTournament()
         {
-            TournamentEntries = TournamentEntries.OrderByDescending(x => x.Seed).ToList();
-            bool useHiLoSeeding = TournamentEntries.Any(x => x.Seed > 0);
-            if (useHiLoSeeding)
-            {
-                List<ITournamentEntry> seededParticipants = new List<ITournamentEntry>();
-                for (int i = 0; i < TournamentEntries.Count / 2; i++)
-                {
-                    seededParticipants.Add(TournamentEntries[i]);
-                    seededParticipants.Add(TournamentEntries[TournamentEntries.Count - 1 - i]);
-                }
-                TournamentEntries = seededParticipants;
-            }
+            TournamentEntries = TournamentBuilderHelper.GetSeededEntries(TournamentEntries);
 
+            var teamQueue = TournamentBuilderHelper.GetTeamQueue(TournamentEntries);
 
-            var teamQueue = BuildTeamQueue();
-
-            AddRounds();
+            Rounds = TournamentBuilderHelper.GetRounds(CalculateRoundTotal(TournamentEntries.Count));
 
             foreach (var round in Rounds)
             {
@@ -53,7 +42,6 @@ namespace TBG.Business.Tournaments
 
         public ITournament RebuildTournament()
         {
-            AddRounds();
             return this;
         }
 
@@ -96,29 +84,6 @@ namespace TBG.Business.Tournaments
             }
             ActiveRound++;
             return this;
-        }
-
-        private Queue<ITournamentEntry> BuildTeamQueue()
-        {
-            Queue<ITournamentEntry> teamQueue = new Queue<ITournamentEntry>();
-            foreach (var team in TournamentEntries)
-            {
-                teamQueue.Enqueue(team);
-            }
-
-            return teamQueue;
-        }
-
-        private void AddRounds()
-        {
-            var roundCount = Rounds.Count() + 1;
-            for (int i = roundCount; i <= CalculateRoundTotal(TournamentEntries.Count); i++)
-            {
-                Rounds.Add(new Round()
-                {
-                    RoundNum = i
-                });
-            }
         }
 
         private void BuildPairings(IRound round)

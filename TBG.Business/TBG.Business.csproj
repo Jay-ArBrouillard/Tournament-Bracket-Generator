@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Helpers\TournamentBuilderHelper.cs" />
     <Compile Include="Interfaces\ITournamentApplication.cs" />
     <Compile Include="Models\Matchup.cs" />
     <Compile Include="Models\MatchupEntry.cs" />
@@ -61,6 +62,7 @@
     <Compile Include="Models\TournamentEntry.cs" />
     <Compile Include="Helpers\TournamentTypeHelper.cs" />
     <Compile Include="Controllers\TournamentViewController.cs" />
+    <Compile Include="Tournaments\SwissTournament.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TBG.Core\TBG.Core.csproj">
