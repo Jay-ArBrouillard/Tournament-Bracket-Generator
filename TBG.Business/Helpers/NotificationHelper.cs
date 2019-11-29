@@ -11,7 +11,7 @@ namespace TBG.Business.Helpers
 {
     public static class NotificationHelper
     {
-        public static async Task sendEmail (string toAddr, string toName, string subject, string body)
+        public static async Task sendEmail(string toAddr, string toName, string subject, string body)
         {
             AppSettingsReader settingsReader = new AppSettingsReader();
 

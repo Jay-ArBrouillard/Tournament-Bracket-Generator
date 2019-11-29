@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Helpers\NotificationHelper.cs" />
     <Compile Include="Helpers\TournamentBuilderHelper.cs" />
     <Compile Include="Interfaces\ITournamentApplication.cs" />
     <Compile Include="Models\Matchup.cs" />
