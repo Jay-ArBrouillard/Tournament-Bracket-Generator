@@ -1,4 +1,4 @@
-CREATE TABLE `TournamentsV2` (
+CREATE TABLE `Tournaments` (
  `tournament_id` int(11) NOT NULL AUTO_INCREMENT,
  `user_id` int(11) NOT NULL,
  `tournament_name` varchar(50) NOT NULL,

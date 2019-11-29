@@ -11,7 +11,7 @@ namespace TBG.Data.Tables
     {
         public static ITournamentEntry Create(ITournamentEntry entity, MySqlConnection dbConn)
         {
-            string query = "INSERT INTO TournamentEntriesV2 (tournament_id, team_id, seed) VALUES (@tournament, @team, @seed)";
+            string query = "INSERT INTO TournamentEntries (tournament_id, team_id, seed) VALUES (@tournament, @team, @seed)";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@tournament", entity.TournamentId.ToString());
             param.Add("@team", entity.TeamId.ToString());
@@ -24,7 +24,7 @@ namespace TBG.Data.Tables
 
         public static ITournamentEntry Get(int Id, MySqlConnection dbConn)
         {
-            string query = "SELECT * FROM TournamentEntriesV2 WHERE tournament_entry_id = @Id";
+            string query = "SELECT * FROM TournamentEntries WHERE tournament_entry_id = @Id";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@Id", Id.ToString());
 
@@ -43,7 +43,7 @@ namespace TBG.Data.Tables
         {
             List<ITournamentEntry> result = new List<ITournamentEntry>();
 
-            string query = "SELECT * FROM TournamentEntriesV2";
+            string query = "SELECT * FROM TournamentEntries";
             using (var reader = DatabaseHelper.GetReader(query, dbConn, new Dictionary<string, string>()))
             {
                 while (reader.Read())
@@ -56,7 +56,7 @@ namespace TBG.Data.Tables
 
         public static ITournamentEntry Delete(ITournamentEntry entity, MySqlConnection dbConn)
         {
-            string query = "DELETE FROM TournamentEntriesV2 WHERE tournament_entry_id = @id";
+            string query = "DELETE FROM TournamentEntries WHERE tournament_entry_id = @id";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@id", entity.TournamentEntryId.ToString());
 

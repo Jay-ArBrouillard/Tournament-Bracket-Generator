@@ -10,7 +10,7 @@ namespace TBG.Data.Tables
     {
         public static IMatchup Create(IMatchup entity, MySqlConnection dbConn)
         {
-            string query = "INSERT INTO MatchupsV2 (round_id, completed) VALUES (@round, @completed)";
+            string query = "INSERT INTO Matchups (round_id, completed) VALUES (@round, @completed)";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@round", entity.RoundId.ToString());
             param.Add("@completed", DatabaseHelper.BoolToString(entity.Completed));
@@ -22,7 +22,7 @@ namespace TBG.Data.Tables
 
         public static IMatchup Get(int Id, MySqlConnection dbConn)
         {
-            string query = "SELECT * FROM MatchupsV2 WHERE matchup_id = @Id";
+            string query = "SELECT * FROM Matchups WHERE matchup_id = @Id";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@Id", Id.ToString());
 
@@ -39,7 +39,7 @@ namespace TBG.Data.Tables
 
         public static IMatchup Update(IMatchup entity, MySqlConnection dbConn)
         {
-            string query = "UPDATE MatchupsV2 SET completed = @status WHERE matchup_id = @id";
+            string query = "UPDATE Matchups SET completed = @status WHERE matchup_id = @id";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@status", DatabaseHelper.BoolToString(entity.Completed));
             param.Add("@id", entity.MatchupId.ToString());
@@ -55,7 +55,7 @@ namespace TBG.Data.Tables
 
         public static IMatchup Delete(IMatchup entity, MySqlConnection dbConn)
         {
-            string query = "DELETE FROM MatchupsV2 WHERE matchup_id = @id";
+            string query = "DELETE FROM Matchups WHERE matchup_id = @id";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@id", entity.MatchupId.ToString());
 
@@ -72,7 +72,7 @@ namespace TBG.Data.Tables
         {
             List<IMatchup> result = new List<IMatchup>();
 
-            string query = "SELECT * FROM MatchupsV2";
+            string query = "SELECT * FROM Matchups";
             using (var reader = DatabaseHelper.GetReader(query, dbConn))
             {
                 while (reader.Read())

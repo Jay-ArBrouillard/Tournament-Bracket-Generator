@@ -10,7 +10,7 @@ namespace TBG.Data.Tables
     {
         public static IMatchupEntry Create(IMatchupEntry entity, MySqlConnection dbConn)
         {
-            string query = "INSERT INTO MatchupEntriesV2 (matchup_entry_id, matchup_id, tournament_entry_id, score) VALUES (NULL, @matchId, @entryId, @score)";
+            string query = "INSERT INTO MatchupEntries (matchup_entry_id, matchup_id, tournament_entry_id, score) VALUES (NULL, @matchId, @entryId, @score)";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@matchId", entity.MatchupId.ToString());
             param.Add("@entryId", entity.TournamentEntryId.ToString());
@@ -23,7 +23,7 @@ namespace TBG.Data.Tables
 
         public static IMatchupEntry Get(int Id, MySqlConnection dbConn)
         {
-            string query = "SELECT * FROM MatchupEntriesV2 WHERE matchup_entry_id = @Id";
+            string query = "SELECT * FROM MatchupEntries WHERE matchup_entry_id = @Id";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@Id", Id.ToString());
 
@@ -41,7 +41,7 @@ namespace TBG.Data.Tables
         public static List<IMatchupEntry> GetAll(MySqlConnection dbConn)
         {
             List<IMatchupEntry> result = new List<IMatchupEntry>();
-            string query = "SELECT * FROM MatchupEntriesV2";
+            string query = "SELECT * FROM MatchupEntries";
             using (var reader = DatabaseHelper.GetReader(query, dbConn, new Dictionary<string, string>()))
             {
                 while (reader.Read())
@@ -54,7 +54,7 @@ namespace TBG.Data.Tables
 
         public static IMatchupEntry Update(IMatchupEntry entity, MySqlConnection dbConn)
         {
-            string query = "UPDATE MatchupEntriesV2 SET matchup_id = @matchupId, tournament_entry_id = @teId, score = @score WHERE matchup_entry_id = @id";
+            string query = "UPDATE MatchupEntries SET matchup_id = @matchupId, tournament_entry_id = @teId, score = @score WHERE matchup_entry_id = @id";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@matchupId", entity.MatchupId.ToString());
             param.Add("@teId", entity.TournamentEntryId.ToString());
@@ -72,7 +72,7 @@ namespace TBG.Data.Tables
 
         public static IMatchupEntry Delete(IMatchupEntry entity, MySqlConnection dbConn)
         {
-            string query = "DELETE FROM MatchupEntriesV2 WHERE matchup_entry_id = @Id";
+            string query = "DELETE FROM MatchupEntries WHERE matchup_entry_id = @Id";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@Id", entity.MatchupEntryId.ToString());
 

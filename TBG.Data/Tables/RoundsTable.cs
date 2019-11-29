@@ -10,7 +10,7 @@ namespace TBG.Data.Tables
     {
         public static IRound Create(IRound entity, MySqlConnection dbConn)
         {
-            string query = "INSERT INTO RoundsV2 (tournament_id, round_num) VALUES (@id, @round)";
+            string query = "INSERT INTO Rounds (tournament_id, round_num) VALUES (@id, @round)";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@id", entity.TournamentId.ToString());
             param.Add("@round", entity.RoundNum.ToString());
@@ -22,7 +22,7 @@ namespace TBG.Data.Tables
 
         public static IRound Get(int Id, MySqlConnection dbConn)
         {
-            string query = "SELECT * FROM RoundsV2 WHERE round_id = @Id";
+            string query = "SELECT * FROM Rounds WHERE round_id = @Id";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@Id", Id.ToString());
 
@@ -41,7 +41,7 @@ namespace TBG.Data.Tables
         {
             List<IRound> result = new List<IRound>();
 
-            string query = "SELECT * FROM RoundsV2";
+            string query = "SELECT * FROM Rounds";
             using (var reader = DatabaseHelper.GetReader(query, dbConn))
             {
                 while (reader.Read())
@@ -54,7 +54,7 @@ namespace TBG.Data.Tables
 
         public static IRound Update(IRound entity, MySqlConnection dbConn)
         {
-            string query = "UPDATE RoundsV2 SET tournament_id = @tId, round_num = @roundNum WHERE round_id = @id";
+            string query = "UPDATE Rounds SET tournament_id = @tId, round_num = @roundNum WHERE round_id = @id";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@tId", entity.TournamentId.ToString());
             param.Add("@roundNum", entity.RoundNum.ToString());
@@ -71,7 +71,7 @@ namespace TBG.Data.Tables
 
         public static IRound Delete(IRound entity, MySqlConnection dbConn)
         {
-            string query = "DELETE FROM RoundsV2 WHERE round_id = @id";
+            string query = "DELETE FROM Rounds WHERE round_id = @id";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@id", entity.RoundId.ToString());
 
