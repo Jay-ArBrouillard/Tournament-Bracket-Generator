@@ -10,11 +10,10 @@ namespace TBG.Core.Interfaces
         double EntryFee { get; set; }
         double TotalPrizePool { get; set; }
         int TournamentTypeId { get; set; }
+        int ActiveRound { get; set; }
         List<ITeam> Teams { get; set; }
-        List<ITournamentEntry> Participants { get; set; }
-        List<IPrize> Prizes { get; set; }
+        List<ITournamentEntry> TournamentEntries { get; set; }
+        List<IPrize> TournamentPrizes { get; set; }
         List<IRound> Rounds { get; set; }
-        bool RecordResult(IMatchup matchup);
-        ITournament BuildTournament();
     }
 }

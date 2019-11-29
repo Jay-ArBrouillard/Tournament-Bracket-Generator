@@ -104,7 +104,6 @@
     <Content Include="SQL\Tables\Persons.sql" />
     <Content Include="SQL\Tables\Places.sql" />
     <Content Include="SQL\Tables\Prizes.sql" />
-    <Content Include="SQL\Tables\RoundMatchups.sql" />
     <Content Include="SQL\Tables\Rounds.sql" />
     <Content Include="SQL\Tables\TeamMembers.sql" />
     <Content Include="SQL\Tables\Teams.sql" />

@@ -12,20 +12,11 @@ namespace TBG.Data.Entities
         public double EntryFee { get; set; }
         public double TotalPrizePool { get; set; }
         public int TournamentTypeId { get; set; }
-        public List<ITeam> Teams { get; set; }
-        public List<ITeam> Participants { get; set; }
-        public List<ITournamentPrize> Prizes { get; set; }
-        public List<IRound> Rounds { get; set; }
-        List<ITournamentEntry> ITournament.Participants { get; set; }
-        List<IPrize> ITournament.Prizes { get; set; }
-
-        public ITournament BuildTournament()
-        {
-            throw new NotImplementedException();
-        }
-        public bool RecordResult(IMatchup matchup)
-        {
-            throw new NotImplementedException("This should probably change?");
-        }
+        public List<ITeam> Teams { get; set; } = new List<ITeam>();
+        public List<ITournamentPrize> Prizes { get; set; } = new List<ITournamentPrize>();
+        public List<IRound> Rounds { get; set; } = new List<IRound>();
+        public int ActiveRound { get; set; }
+        public List<ITournamentEntry> TournamentEntries { get; set; } = new List<ITournamentEntry>();
+        public List<IPrize> TournamentPrizes { get; set; } = new List<IPrize>();
     }
 }

@@ -38,58 +38,50 @@ namespace TBG.Data.Tables
             return null;
         }
 
-        public static List<IMatchupEntry> GetByMatchupId(int matchupId, MySqlConnection dbConn)
+        public static List<IMatchupEntry> GetAll(MySqlConnection dbConn)
         {
-            List<IMatchupEntry> results = new List<IMatchupEntry>();
-
-            string query = "SELECT * FROM MatchupEntries WHERE matchup_id = @Id";
-            Dictionary<string, string> param = new Dictionary<string, string>();
-            param.Add("@Id", matchupId.ToString());
-
-            using (var reader = DatabaseHelper.GetReader(query, dbConn, param))
+            List<IMatchupEntry> result = new List<IMatchupEntry>();
+            string query = "SELECT * FROM MatchupEntries";
+            using (var reader = DatabaseHelper.GetReader(query, dbConn, new Dictionary<string, string>()))
             {
                 while (reader.Read())
                 {
-                    results.Add(ConvertReader(reader));
+                    result.Add(ConvertReader(reader));
                 }
             }
-            return results;
+            return result;
         }
 
-        public static IMatchupEntry GetByMatchupIdAndTournamentEntryId(int matchupId, int tournamentEntryId, MySqlConnection dbConn)
+        public static IMatchupEntry Update(IMatchupEntry entity, MySqlConnection dbConn)
         {
-            string query = "SELECT * FROM MatchupEntries WHERE matchup_id = @match AND tournament_entry_id = @entryId";
+            string query = "UPDATE MatchupEntries SET matchup_id = @matchupId, tournament_entry_id = @teId, score = @score WHERE matchup_entry_id = @id";
             Dictionary<string, string> param = new Dictionary<string, string>();
-            param.Add("@match", matchupId.ToString());
-            param.Add("@entryId", tournamentEntryId.ToString());
+            param.Add("@matchupId", entity.MatchupId.ToString());
+            param.Add("@teId", entity.TournamentEntryId.ToString());
+            param.Add("@id", entity.MatchupEntryId.ToString());
+            param.Add("@score", entity.Score.ToString());
 
-            using (var reader = DatabaseHelper.GetReader(query, dbConn, param))
+            var result = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
+            if (result != 0)
             {
-                if (reader.HasRows)
-                {
-                    reader.Read();
-                    return ConvertReader(reader);
-                }
+                return entity;
             }
+
             return null;
         }
 
-        public static IMatchupEntry UpdateScore(int matchupId, int tournamentEntryId, int score, MySqlConnection dbConn)
+        public static IMatchupEntry Delete(IMatchupEntry entity, MySqlConnection dbConn)
         {
-            string query = "UPDATE MatchupEntries SET score = @score WHERE matchup_id = @id AND tournament_entry_id = @entryId";
+            string query = "DELETE FROM MatchupEntries WHERE matchup_entry_id = @Id";
             Dictionary<string, string> param = new Dictionary<string, string>();
-            param.Add("@Id", matchupId.ToString());
-            param.Add("@entryId", tournamentEntryId.ToString());
-            param.Add("@score", score.ToString());
+            param.Add("@Id", entity.MatchupEntryId.ToString());
 
-            using (var reader = DatabaseHelper.GetReader(query, dbConn, param))
+            var result = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
+            if (result != 0)
             {
-                if (reader.HasRows)
-                {
-                    reader.Read();
-                    return ConvertReader(reader);
-                }
+                return entity;
             }
+
             return null;
         }
 
@@ -100,7 +92,7 @@ namespace TBG.Data.Tables
                 MatchupEntryId = int.Parse(reader["matchup_entry_id"].ToString()),
                 MatchupId = int.Parse(reader["matchup_id"].ToString()),
                 TournamentEntryId = int.Parse(reader["tournament_entry_id"].ToString()),
-                Score = int.Parse(reader["score"].ToString()),
+                Score = int.Parse(reader["score"].ToString())
             };
         }
 

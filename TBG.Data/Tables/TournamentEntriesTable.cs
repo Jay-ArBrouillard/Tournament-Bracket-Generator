@@ -24,7 +24,7 @@ namespace TBG.Data.Tables
 
         public static ITournamentEntry Get(int Id, MySqlConnection dbConn)
         {
-            string query = "SELECT * FROM `TournamentEntries` WHERE `tournament_entry_id` = @Id";
+            string query = "SELECT * FROM TournamentEntries WHERE tournament_entry_id = @Id";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@Id", Id.ToString());
 
@@ -37,24 +37,6 @@ namespace TBG.Data.Tables
                 }
             }
             return null;
-        }
-
-        public static List<ITournamentEntry> GetByTournamentId(int Id, MySqlConnection dbConn)
-        {
-            List<ITournamentEntry> result = new List<ITournamentEntry>();
-            string query = "SELECT * FROM `TournamentEntries` WHERE `tournament_id` = @Id";
-            Dictionary<string, string> param = new Dictionary<string, string>();
-            param.Add("@Id", Id.ToString());
-
-            using (var reader = DatabaseHelper.GetReader(query, dbConn, param))
-            {
-                while (reader.Read())
-                {
-                    result.Add(ConvertReader(reader));
-                }
-
-                return result;
-            }
         }
 
         public static List<ITournamentEntry> GetAll(MySqlConnection dbConn)
@@ -70,6 +52,21 @@ namespace TBG.Data.Tables
                 }
             }
             return result;
+        }
+
+        public static ITournamentEntry Delete(ITournamentEntry entity, MySqlConnection dbConn)
+        {
+            string query = "DELETE FROM TournamentEntries WHERE tournament_entry_id = @id";
+            Dictionary<string, string> param = new Dictionary<string, string>();
+            param.Add("@id", entity.TournamentEntryId.ToString());
+
+            var result = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
+            if (result != 0)
+            {
+                return entity;
+            }
+
+            return null;
         }
 
         public static ITournamentEntry ConvertReader(MySqlDataReader reader)

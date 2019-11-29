@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using TBG.Core.Interfaces;
@@ -19,23 +20,18 @@ namespace TBG.UI
         private IUser user;
         private List<ITournament> allTournaments;
 
-        public Dashboard(User user)
+        public Dashboard(IUser user)
         {
             InitializeComponent();
             this.user = user;
             this.source = ApplicationController.getProvider();
             tournamentController = ApplicationController.getTournamentController();
 
-            allTournaments = source.getAllTournaments();
             var tournamentTypes = source.getTournamentTypes();
 
-            foreach (var tournament in allTournaments)
-            {
-                var item = new TournamentListBoxItem(tournament.TournamentName);
-                this.tournamentList.Items.Add(new ListBoxItem {
-                    Content = item.Name
-                });
-            }
+            List<TournamentListBoxItem> tourneys = new List<TournamentListBoxItem>();
+
+            BuildTournamentList();
 
             foreach (var tournamentType in tournamentTypes)
             {
@@ -53,135 +49,51 @@ namespace TBG.UI
             }
         }
 
+        private void BuildTournamentList()
+        {
+            tournamentList.Items.Clear();
+            allTournaments = source.getAllTournaments();
+            foreach (var tournament in allTournaments)
+            {
+                var item = new TournamentListBoxItem()
+                {
+                    Name = tournament.TournamentName,
+                    Id = tournament.TournamentId
+                };
+
+                tournamentList.Items.Add(item);
+            }
+        }
+
         public void Load_Tournament(object sender, RoutedEventArgs e)
         {
             //Only load tournament if one is selected
             if (tournamentList.SelectedIndex == -1) return;
-
-            //Look at selected item in tournamentList, pass that id to Tournament
-            ITournament selectedTournament = source.getTournamentByName(allTournaments[tournamentList.SelectedIndex].TournamentName);
-
-            ITournament newTournament = new Tournament()
-            {
-                TournamentId = selectedTournament.TournamentId,
-                UserId = selectedTournament.UserId,
-                TournamentName = selectedTournament.TournamentName,
-                EntryFee = selectedTournament.EntryFee,
-                TotalPrizePool = selectedTournament.TotalPrizePool,
-                TournamentTypeId = selectedTournament.TournamentTypeId
-            };
-            newTournament.Participants = source.getTournamentEntriesByTournamentId(selectedTournament.TournamentId);
-            newTournament = tournamentController.createTournament(newTournament);
-            List<IRound> existingRounds = source.getRoundsByTournamentId(newTournament.TournamentId);
-            for (int i = 0; i < existingRounds.Count; i++)
-            {
-                List<IRoundMatchup> roundMatchups = source.getRoundMatchupsByRoundId(new RoundMatchup(existingRounds[i].RoundId));
-                if (roundMatchups.Count > 0)
-                {
-                    for (int j = 0; j < roundMatchups.Count; j++)
-                    {
-                        List<IMatchupEntry> matchupEntries = source.getMatchupEntriesByMatchupId(roundMatchups[j].MatchupId);
-
-                        if (i != 0)
-                        {
-                            IMatchup matchup = source.getMatchup(matchupEntries[j].MatchupId);
-                            List<IMatchupEntry> matchEntries = source.getMatchupEntriesByMatchupId(matchup.MatchupId);
-                            foreach (IMatchupEntry matchupEntry in matchEntries)
-                            {
-                                matchupEntry.TheTeam = source.getTournamentEntry(matchupEntry.TournamentEntryId);
-                            }
-                            newTournament.Rounds[i].Pairings[j].Teams = matchEntries;
-                        }
-
-                        newTournament.Rounds[i].Pairings[j].MatchupId = roundMatchups[j].MatchupId;
-
-                        if (matchupEntries.Count == 1)
-                        {
-                            newTournament.Rounds[i].Pairings[j].Teams[0].Score = matchupEntries[0].Score;
-                            newTournament.Rounds[i].Pairings[j].Teams[0].MatchupId = matchupEntries[0].MatchupId;
-                            newTournament.Rounds[i].Pairings[j].Teams[0].TheTeam.TournamentEntryId = matchupEntries[0].TournamentEntryId;
-                        }
-                        else if (matchupEntries.Count == 2)
-                        {
-                            newTournament.Rounds[i].Pairings[j].Teams[0].Score = matchupEntries[0].Score;
-                            newTournament.Rounds[i].Pairings[j].Teams[1].Score = matchupEntries[1].Score;
-                            newTournament.Rounds[i].Pairings[j].Teams[0].MatchupId = matchupEntries[0].MatchupId;
-                            newTournament.Rounds[i].Pairings[j].Teams[1].MatchupId = matchupEntries[1].MatchupId;
-                            newTournament.Rounds[i].Pairings[j].Teams[0].TheTeam.TournamentEntryId = matchupEntries[0].TournamentEntryId;
-                            newTournament.Rounds[i].Pairings[j].Teams[1].TheTeam.TournamentEntryId = matchupEntries[1].TournamentEntryId;
-                        }
-                    }
-                }
-            }
-
-            TournamentViewUI viewUI = new TournamentViewUI(newTournament);
+            var selectedItem = tournamentList.SelectedItem as TournamentListBoxItem;
+            var selectedTournamentId = allTournaments.Where(x => x.TournamentId == selectedItem.Id).First().TournamentId;
+            var selectedTournament = source.getTournament(selectedTournamentId);
+            selectedTournament = tournamentController.rebuildTournament(selectedTournament);
+            TournamentViewUI viewUI = new TournamentViewUI(selectedTournament);
             viewUI.Show();
         }
 
         public void Delete_Tournament(object sender, RoutedEventArgs e)
         {
+            //Probably should add a confirmation to this
+            if (tournamentList.SelectedIndex == -1) return;
+            var selectedItem = tournamentList.SelectedItem as TournamentListBoxItem;
+            var selectedTournamentId = allTournaments.Where(x => x.TournamentId == selectedItem.Id).First().TournamentId;
 
-            Console.WriteLine("Temp: " + tournamentList.SelectedIndex);
-            Console.WriteLine(tournamentList.SelectedIndex == -1);
-            if (tournamentList.SelectedIndex == -1)
-            {
-                messageBox.Text = "Please select a tournament";
-                return;
-            }
+            var deletedTournament = source.deleteTournament(selectedTournamentId);
 
-            ITournament selectedTournament = source.getTournamentByName(allTournaments[tournamentList.SelectedIndex].TournamentName);
-            ITournament tournament = source.deleteTournament(new Tournament(selectedTournament.TournamentId));
-
-            if (tournament != null)
-            {
-                //Delete from Matchups Table if it doesn't have any matchupEntries since it isn't effected by the cascade from deleting tournament
-                foreach (var matchup in source.getAllMatchups())
-                {
-                    if (source.getMatchupEntriesByMatchupId(matchup.MatchupId) != null)
-                    {
-                        IMatchup currMatchup = source.deleteMatchup(new Matchup(matchup.MatchupId));
-                    }
-                }
-
-                tournamentList.Items.Clear();
-
-                allTournaments = source.getAllTournaments();
-                foreach (var t in allTournaments)
-                {
-                    var item = new TournamentListBoxItem(t.TournamentName);
-                    this.tournamentList.Items.Add(new ListBoxItem
-                    {
-                        Content = item.Name
-                    });
-                }
-
-                var tournamentTypes = source.getTournamentTypes();
-
-                foreach (var tournamentType in tournamentTypes)
-                {
-                    this.typeFilter.Items.Add(new ListBoxItem
-                    {
-                        Content = new Label
-                        {
-                            Content = tournamentType.TournamentTypeName
-                        }
-                    });
-                }
-
-                tournamentList.Items.Refresh();
-                messageBox.Text = "Successfully deleted tournament";
-            }
-            else
-            {
-                messageBox.Text = "Couldn't delete the selected Tournament";
-            }
+            BuildTournamentList();
+            messageBox.Text = "Successfully deleted tournament";
         }
 
         private void CreateTournament_Click(object sender, RoutedEventArgs e)
         {
             CreateTournament newTournament = new CreateTournament(user);
             newTournament.Show();
-            this.Close();
         }
     }
 }

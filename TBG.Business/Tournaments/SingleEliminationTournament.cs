@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TBG.Business.Interfaces;
 using TBG.Business.Models;
 using TBG.Core.Interfaces;
 
 namespace TBG.Business.Tournaments
 {
-    public class SingleEliminationTournament : ITournament
+    public class SingleEliminationTournament : ITournamentApplication
     {
         public int TournamentId { get; set; }
         public int UserId { get; set; }
@@ -14,24 +15,26 @@ namespace TBG.Business.Tournaments
         public double EntryFee { get; set; }
         public double TotalPrizePool { get; set; }
         public int TournamentTypeId { get; set; }
-        public List<ITeam> Teams { get; set; }
-        public List<ITournamentEntry> Participants { get; set; } 
-        public List<IPrize> Prizes { get; set; }
-        public List<IRound> Rounds { get; set; } 
-        
+        public List<ITeam> Teams { get; set; } = new List<ITeam>();
+        public List<ITournamentEntry> TournamentEntries { get; set; } = new List<ITournamentEntry>();
+        public List<IPrize> Prizes { get; set; } = new List<IPrize>();
+        public List<IRound> Rounds { get; set; } = new List<IRound>();
+        public int ActiveRound { get; set; }
+        public List<IPrize> TournamentPrizes { get; set; }
+
         public ITournament BuildTournament()
         {
-            Participants = Participants.OrderByDescending(x => x.Seed).ToList();
-            bool useHiLoSeeding = Participants.Any(x => x.Seed > 0);
+            TournamentEntries = TournamentEntries.OrderByDescending(x => x.Seed).ToList();
+            bool useHiLoSeeding = TournamentEntries.Any(x => x.Seed > 0);
             if (useHiLoSeeding)
             {
                 List<ITournamentEntry> seededParticipants = new List<ITournamentEntry>();
-                for (int i = 0; i < Participants.Count / 2; i++)
+                for (int i = 0; i < TournamentEntries.Count / 2; i++)
                 {
-                    seededParticipants.Add(Participants[i]);
-                    seededParticipants.Add(Participants[Participants.Count - 1 - i]);
+                    seededParticipants.Add(TournamentEntries[i]);
+                    seededParticipants.Add(TournamentEntries[TournamentEntries.Count - 1 - i]);
                 }
-                Participants = seededParticipants;
+                TournamentEntries = seededParticipants;
             }
 
 
@@ -42,26 +45,63 @@ namespace TBG.Business.Tournaments
             foreach (var round in Rounds)
             {
                 AddTeamsToPairings(teamQueue, round);
-                AddLinkedMatchupEntry(round);
             }
 
+            ActiveRound = 1;
             return this;
         }
 
-        public bool RecordResult(IMatchup matchup)
+        public ITournament RebuildTournament()
         {
-            var winner = CreateWinnerMatchupEntry(matchup.Teams.OrderByDescending(x => x.Score).First());
-            if (matchup.NextRound != null)
+            AddRounds();
+            return this;
+        }
+
+        public ITournament AdvanceRound()
+        {
+            Queue<ITournamentEntry> teamQueue = new Queue<ITournamentEntry>();
+            var activeRound = Rounds.Where(x => x.RoundNum == ActiveRound).First();
+            foreach (var pairing in activeRound.Matchups)
             {
-                matchup.NextRound.Teams.Add(winner);
+                var winner = pairing.MatchupEntries.OrderByDescending(x => x.Score).First().TheTeam;
+                teamQueue.Enqueue(winner);
             }
-            return true;
+
+            var nextRound = Rounds.Where(x => x.RoundNum == ActiveRound + 1).First();
+            if (nextRound != null)
+            {
+                for (int i = 0; i < teamQueue.Count / 2; i++)
+                {
+                    nextRound.Matchups.Add(new Matchup()
+                    {
+                        MatchupId = i,
+                        MatchupEntries = new List<IMatchupEntry>()
+                    });
+                }
+
+                foreach (var matchup in nextRound.Matchups)
+                {
+                    matchup.MatchupEntries.Add(new MatchupEntry()
+                    {
+                        TheTeam = teamQueue.Dequeue(),
+                        Score = 0
+                    });
+
+                    matchup.MatchupEntries.Add(new MatchupEntry()
+                    {
+                        TheTeam = teamQueue.Dequeue(),
+                        Score = 0
+                    });
+                }
+            }
+            ActiveRound++;
+            return this;
         }
 
         private Queue<ITournamentEntry> BuildTeamQueue()
         {
             Queue<ITournamentEntry> teamQueue = new Queue<ITournamentEntry>();
-            foreach (var team in Participants)
+            foreach (var team in TournamentEntries)
             {
                 teamQueue.Enqueue(team);
             }
@@ -71,24 +111,24 @@ namespace TBG.Business.Tournaments
 
         private void AddRounds()
         {
-            for (int i = 1; i <= CalculateRoundTotal(Participants.Count); i++)
+            var roundCount = Rounds.Count() + 1;
+            for (int i = roundCount; i <= CalculateRoundTotal(TournamentEntries.Count); i++)
             {
                 Rounds.Add(new Round()
                 {
-                    RoundNum = i,
-                    TournamentId = TournamentId
+                    RoundNum = i
                 });
             }
         }
 
         private void BuildPairings(IRound round)
         {
-            for (int i = 0; i < Participants.Count / 2; i++)
+            for (int i = 0; i < TournamentEntries.Count / 2; i++)
             {
-                round.Pairings.Add(new Matchup()
+                round.Matchups.Add(new Matchup()
                 {
                     MatchupId = i,
-                    Teams = new List<IMatchupEntry>()
+                    MatchupEntries = new List<IMatchupEntry>()
                 });
             }
         }
@@ -99,40 +139,19 @@ namespace TBG.Business.Tournaments
             {
                 BuildPairings(round);
 
-                foreach (var matchup in round.Pairings)
+                foreach (var matchup in round.Matchups)
                 {
-                    matchup.Teams.Add(new MatchupEntry()
+                    matchup.MatchupEntries.Add(new MatchupEntry()
                     {
                         TheTeam = teamQueue.Dequeue(),
                         Score = 0
                     });
 
-                    matchup.Teams.Add(new MatchupEntry()
+                    matchup.MatchupEntries.Add(new MatchupEntry()
                     {
                         TheTeam = teamQueue.Dequeue(),
                         Score = 0
                     });
-                }
-            }
-        }
-
-        private void AddLinkedMatchupEntry(IRound round)
-        {
-            if (round.Pairings.Count > 1)
-            {
-                int count = 1;
-                Matchup nextRoundMatchup = new Matchup();
-                foreach (var matchup in round.Pairings)
-                {
-                    if (IsOdd(count))
-                    {
-                        nextRoundMatchup = new Matchup();
-                        var nextRound = Rounds.Find(x => x.RoundNum == round.RoundNum + 1);
-                        if (nextRound != null) { nextRound.Pairings.Add(nextRoundMatchup); } //Safety, but there should be a next round if Pairings.count > 1.
-                    }
-                    matchup.NextRound = nextRoundMatchup;
-
-                    count++;
                 }
             }
         }

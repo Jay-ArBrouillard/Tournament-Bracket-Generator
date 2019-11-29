@@ -1,32 +1,47 @@
-﻿using TBG.Core.Interfaces;
+﻿using System;
+using TBG.Business.Models;
+using TBG.Core.Interfaces;
 
 namespace TBG.Business.Controllers
 {
     public class LoginController : ILoginController
     {
-        public bool validateLogin(IUser thisUser, IUser thatUser)
+        public IUser setLoginTime(IUser thisUser)
         {
-            if (thisUser == null || thatUser == null) { return false; }
-            //Check UserName
-            if (!thisUser.UserName.Equals(thatUser.UserName)) { return false; }
-
-            //Check Password
-            if (!thisUser.Password.Equals(thatUser.Password)) { return false; }
-
-            thisUser.UserId = thatUser.UserId;  //They are the same users
-
-            return true;
+            thisUser.LastLogin = DateTime.Now;
+            return thisUser;
         }
 
-        public bool validateRegister(IUser thisUser, IUser thatUser)
+        public IUser validateLogin(string username, string password, IUser thatUser)
         {
-            if (thisUser == null || thatUser != null) { return false; }
+            if (thatUser == null) { return null; }
 
-            if (string.IsNullOrEmpty(thisUser.UserName)) { return false; }
+            //Check UserName
+            if (!username.Equals(thatUser.UserName)) { return null; }
 
-            if (string.IsNullOrEmpty(thisUser.Password)) { return false; }
+            //Check Password
+            if (!password.Equals(thatUser.Password)) { return null; }
 
-            return true;
+            var thisUser = thatUser;
+            thisUser.LastLogin = DateTime.Now;
+
+            return thisUser;
+        }
+
+        public IUser validateRegister(string username, string password, IUser thatUser)
+        {
+            if (thatUser != null) { return null; }
+            if (string.IsNullOrEmpty(username)) { return null ; }
+            if (string.IsNullOrEmpty(password)) { return null; }
+
+            return new User()
+            {
+                UserName = username,
+                Password = password,
+                Active = true,
+                Admin = false,
+                LastLogin = DateTime.Now
+            };
         }
     }
 }

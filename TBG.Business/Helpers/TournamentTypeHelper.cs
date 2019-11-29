@@ -1,11 +1,32 @@
-﻿using TBG.Business.Tournaments;
+﻿using TBG.Business.Interfaces;
+using TBG.Business.Tournaments;
 using TBG.Core.Interfaces;
 
 namespace TBG.Business.Helpers
 {
     public static class TournamentTypeHelper
     {
-        public static ITournament ConvertTournamentType(ITournament tournament)
+        public static ITournamentApplication GetNewTournament(ITournamentType type)
+        {
+            ITournamentApplication newTournament;
+            switch (type?.TournamentTypeId)
+            {
+                case 1:
+                    newTournament = NewSingleEliminationTournament();
+                    break;
+                default:
+                    newTournament = null;
+                    break;
+            }
+
+            if (newTournament != null)
+            {
+                newTournament.TournamentTypeId = type.TournamentTypeId;
+            }
+
+            return newTournament;
+        }
+        public static ITournamentApplication ConvertTournamentType(ITournament tournament)
         {
             switch (tournament.TournamentTypeId)
             {
@@ -14,7 +35,7 @@ namespace TBG.Business.Helpers
             }
         }
 
-        public static SingleEliminationTournament ConvertToSingleElimination(ITournament tournament)
+        private static SingleEliminationTournament ConvertToSingleElimination(ITournament tournament)
         {
             SingleEliminationTournament converted = new SingleEliminationTournament()
             {
@@ -24,13 +45,19 @@ namespace TBG.Business.Helpers
                 EntryFee = tournament.EntryFee,
                 TotalPrizePool = tournament.TotalPrizePool,
                 TournamentTypeId = tournament.TournamentTypeId,
-                Participants = tournament.Participants,
-                Prizes = tournament.Prizes,
-                Rounds = tournament.Rounds
+                TournamentEntries = tournament.TournamentEntries,
+                Prizes = tournament.TournamentPrizes,
+                Rounds = tournament.Rounds,
+                ActiveRound = tournament.ActiveRound,
+                Teams = tournament.Teams
             };
 
             return converted;
         }
 
+        private static SingleEliminationTournament NewSingleEliminationTournament()
+        {
+            return new SingleEliminationTournament();
+        }
     }
 }

@@ -12,7 +12,7 @@ namespace TBG.UI.Classes
         public int RoundId { get; set; }
         public int RoundNum { get; set; }
         public int TournamentId { get; set; }
-        public List<IMatchup> Pairings { get; set; }
+        public List<IMatchup> Matchups { get; set; }
         public Round()
         {
         }

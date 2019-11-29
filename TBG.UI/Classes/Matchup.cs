@@ -10,16 +10,9 @@ namespace TBG.UI.Classes
     public class Matchup : IMatchup
     {
         public int MatchupId { get; set; }
-        public List<IMatchupEntry> Teams { get; set; }
+        public List<IMatchupEntry> MatchupEntries { get; set; } = new List<IMatchupEntry>();
         public IMatchup NextRound { get; set; }
-
-        public Matchup()
-        {
-        }
-
-        public Matchup(int matchupId)
-        {
-            MatchupId = matchupId;
-        }
+        public bool Completed { get; set; }
+        public int RoundId { get; set; }
     }
 }

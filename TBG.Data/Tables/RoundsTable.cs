@@ -52,39 +52,35 @@ namespace TBG.Data.Tables
             return result;
         }
 
-        public static List<IRound> GetByTournamentId(int tournamentId, MySqlConnection dbConn)
+        public static IRound Update(IRound entity, MySqlConnection dbConn)
         {
-            List<IRound> result = new List<IRound>();
-
-            string query = "SELECT * FROM Rounds WHERE tournament_id = @tournamentId";
+            string query = "UPDATE Rounds SET tournament_id = @tId, round_num = @roundNum WHERE round_id = @id";
             Dictionary<string, string> param = new Dictionary<string, string>();
-            param.Add("@tournamentId", tournamentId.ToString());
+            param.Add("@tId", entity.TournamentId.ToString());
+            param.Add("@roundNum", entity.RoundNum.ToString());
+            param.Add("@id", entity.RoundId.ToString());
 
-            using (var reader = DatabaseHelper.GetReader(query, dbConn, param))
+            var result = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
+            if (result != 0)
             {
-                while (reader.Read())
-                {
-                    result.Add(ConvertReader(reader));
-                }
+                return entity;
             }
-            return result;
+
+            return null;
         }
 
-        public static IRound GetByTournamentIdAndRoundNum(IRound entity, MySqlConnection dbConn)
+        public static IRound Delete(IRound entity, MySqlConnection dbConn)
         {
-            string query = "SELECT * FROM Rounds WHERE tournament_id = @tournamentId AND round_num = @roundNum";
+            string query = "DELETE FROM Rounds WHERE round_id = @id";
             Dictionary<string, string> param = new Dictionary<string, string>();
-            param.Add("@tournamentId", entity.TournamentId.ToString());
-            param.Add("@roundNum", entity.RoundNum.ToString());
+            param.Add("@id", entity.RoundId.ToString());
 
-            using (var reader = DatabaseHelper.GetReader(query, dbConn, param))
+            var result = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
+            if (result != 0)
             {
-                if (reader.HasRows)
-                {
-                    reader.Read();
-                    return ConvertReader(reader);
-                }
+                return entity;
             }
+
             return null;
         }
 

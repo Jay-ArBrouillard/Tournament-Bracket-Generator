@@ -5,5 +5,4 @@ CREATE TABLE Rounds (
     PRIMARY KEY (round_id),
     FOREIGN KEY (tournament_id)
         REFERENCES Tournaments (tournament_id)
-		ON DELETE CASCADE
 );
