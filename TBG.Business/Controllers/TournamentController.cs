@@ -16,7 +16,9 @@ namespace TBG.Business.Controllers
             int userId, 
             double entryFee, 
             double totalPrizePool,
-            List<ITournamentEntry> participants)
+            List<ITournamentEntry> participants,
+            List<ITeam> teams
+        )
         {
             var tournament = TournamentTypeHelper.GetNewTournament(tournamentType);
             tournament.TournamentName = tournamentName;
@@ -24,6 +26,7 @@ namespace TBG.Business.Controllers
             tournament.TotalPrizePool = totalPrizePool;
             tournament.UserId = userId;
             tournament.TournamentEntries = participants;
+            tournament.Teams = teams;
 
             return tournament.BuildTournament();
         }

@@ -189,7 +189,7 @@ namespace TBG.Data.Classes
                 }
             }
 
-            return TeamsTable.GetAll(dbConn);
+            return allTeams;
         }
         #endregion
 

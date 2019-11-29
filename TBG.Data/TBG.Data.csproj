@@ -79,7 +79,6 @@
     <Compile Include="Tables\MatchupsTable.cs" />
     <Compile Include="Tables\PersonsTable.cs" />
     <Compile Include="Tables\PrizesTable.cs" />
-    <Compile Include="Tables\RoundMatchupsTable.cs" />
     <Compile Include="Tables\RoundsTable.cs" />
     <Compile Include="Tables\TeamMembersTable.cs" />
     <Compile Include="Tables\TeamsTable.cs" />

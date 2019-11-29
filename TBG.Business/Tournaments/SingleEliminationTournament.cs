@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using TBG.Business.Helpers;
 using TBG.Business.Interfaces;
 using TBG.Business.Models;
 using TBG.Core.Interfaces;
@@ -48,12 +49,12 @@ namespace TBG.Business.Tournaments
             }
 
             ActiveRound = 1;
+            NotifyParticipants();
             return this;
         }
 
         public ITournament RebuildTournament()
         {
-            AddRounds();
             return this;
         }
 
@@ -95,6 +96,9 @@ namespace TBG.Business.Tournaments
                 }
             }
             ActiveRound++;
+
+            NotifyParticipants();
+
             return this;
         }
 
@@ -156,31 +160,25 @@ namespace TBG.Business.Tournaments
             }
         }
 
-        private IMatchupEntry CreateWinnerMatchupEntry(IMatchupEntry winner)
-        {
-            var nextRound = new MatchupEntry()
-            {
-                TheTeam = winner.TheTeam,
-                Score = 0
-            };
-
-            return nextRound;
-        }
-
-        /// <summary>
-        /// Assuming there are 2 teams per matchup
-        /// </summary>
-        /// <param name="FieldSize"></param>
-        /// <returns></returns>
         private int CalculateRoundTotal(int FieldSize)
         {
             return (int) Math.Log(FieldSize, 2);
         }
 
-        public static bool IsOdd(int value)
+        private void NotifyParticipants()
         {
-            return value % 2 != 0;
+            foreach (var team in Teams)
+            {
+                foreach (var person in team.TeamMembers)
+                {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                    NotificationHelper.sendEmail(person.Email,
+                        $"{person.FirstName} {person.LastName}",
+                        $"Round {ActiveRound} ready to start",
+                        $"Round {ActiveRound} is ready to start.  Please report to the scorers table for location information");
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                }
+            }
         }
-
     }
 }
