@@ -18,7 +18,8 @@ namespace TBG.Core.Interfaces
             int userId, 
             double entryFee, 
             double totalPrizePool,
-            List<ITournamentEntry> participants
+            List<ITournamentEntry> participants,
+            List<ITeam> teamsInTournament
         );
         ITournament rebuildTournament(ITournament savedTournament);
         bool ScoreMatchup(IMatchup matchup, int team1Score, int team2Score);

@@ -242,7 +242,8 @@ namespace TBG.UI
                 user.UserId, 
                 validEntryFee, 
                 validTotalPrizePool, 
-                teamsInTournament);
+                teamsInTournament,
+                tournament.Teams);
 
             newTournament.Teams.AddRange(tournament.Teams);
 
