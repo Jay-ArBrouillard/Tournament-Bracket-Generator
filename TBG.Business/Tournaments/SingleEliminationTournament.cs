@@ -94,11 +94,6 @@ namespace TBG.Business.Tournaments
                     NotifyParticipants(matchup);
                 }
             }
-            else
-            {
-                var lastRound = Rounds.Where(x => x.RoundNum == ActiveRound - 1).First();
-                NotifyParticipants(lastRound.Matchups[0]);
-            }
 
             return this;
         }
