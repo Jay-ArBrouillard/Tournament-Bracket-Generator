@@ -50,5 +50,43 @@ namespace TBG.Business.Helpers
             }
             return result;
         }
+
+        public static int GetRoundCounts(int fieldSize, int logBase)
+        {
+            return (int)Math.Log(fieldSize, logBase);
+        }
+
+        public static void AddTeamsToPairings(Queue<ITournamentEntry> teamQueue, ITournament tournament, IRound round)
+        {
+            BuildPairings(round, teamQueue.Count);
+
+            foreach (var matchup in round.Matchups)
+            {
+                matchup.MatchupEntries.Add(new MatchupEntry()
+                {
+                    TheTeam = teamQueue.Dequeue(),
+                    Score = 0
+                });
+
+                matchup.MatchupEntries.Add(new MatchupEntry()
+                {
+                    TheTeam = teamQueue.Dequeue(),
+                    Score = 0
+                });
+                NotificationHelper.NotifyParticipants(matchup, tournament);
+            }
+        }
+
+        private static void BuildPairings(IRound round, int entryCount)
+        {
+            for (int i = 0; i < entryCount / 2; i++)
+            {
+                round.Matchups.Add(new Matchup()
+                {
+                    MatchupId = i,
+                    MatchupEntries = new List<IMatchupEntry>()
+                });
+            }
+        }
     }
 }

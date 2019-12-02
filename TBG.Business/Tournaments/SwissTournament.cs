@@ -22,26 +22,42 @@ namespace TBG.Business.Tournaments
         public List<ITeam> Teams { get; set; } = new List<ITeam>();
         public List<ITournamentEntry> TournamentEntries { get; set; } = new List<ITournamentEntry>();
         public List<IPrize> TournamentPrizes { get; set; } = new List<IPrize>();
+        public List<IPrize> Prizes { get; set; } = new List<IPrize>();
         public List<IRound> Rounds { get; set; } = new List<IRound>();
 
         public ITournament AdvanceRound()
         {
-            throw new NotImplementedException();
+            var activeRound = Rounds.Where(x => x.RoundNum == ActiveRound).First();
+
+            ReseedTournament();
+            TournamentEntries = TournamentEntries.OrderByDescending(x => x.Seed).ToList();
+            var teamQueue = TournamentBuilderHelper.GetTeamQueue(TournamentEntries);
+
+            ActiveRound++;
+
+            var nextRound = Rounds.Where(x => x.RoundNum == ActiveRound).First();
+            if (nextRound != null)
+            {
+                TournamentBuilderHelper.AddTeamsToPairings(teamQueue, this, nextRound);
+            }
+
+            return this;
         }
 
         public ITournament BuildTournament()
         {
             TournamentEntries = TournamentBuilderHelper.GetSeededEntries(TournamentEntries);
             var teamQueue = TournamentBuilderHelper.GetTeamQueue(TournamentEntries);
+            var roundCount = TournamentBuilderHelper.GetRoundCounts(TournamentEntries.Count, 2);
+            Rounds = TournamentBuilderHelper.GetRounds(roundCount);
 
-            Rounds = TournamentBuilderHelper.GetRounds(10); //Need formula to calculate # of rounds
+            ActiveRound = 1;
 
             foreach (var round in Rounds)
             {
-                AddTeamsToPairings(teamQueue, round);
+                TournamentBuilderHelper.AddTeamsToPairings(teamQueue, this, round);
             }
-
-            ActiveRound = 1;
+            
             return this;
         }
 
@@ -50,38 +66,24 @@ namespace TBG.Business.Tournaments
             return this;
         }
 
-        private void BuildPairings(IRound round)
+        private void ReseedTournament()
         {
-            for (int i = 0; i < TournamentEntries.Count / 2; i++)
+            var matchups = Rounds.SelectMany(x => x.Matchups).ToList();
+            foreach (var entry in TournamentEntries)
             {
-                round.Matchups.Add(new Matchup()
+                var wins = 0;
+                var losses = 0;
+                var entryMatchupEntries = matchups.SelectMany(y => y.MatchupEntries).Where(z => z.TheTeam.TeamId == entry.TeamId);
+                foreach(var matchupEntry in entryMatchupEntries)
                 {
-                    MatchupId = i,
-                    MatchupEntries = new List<IMatchupEntry>()
-                });
-            }
-        }
-
-        private void AddTeamsToPairings(Queue<ITournamentEntry> teamQueue, IRound round)
-        {
-            if (round.RoundNum == 1)
-            {
-                BuildPairings(round);
-
-                foreach (var matchup in round.Matchups)
-                {
-                    matchup.MatchupEntries.Add(new MatchupEntry()
-                    {
-                        TheTeam = teamQueue.Dequeue(),
-                        Score = 0
-                    });
-
-                    matchup.MatchupEntries.Add(new MatchupEntry()
-                    {
-                        TheTeam = teamQueue.Dequeue(),
-                        Score = 0
-                    });
+                    var matchup = matchups.Where(x => x.MatchupId == matchupEntry.MatchupId).First();
+                    var entryScore = matchup.MatchupEntries.Where(x => x.TheTeam.TeamId == entry.TeamId).First().Score;
+                    var opponentScore = matchup.MatchupEntries.Where(x => x.TheTeam.TeamId != entry.TeamId).First().Score;
+                    if (entryScore > opponentScore) { wins++; }
+                    else { losses++; }
                 }
+                if (losses == 0) { entry.Seed = 1; }
+                else { entry.Seed = wins / (wins + losses); }
             }
         }
     }

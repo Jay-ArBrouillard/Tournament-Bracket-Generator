@@ -118,9 +118,16 @@ namespace TBG.Data.Classes
             var allMatchupEntries = MatchupEntriesTable.GetAll(dbConn);
             var allTournamentEntries = TournamentEntryTable.GetAll(dbConn);
             var allTeams = TeamsTable.GetAll(dbConn);
+            var allTeamMembers = TeamMembersTable.GetAll(dbConn);
+            var allPersons = PersonsTable.GetAll(dbConn);
             tournament.TournamentEntries = allTournamentEntries.Where(x => x.TournamentId == tournament.TournamentId).ToList();
             foreach(var entry in tournament.TournamentEntries)
             {
+                var entryMembers = allTeamMembers.Where(x => x.TeamId == entry.TeamId).ToList();
+                foreach(var member in entryMembers)
+                {
+                    entry.Members.Add(allPersons.Find(x => x.PersonId == member.PersonId));
+                }
                 var theTeam = allTeams.Where(x => x.TeamId == entry.TeamId).First();
                 tournament.Teams.Add(theTeam);
             }

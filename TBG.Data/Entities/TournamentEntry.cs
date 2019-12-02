@@ -9,6 +9,6 @@ namespace TBG.Data.Entities
         public int TournamentId { get; set; }
         public int TeamId { get; set; }
         public double Seed { get; set; }
-        public ObservableCollection<IPerson> Members { get; set; }
+        public ObservableCollection<IPerson> Members { get; set; } = new ObservableCollection<IPerson>();
     }
 }

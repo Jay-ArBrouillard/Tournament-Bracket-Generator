@@ -14,6 +14,9 @@ namespace TBG.Business.Helpers
                 case 1:
                     newTournament = NewSingleEliminationTournament();
                     break;
+                case 2:
+                    newTournament = NewSwissTournament();
+                    break;
                 default:
                     newTournament = null;
                     break;
@@ -31,6 +34,7 @@ namespace TBG.Business.Helpers
             switch (tournament.TournamentTypeId)
             {
                 case 1: return ConvertToSingleElimination(tournament);
+                case 2: return ConvertToSwiss(tournament);
                 default: return null;
             }
         }
@@ -55,9 +59,34 @@ namespace TBG.Business.Helpers
             return converted;
         }
 
+        private static SwissTournament ConvertToSwiss(ITournament tournament)
+        {
+            SwissTournament converted = new SwissTournament()
+            {
+                TournamentId = tournament.TournamentId,
+                UserId = tournament.UserId,
+                TournamentName = tournament.TournamentName,
+                EntryFee = tournament.EntryFee,
+                TotalPrizePool = tournament.TotalPrizePool,
+                TournamentTypeId = tournament.TournamentTypeId,
+                TournamentEntries = tournament.TournamentEntries,
+                Prizes = tournament.TournamentPrizes,
+                Rounds = tournament.Rounds,
+                ActiveRound = tournament.ActiveRound,
+                Teams = tournament.Teams
+            };
+
+            return converted;
+        }
+
         private static SingleEliminationTournament NewSingleEliminationTournament()
         {
             return new SingleEliminationTournament();
+        }
+
+        private static SwissTournament NewSwissTournament()
+        {
+            return new SwissTournament();
         }
     }
 }
