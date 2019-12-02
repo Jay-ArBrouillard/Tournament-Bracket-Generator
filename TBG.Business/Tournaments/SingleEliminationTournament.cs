@@ -177,25 +177,25 @@ namespace TBG.Business.Tournaments
             Email(matchupEntries[1], firstTeamName, secondTeamName);
         }
 
-        private void Email (IMatchupEntry matchupEntry, string firstTeamName, string secondTeamName)
+        private void Email (IMatchupEntry matchupEntry, string competitor, string opponent)
         {
             foreach (var members in matchupEntry.TheTeam.Members)
             {
-                string matchupString = "Your next matchup is against: " + secondTeamName;
+                string matchupString = "Your next matchup is against: " + opponent;
                 int finalRound = Rounds.Max(x => x.RoundNum);
                 if (ActiveRound == finalRound)
                 {
-                    matchupString = "Welcome to the finals against: " + secondTeamName;
+                    matchupString = "Welcome to the finals against: " + opponent;
                 }
 
 #pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
                 NotificationHelper.sendEmail(members.Email,
                     $"{members.FirstName} {members.LastName}",
                     $"{TournamentName} Tournament: Round {ActiveRound} ready to start",
-                    $"Hello {firstTeamName}!" +
+                    $"Hello {competitor}!" +
                     $"\nRound {ActiveRound} is ready to start.\n" + 
                     matchupString + 
-                    ".\nPlease report to the scorers table for location information");
+                    ".\nPlease report to the scorers table for location information.");
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             }
         }
