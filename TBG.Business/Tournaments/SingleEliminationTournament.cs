@@ -173,10 +173,17 @@ namespace TBG.Business.Tournaments
             List<IMatchupEntry> matchupEntries = matchup.MatchupEntries;
             string firstTeamName = Teams.Find(x => x.TeamId == matchupEntries[0].TheTeam.TeamId).TeamName;
             string secondTeamName = Teams.Find(x => x.TeamId == matchupEntries[1].TheTeam.TeamId).TeamName;
-            foreach (var members in matchupEntries[0].TheTeam.Members)
+            Email(matchupEntries[0], firstTeamName, secondTeamName);
+            Email(matchupEntries[1], firstTeamName, secondTeamName);
+        }
+
+        private void Email (IMatchupEntry matchupEntry, string firstTeamName, string secondTeamName)
+        {
+            foreach (var members in matchupEntry.TheTeam.Members)
             {
                 string matchupString = "Your next matchup is against: " + secondTeamName;
-                if (ActiveRound == CalculateRoundTotal(2) + 1)
+                int finalRound = Rounds.Max(x => x.RoundNum);
+                if (ActiveRound == finalRound)
                 {
                     matchupString = "Welcome to the finals against: " + secondTeamName;
                 }
@@ -185,23 +192,10 @@ namespace TBG.Business.Tournaments
                 NotificationHelper.sendEmail(members.Email,
                     $"{members.FirstName} {members.LastName}",
                     $"{TournamentName} Tournament: Round {ActiveRound} ready to start",
-                    $"Hello {firstTeamName}!\nRound {ActiveRound} is ready to start.\n" + matchupString + ".\nPlease report to the scorers table for location information");
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            }
-
-            foreach (var members in matchupEntries[1].TheTeam.Members)
-            {
-                string matchupString = "Your next matchup is against: " + firstTeamName;
-                if (ActiveRound == CalculateRoundTotal(2) + 1)
-                {
-                    matchupString = "Welcome to the finals against: " + firstTeamName;
-                }
-
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                NotificationHelper.sendEmail(members.Email,
-                    $"{members.FirstName} {members.LastName}",
-                    $"{TournamentName} Tournament: Round {ActiveRound} ready to start",
-                    $"Hello {secondTeamName}!\nRound {ActiveRound} is ready to start.\n" + matchupString + ".\nPlease report to the scorers table for location information");
+                    $"Hello {firstTeamName}!" +
+                    $"\nRound {ActiveRound} is ready to start.\n" + 
+                    matchupString + 
+                    ".\nPlease report to the scorers table for location information");
 #pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             }
         }
