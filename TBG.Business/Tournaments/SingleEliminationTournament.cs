@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TBG.Business.Helpers;
@@ -38,18 +38,14 @@ namespace TBG.Business.Tournaments
                 TournamentEntries = seededParticipants;
             }
 
-
             var teamQueue = BuildTeamQueue();
 
             AddRounds();
-
+            ActiveRound = 1;
             foreach (var round in Rounds)
             {
                 AddTeamsToPairings(teamQueue, round);
             }
-
-            ActiveRound = 1;
-            NotifyParticipants();
             return this;
         }
 
@@ -68,7 +64,8 @@ namespace TBG.Business.Tournaments
                 teamQueue.Enqueue(winner);
             }
 
-            var nextRound = Rounds.Where(x => x.RoundNum == ActiveRound + 1).First();
+            ActiveRound++;
+            var nextRound = Rounds.Where(x => x.RoundNum == ActiveRound).First();
             if (nextRound != null)
             {
                 for (int i = 0; i < teamQueue.Count / 2; i++)
@@ -93,11 +90,15 @@ namespace TBG.Business.Tournaments
                         TheTeam = teamQueue.Dequeue(),
                         Score = 0
                     });
+
+                    NotifyParticipants(matchup);
                 }
             }
-            ActiveRound++;
-
-            NotifyParticipants();
+            else
+            {
+                var lastRound = Rounds.Where(x => x.RoundNum == ActiveRound - 1).First();
+                NotifyParticipants(lastRound.Matchups[0]);
+            }
 
             return this;
         }
@@ -156,28 +157,52 @@ namespace TBG.Business.Tournaments
                         TheTeam = teamQueue.Dequeue(),
                         Score = 0
                     });
+
+                    NotifyParticipants(matchup);
                 }
             }
         }
 
         private int CalculateRoundTotal(int FieldSize)
         {
-            return (int) Math.Log(FieldSize, 2);
+            return (int)Math.Log(FieldSize, 2);
         }
 
-        private void NotifyParticipants()
+        private void NotifyParticipants(IMatchup matchup)
         {
-            foreach (var team in Teams)
+            List<IMatchupEntry> matchupEntries = matchup.MatchupEntries;
+            string firstTeamName = Teams.Find(x => x.TeamId == matchupEntries[0].TheTeam.TeamId).TeamName;
+            string secondTeamName = Teams.Find(x => x.TeamId == matchupEntries[1].TheTeam.TeamId).TeamName;
+            foreach (var members in matchupEntries[0].TheTeam.Members)
             {
-                foreach (var person in team.TeamMembers)
+                string matchupString = "Your next matchup is against: " + secondTeamName;
+                if (ActiveRound == CalculateRoundTotal(2) + 1)
                 {
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                    NotificationHelper.sendEmail(person.Email,
-                        $"{person.FirstName} {person.LastName}",
-                        $"Round {ActiveRound} ready to start",
-                        $"Round {ActiveRound} is ready to start.  Please report to the scorers table for location information");
-#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                    matchupString = "Welcome to the finals against: " + secondTeamName;
                 }
+
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                NotificationHelper.sendEmail(members.Email,
+                    $"{members.FirstName} {members.LastName}",
+                    $"{TournamentName} Tournament: Round {ActiveRound} ready to start",
+                    $"Hello {firstTeamName}!\nRound {ActiveRound} is ready to start.\n" + matchupString + ".\nPlease report to the scorers table for location information");
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            }
+
+            foreach (var members in matchupEntries[1].TheTeam.Members)
+            {
+                string matchupString = "Your next matchup is against: " + firstTeamName;
+                if (ActiveRound == CalculateRoundTotal(2) + 1)
+                {
+                    matchupString = "Welcome to the finals against: " + firstTeamName;
+                }
+
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+                NotificationHelper.sendEmail(members.Email,
+                    $"{members.FirstName} {members.LastName}",
+                    $"{TournamentName} Tournament: Round {ActiveRound} ready to start",
+                    $"Hello {secondTeamName}!\nRound {ActiveRound} is ready to start.\n" + matchupString + ".\nPlease report to the scorers table for location information");
+#pragma warning restore CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
             }
         }
     }
