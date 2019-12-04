@@ -24,6 +24,7 @@ namespace TBG.UI
         public double prizePool;
         private IUser user;
         private ITournament tournament;
+        private List<ParticipantTree> theTeams = new List<ParticipantTree>();
 
         public CreateTournament(IUser user)
         {
@@ -108,8 +109,30 @@ namespace TBG.UI
             }
             tournament.Teams.AddRange(selectedTeams);
             //Add selected teams to TreeView and Tournaments list
-            teamsInTournament.AddRange(convertToEntries(selectedTeams));
-            participantsTreeView.ItemsSource = teamsInTournament;
+            var converted = convertToEntries(selectedTeams);
+            teamsInTournament.AddRange(converted);
+
+            foreach(var team in converted)
+            {
+                var newTeam = new ParticipantTree()
+                {
+                    TeamId = team.TeamId,
+                    Seed = team.Seed,
+                    TeamName = selectedTeams.Find(x => x.TeamId == team.TeamId).TeamName
+                };
+
+                foreach(var member in team.Members)
+                {
+                    newTeam.Members.Add(new Person()
+                    {
+                        FirstName = member.FirstName,
+                        LastName = member.LastName
+                    });
+                }
+
+                theTeams.Add(newTeam);
+            }
+            participantsTreeView.ItemsSource = theTeams;
             participantsTreeView.Items.Refresh();
 
             //Update PrizePool
@@ -131,9 +154,11 @@ namespace TBG.UI
 
         private void DeleteTeamButton_Click(object sender, RoutedEventArgs e)
         {
-            if (participantsTreeView.SelectedItem is ITournamentEntry selectedTeamItem)
+            if (participantsTreeView.SelectedItem is ParticipantTree selectedTeamItem)
             {
-                teamsInTournament.Remove(selectedTeamItem);
+                var theTeam = teamsInTournament.Find(x => x.TeamId == selectedTeamItem.TeamId);
+                teamsInTournament.Remove(theTeam);
+                theTeams.Remove(selectedTeamItem);
                 participantsTreeView.Items.Refresh();
 
                 //Update PrizePool
