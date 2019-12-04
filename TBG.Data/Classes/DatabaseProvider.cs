@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.Diagnostics;
 using System.Linq;
 using TBG.Core.Interfaces;
 using TBG.Data.Entities;
@@ -305,7 +304,7 @@ namespace TBG.Data.Classes
         #region DASHBOARD METHODS
         public List<ITournament> getAllTournaments()
         {
-            return TournamentTable.GetAll(dbConn); ;
+            return TournamentTable.GetAll(dbConn);
         }
 
         public List<ITournamentType> getTournamentTypes()
