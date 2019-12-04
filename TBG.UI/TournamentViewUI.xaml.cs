@@ -37,6 +37,7 @@ namespace TBG.UI
 
 
             matchupGrid.IsEnabled = fullAccess;
+            finalizeRoundBtn.IsEnabled = fullAccess;
 
             populateMatchupListBox(0);
             initialization = false;
