@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using TBG.Core.Interfaces;
 using TBG.Driver;
 using TBG.UI.Classes;
@@ -55,10 +57,14 @@ namespace TBG.UI
             allTournaments = source.getAllTournaments();
             foreach (var tournament in allTournaments)
             {
+                List<ITeam> teams = source.getTeamsFromTournamentId(tournament.TournamentId);
                 var item = new TournamentListBoxItem()
                 {
                     Name = tournament.TournamentName,
-                    Id = tournament.TournamentId
+                    TournamentId = tournament.TournamentId,
+                    TournamentTypeId = tournament.TournamentTypeId,
+                    Teams = teams,
+                    PrizePool = tournament.TotalPrizePool
                 };
 
                 tournamentList.Items.Add(item);
@@ -70,7 +76,7 @@ namespace TBG.UI
             //Only load tournament if one is selected
             if (tournamentList.SelectedIndex == -1) return;
             var selectedItem = tournamentList.SelectedItem as TournamentListBoxItem;
-            var selectedTournamentId = allTournaments.Where(x => x.TournamentId == selectedItem.Id).First().TournamentId;
+            var selectedTournamentId = allTournaments.Where(x => x.TournamentId == selectedItem.TournamentId).First().TournamentId;
             var selectedTournament = source.getTournament(selectedTournamentId);
             selectedTournament = tournamentController.rebuildTournament(selectedTournament);
             TournamentViewUI viewUI = new TournamentViewUI(selectedTournament);
@@ -82,7 +88,7 @@ namespace TBG.UI
             //Probably should add a confirmation to this
             if (tournamentList.SelectedIndex == -1) return;
             var selectedItem = tournamentList.SelectedItem as TournamentListBoxItem;
-            var selectedTournamentId = allTournaments.Where(x => x.TournamentId == selectedItem.Id).First().TournamentId;
+            var selectedTournamentId = allTournaments.Where(x => x.TournamentId == selectedItem.TournamentId).First().TournamentId;
 
             var deletedTournament = source.deleteTournament(selectedTournamentId);
 
@@ -95,5 +101,107 @@ namespace TBG.UI
             CreateTournament newTournament = new CreateTournament(user);
             newTournament.Show();
         }
+
+
+
+        private void NameSearch_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ICollectionView view = CollectionViewSource.GetDefaultView(tournamentList.Items);
+            view.Filter = TournamentNameFilter;
+            view.Refresh();
+        }
+
+        private void TypeFilter_SelectionChanged(object sender, RoutedEventArgs e)
+        {
+            if (typeFilter.SelectedIndex != 0)
+            {
+                ICollectionView view = CollectionViewSource.GetDefaultView(tournamentList.Items);
+                view.Filter = TournamentTypeFilter;
+                view.Refresh();
+            }
+            else 
+            {
+                if (tournamentList != null) //Because this method is called once before tournamentList is initialized
+                {
+                    ICollectionView view = CollectionViewSource.GetDefaultView(tournamentList.Items);
+                    view.Filter = null;
+                    view.Refresh();
+                }
+            }
+        }
+
+        private void PlayerFilter_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ICollectionView view = CollectionViewSource.GetDefaultView(tournamentList.Items);
+            if (string.IsNullOrEmpty(playerFilter.Text))
+            {
+                view.Filter = null;
+            }
+            else
+            {
+                view.Filter = TeamNameFilter;
+            }
+            view.Refresh();
+        }
+
+        private void PrizeFilter_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            ICollectionView view = CollectionViewSource.GetDefaultView(tournamentList.Items);
+            if (string.IsNullOrEmpty(prizeFilter.Text))
+            {
+                view.Filter = null;
+            }
+            else
+            {
+                if (Double.TryParse(prizeFilter.Text, out double i))
+                {
+                    view.Filter = PrizeFilter;
+                }
+                else
+                {
+                    messageBox.Text = "Prize Filter requires a number";
+                    messageBox.Visibility = Visibility.Visible;
+                }
+            }
+            view.Refresh();
+        }
+
+        private bool TournamentNameFilter(object item)
+        {
+            TournamentListBoxItem tournament = item as TournamentListBoxItem;
+            return tournament.Name.ToLower().Contains(nameSearch.Text.ToLower());
+        }
+
+        private bool TournamentTypeFilter(object item)
+        {
+            TournamentListBoxItem tournament = item as TournamentListBoxItem;
+            var thisTournament = allTournaments.Find(x => x.TournamentId == tournament.TournamentId);
+            if (thisTournament.TournamentTypeId == typeFilter.SelectedIndex)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private bool TeamNameFilter(object item)
+        {
+            TournamentListBoxItem tournament = item as TournamentListBoxItem;
+            if (tournament.Teams.Find(x => x.TeamName.ToLower().Contains(playerFilter.Text.ToLower())) != null)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        private bool PrizeFilter(object item)
+        {
+            TournamentListBoxItem tournament = item as TournamentListBoxItem;
+            if (Double.Parse(prizeFilter.Text) <= tournament.PrizePool)
+            {
+                return true;
+            }
+            return false;
+        }
+
     }
 }

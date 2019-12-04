@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
 using TBG.Core.Interfaces;
 using TBG.Data.Entities;
@@ -181,6 +182,30 @@ namespace TBG.Data.Classes
             return TeamsTable.Get(teamId, dbConn);
         }
 
+        public List<ITeam> getTeamsFromTournamentId(int tournamentId)
+        {
+            var results = new List<ITeam>();
+            var tournamentEntries = TournamentEntryTable.GetAll(dbConn);
+            var teams = TeamsTable.GetAll(dbConn);
+            var teamHashTable = teams.ToDictionary(x => x.TeamId, x => x);
+
+            for (int i = 0; i < tournamentEntries.Count; i++)
+            {
+                if (tournamentEntries[i].TournamentId == tournamentId)
+                {
+                    do
+                    {
+                        results.Add(teamHashTable[tournamentEntries[i].TeamId]);
+                        i++;
+                    }
+                    while (i < tournamentEntries.Count && tournamentEntries[i].TournamentId == tournamentId);
+                    break;
+                }
+            }
+
+            return results;
+        }
+
         public List<ITeam> getAllTeams()
         {
             var allTeams = TeamsTable.GetAll(dbConn);
@@ -312,6 +337,7 @@ namespace TBG.Data.Classes
 
             return matchup;
         }
+
         #endregion
     }
 }
