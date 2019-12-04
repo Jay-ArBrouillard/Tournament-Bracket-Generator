@@ -28,13 +28,9 @@ namespace TBG.UI
             this.user = user;
             this.source = ApplicationController.getProvider();
             tournamentController = ApplicationController.getTournamentController();
-
             var tournamentTypes = source.getTournamentTypes();
 
-            List<TournamentListBoxItem> tourneys = new List<TournamentListBoxItem>();
-
             BuildTournamentList();
-
             foreach (var tournamentType in tournamentTypes)
             {
                 this.typeFilter.Items.Add(new ListBoxItem {
@@ -102,8 +98,6 @@ namespace TBG.UI
             newTournament.Show();
         }
 
-
-
         private void NameSearch_TextChanged(object sender, TextChangedEventArgs e)
         {
             ICollectionView view = CollectionViewSource.GetDefaultView(tournamentList.Items);
@@ -155,12 +149,12 @@ namespace TBG.UI
             {
                 if (Double.TryParse(prizeFilter.Text, out double i))
                 {
+                    messageBox.Text = "";
                     view.Filter = PrizeFilter;
                 }
                 else
                 {
                     messageBox.Text = "Prize Filter requires a number";
-                    messageBox.Visibility = Visibility.Visible;
                 }
             }
             view.Refresh();
