@@ -22,7 +22,7 @@ namespace TBG.UI
         private Boolean initialization = true;
         private ITournamentController tournamentController;
 
-        public TournamentViewUI(ITournament inTourney)
+        public TournamentViewUI(ITournament inTourney, bool fullAccess = true)
         {
             InitializeComponent();
             source = ApplicationController.getProvider();
@@ -34,6 +34,9 @@ namespace TBG.UI
 
             //Set tournament Name
             tournamentNameLbl.Content = tournament.TournamentName;
+
+
+            matchupGrid.IsEnabled = fullAccess;
 
             populateMatchupListBox(0);
             initialization = false;

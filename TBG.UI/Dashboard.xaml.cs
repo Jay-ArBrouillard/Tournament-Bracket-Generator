@@ -73,7 +73,9 @@ namespace TBG.UI
             var selectedTournamentId = allTournaments.Where(x => x.TournamentId == selectedItem.Id).First().TournamentId;
             var selectedTournament = source.getTournament(selectedTournamentId);
             selectedTournament = tournamentController.rebuildTournament(selectedTournament);
-            TournamentViewUI viewUI = new TournamentViewUI(selectedTournament);
+
+            var fullAccess = user != null;
+            TournamentViewUI viewUI = new TournamentViewUI(selectedTournament, fullAccess);
             viewUI.Show();
         }
 
