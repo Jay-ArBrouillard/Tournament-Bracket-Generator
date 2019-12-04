@@ -7,7 +7,7 @@ namespace TBG.Core.Interfaces
         double validateEntryFee(string number);
         bool validateTournamentType(ITournamentType tournamentType);
         bool validateTournamentName(string name);
-        bool validateParticipantCount(int count);
+        bool validateParticipantCount(int count, ITournamentType tournamentType);
         double validateTotalPrizePool(string pool, int numParticipants, double EntryFee);
         int validateScore(string score);
         bool validateRoundCompletion(IRound round);

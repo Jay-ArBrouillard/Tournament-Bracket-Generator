@@ -50,9 +50,11 @@ namespace TBG.Business.Controllers
             return true;
         }
 
-        public bool validateParticipantCount(int count)
+        public bool validateParticipantCount(int count, ITournamentType tournamentType)
         {
-            if (count <= 0) { return false; }
+            if (count <= 1) { return false; }
+            if (!isEven(count)) { return false; }
+            if (tournamentType.TournamentTypeId == 1 && !isPowerOfTwo(count)) { return false; }
             return true;
         }
 
@@ -116,6 +118,30 @@ namespace TBG.Business.Controllers
             var lastround = tournament.Rounds.Max(x => x.RoundNum);
             if (tournament.ActiveRound == lastround) { return false; }
             return true;
+        }
+
+        private bool isPowerOfTwo(int n)
+        {
+
+            if (n == 0)
+                return false;
+
+            return (int)(Math.Ceiling((Math.Log(n) /
+                                       Math.Log(2)))) ==
+                   (int)(Math.Floor(((Math.Log(n) /
+                                      Math.Log(2)))));
+        }
+
+        private bool isEven(int n)
+        {
+            if (n % 2 == 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
     }
 }

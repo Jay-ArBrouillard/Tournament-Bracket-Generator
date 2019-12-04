@@ -91,6 +91,13 @@ namespace TBG.UI
             string user = userNameTextBox.Text;
             string pass = passwordTextBox.Password;
 
+            if (String.IsNullOrEmpty(user) || String.IsNullOrEmpty(pass))
+            {
+                SetDisplayColors(new SolidColorBrush(Colors.Red));
+                displayMessage.Text = "Username and Password\ncan't be empty";
+                return;
+            }
+
             var userExisting = source.getUser(user);
             var validatedUser = loginController.validateRegister(user, pass, userExisting);
 

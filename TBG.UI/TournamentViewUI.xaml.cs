@@ -22,7 +22,7 @@ namespace TBG.UI
         private Boolean initialization = true;
         private ITournamentController tournamentController;
 
-        public TournamentViewUI(ITournament inTourney)
+        public TournamentViewUI(ITournament inTourney, bool fullAccess = true)
         {
             InitializeComponent();
             source = ApplicationController.getProvider();
@@ -34,6 +34,10 @@ namespace TBG.UI
 
             //Set tournament Name
             tournamentNameLbl.Content = tournament.TournamentName;
+
+
+            matchupGrid.IsEnabled = fullAccess;
+            finalizeRoundBtn.IsEnabled = fullAccess;
 
             populateMatchupListBox(0);
             initialization = false;
@@ -167,7 +171,7 @@ namespace TBG.UI
             bool invalidTeamScore = false;
 
             //Validates score before saving
-            if (validatedTeam1Score == 0 && validatedTeam2Score == 0)
+            if (validatedTeam1Score == 0 && validatedTeam2Score == 0 || validatedTeam1Score == validatedTeam2Score)
             {
                 scoreRecordedLbl.Content = "Scores are not valid";
                 return;

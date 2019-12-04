@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TBG.UI"
         xmlns:self="clr-namespace:TBG.UI.Classes"
+        xmlns:tree="clr-namespace:TBG.UI.Models"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
         Title="Tournament" Height="550" Width="850">
@@ -52,7 +53,7 @@
             <StackPanel Orientation="Horizontal">
                 <TreeView Name="participantsTreeView" Width="250" Height="200">
                     <TreeView.Resources>
-                        <HierarchicalDataTemplate DataType="{x:Type self:TournamentEntry}" ItemsSource="{Binding Members}">
+                        <HierarchicalDataTemplate DataType="{x:Type tree:ParticipantTree}" ItemsSource="{Binding Members}">
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="Assets/group.png" Width="15" Height="15" Margin="3"/>
                                 <TextBlock x:Name="teamName" Text="{Binding TeamName}" VerticalAlignment="Center"/>

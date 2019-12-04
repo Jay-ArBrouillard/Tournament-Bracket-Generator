@@ -75,6 +75,8 @@
     <Compile Include="Classes\Tournament.cs" />
     <Compile Include="Classes\TournamentEntry.cs" />
     <Compile Include="Classes\TournamentPrize.cs" />
+    <Compile Include="Models\ParticipantTree.cs" />
+    <Compile Include="Models\TeamMember.cs" />
     <Compile Include="Models\TournamentViewDataGridItem.cs" />
     <Compile Include="Models\TournamentViewListBoxItem.cs" />
     <Compile Include="PrizeUI.xaml.cs">
