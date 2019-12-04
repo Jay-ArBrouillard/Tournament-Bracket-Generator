@@ -225,7 +225,7 @@ namespace TBG.UI
             var validTournamentName = tournamentController.validateTournamentName(tournamentName);
             var validEntryFee = tournamentController.validateEntryFee(entryFee);
             var validTournamentTypeId = tournamentController.validateTournamentType(TournamentType);
-            var validParticipantCount = tournamentController.validateParticipantCount(numParticipants);
+            var validParticipantCount = tournamentController.validateParticipantCount(numParticipants, TournamentType);
             var validTotalPrizePool = tournamentController.validateTotalPrizePool(prizePool, numParticipants, validEntryFee);
 
             if (!validTournamentName)
