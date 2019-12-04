@@ -26,5 +26,6 @@ namespace TBG.Core.Interfaces
         ITournament saveActiveRound(ITournament tournament);
         IUser updateUser(IUser entity);
         ITournament getTournament(int id);
+        List<ITeam> getTeamsFromTournamentId(int tournamentId);
     }
 }

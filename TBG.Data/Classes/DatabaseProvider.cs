@@ -181,6 +181,30 @@ namespace TBG.Data.Classes
             return TeamsTable.Get(teamId, dbConn);
         }
 
+        public List<ITeam> getTeamsFromTournamentId(int tournamentId)
+        {
+            var results = new List<ITeam>();
+            var tournamentEntries = TournamentEntryTable.GetAll(dbConn);
+            var teams = TeamsTable.GetAll(dbConn);
+            var teamHashTable = teams.ToDictionary(x => x.TeamId, x => x);
+
+            for (int i = 0; i < tournamentEntries.Count; i++)
+            {
+                if (tournamentEntries[i].TournamentId == tournamentId)
+                {
+                    do
+                    {
+                        results.Add(teamHashTable[tournamentEntries[i].TeamId]);
+                        i++;
+                    }
+                    while (i < tournamentEntries.Count && tournamentEntries[i].TournamentId == tournamentId);
+                    break;
+                }
+            }
+
+            return results;
+        }
+
         public List<ITeam> getAllTeams()
         {
             var allTeams = TeamsTable.GetAll(dbConn);
@@ -280,7 +304,7 @@ namespace TBG.Data.Classes
         #region DASHBOARD METHODS
         public List<ITournament> getAllTournaments()
         {
-            return TournamentTable.GetAll(dbConn); ;
+            return TournamentTable.GetAll(dbConn);
         }
 
         public List<ITournamentType> getTournamentTypes()
@@ -312,6 +336,7 @@ namespace TBG.Data.Classes
 
             return matchup;
         }
+
         #endregion
     }
 }
