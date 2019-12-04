@@ -171,7 +171,7 @@ namespace TBG.UI
             bool invalidTeamScore = false;
 
             //Validates score before saving
-            if (validatedTeam1Score == 0 && validatedTeam2Score == 0)
+            if (validatedTeam1Score == 0 && validatedTeam2Score == 0 || validatedTeam1Score == validatedTeam2Score)
             {
                 scoreRecordedLbl.Content = "Scores are not valid";
                 return;
