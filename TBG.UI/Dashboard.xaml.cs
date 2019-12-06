@@ -51,6 +51,11 @@ namespace TBG.UI
         {
             tournamentList.Items.Clear();
             allTournaments = source.getAllTournaments();
+            if (!user.Admin)
+            {
+                allTournaments = allTournaments.Where(x => x.UserId == user.UserId).ToList();
+            }
+
             foreach (var tournament in allTournaments)
             {
                 List<ITeam> teams = source.getTeamsFromTournamentId(tournament.TournamentId);
