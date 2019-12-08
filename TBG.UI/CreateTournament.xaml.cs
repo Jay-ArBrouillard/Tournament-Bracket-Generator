@@ -354,14 +354,21 @@ namespace TBG.UI
 
             var selectedPlace = placeComboBox.SelectedItem;
             int selectedPlaceNumber = (int)selectedPlace;
+
+            decimal percentTotal = prizesInTournament.Sum(x => x.PrizePercent);
+
             //validate that prize doesn't already exist
+            errorMessages.Text = "";
             if (prizesInTournament.Any(x => x.PlaceNumber == selectedPlaceNumber))
             {
                 errorMessages.Text = "There is already a prize for the selected place.";
                 return;
-            } else
+            }
+
+            if (percentTotal + selectedPrize.PrizePercent > 1)
             {
-                errorMessages.Text = "";
+                errorMessages.Text = "Total prize percent exceeds 100%";
+                return;
             }
 
             prizesInTournament.Add(new Prize()
