@@ -29,5 +29,6 @@ namespace TBG.Core.Interfaces
         List<ITeam> getTeamsFromTournamentId(int tournamentId);
         List<ITournamentEntry> saveTournamentEntry(IMatchup matchup);
         IMatchup savePersonStats(IMatchup matchup);
+        IMatchup saveTeamScore(IMatchup matchup);
     }
 }
