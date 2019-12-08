@@ -44,7 +44,7 @@ namespace TBG.UI
         {
             prizesInTournament = new List<IPrize>();
             prizes = source.getAllPrizes();
-            prizeComboBox.ItemsSource = prizes;
+            prizes.ForEach(x => prizeDataGrid.Items.Add(x));
             prizePool = 0;
             SeedToggle_Unchecked(sender, e);
             Update_Place_Values();
@@ -67,11 +67,23 @@ namespace TBG.UI
                 }
                 totalPrizePool.Text = prizePool.ToString();
                 entryFeeTextBox.BorderBrush = new SolidColorBrush(Colors.Green);
+                setPrizeAmounts();
             }
             else
             {
                 entryFeeTextBox.BorderBrush = new SolidColorBrush(Colors.Red);
             }
+        }
+
+        private void setPrizeAmounts()
+        {
+            foreach (IPrize prize in prizes)
+            {
+                decimal convertPercent = prize.PrizePercent > 1 ? prize.PrizePercent / 100 : prize.PrizePercent;
+                prize.PrizeAmount = Math.Round(Int32.Parse(totalPrizePool.Text) * convertPercent, 2);
+            }
+
+            prizeDataGrid.Items.Refresh();
         }
 
         public List<ITournamentEntry> convertToEntries(List<ITeam> list)
@@ -183,6 +195,8 @@ namespace TBG.UI
 
                 //Update PrizePool
                 SetEntryFee_Click(sender, e);
+                //Update PrizeAmounts
+                setPrizeAmounts();
             }
             Update_Place_Values();
 
@@ -210,7 +224,6 @@ namespace TBG.UI
             {
                 prizesInTournament.Remove(p);
             }
-
             prizesListBox.Items.Refresh();
         }
 
@@ -327,7 +340,7 @@ namespace TBG.UI
 
         private void Add_Prize_Click(object sender, RoutedEventArgs e)
         {
-            object selectedItem = prizeComboBox.SelectedItem;
+            object selectedItem = prizeDataGrid.SelectedItem;
             IPrize selectedPrize = (IPrize)selectedItem;
 
             var selectedPlace = placeComboBox.SelectedItem;

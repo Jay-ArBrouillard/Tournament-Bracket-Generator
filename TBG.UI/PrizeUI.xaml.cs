@@ -43,11 +43,11 @@ namespace TBG.UI
                 readPrizes();
                 List<IPrize> prizesInTournment = tournament.prizesInTournament;
                 List<IPrize> allPrizes = tournament.prizes;
-                allPrizes.Add(newPrize);
+                allPrizes.Add(newPrize);/*
                 tournament.prizeComboBox.ItemsSource = allPrizes;
                 tournament.prizesListBox.ItemsSource = prizesInTournment;
                 tournament.prizeComboBox.Items.Refresh();
-                tournament.prizesListBox.Items.Refresh();
+                tournament.prizesListBox.Items.Refresh();*/
                 errorMsgLbl.Visibility = Visibility.Hidden;
             }
             else
