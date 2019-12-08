@@ -50,6 +50,7 @@
     <Compile Include="Interfaces\IPrize.cs" />
     <Compile Include="Interfaces\IPrizeController.cs" />
     <Compile Include="Interfaces\IProvider.cs" />
+    <Compile Include="Interfaces\IResultDataRow.cs" />
     <Compile Include="Interfaces\IRound.cs" />
     <Compile Include="Interfaces\IRoundMatchup.cs" />
     <Compile Include="Interfaces\ITeam.cs" />

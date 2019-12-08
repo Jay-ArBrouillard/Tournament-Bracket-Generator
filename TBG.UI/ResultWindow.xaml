@@ -28,7 +28,7 @@
         <!-- ComboBox to select round -->
         <StackPanel Orientation="Horizontal" Grid.Row="2" Grid.Column="1" Margin="0,10,0,0">
             <TextBlock Text="Select a Round" Margin="0,0,10,0" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-            <ComboBox x:Name="roundSelectComboBox" Height="25" Width="100" Background="LightGray" SelectionChanged="RoundSelectComboBox_SelectionChanged"/>
+            <ComboBox x:Name="roundSelectComboBox" Height="25" Width="100" Background="LightGray" SelectionChanged="RoundSelectComboBox_SelectionChanged" SelectedIndex="0"/>
         </StackPanel>
 
         <!-- Data grid -->

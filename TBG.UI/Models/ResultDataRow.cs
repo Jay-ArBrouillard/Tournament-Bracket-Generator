@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TBG.Core.Interfaces;
 
 namespace TBG.UI.Models
 {
-    public class ResultItem
+    public class ResultDataRow : IResultDataRow
     {
         public String TeamName { get; set; }
         public String Players { get; set; }
