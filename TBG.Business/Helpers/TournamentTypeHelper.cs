@@ -50,7 +50,7 @@ namespace TBG.Business.Helpers
                 TotalPrizePool = tournament.TotalPrizePool,
                 TournamentTypeId = tournament.TournamentTypeId,
                 TournamentEntries = tournament.TournamentEntries,
-                Prizes = tournament.TournamentPrizes,
+                TournamentPrizes = tournament.TournamentPrizes,
                 Rounds = tournament.Rounds,
                 ActiveRound = tournament.ActiveRound,
                 Teams = tournament.Teams

@@ -302,7 +302,7 @@ namespace TBG.UI
                 return;
             }
 
-            if (validatedPrizes.Count == 0)
+            if (validatedPrizes == null)
             {
                 errorMessages.Text = "Prizes are not valid";
                 return;

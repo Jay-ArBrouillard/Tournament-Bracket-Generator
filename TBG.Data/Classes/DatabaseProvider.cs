@@ -108,6 +108,11 @@ namespace TBG.Data.Classes
                 TournamentEntryTable.Delete(tournamentEntry, dbConn);
             }
 
+            foreach(var tournamentPrize in tournament.TournamentPrizes)
+            {
+                TournamentPrizesTable.Delete(tournamentPrize, dbConn);
+            }
+
             TournamentTable.Delete(tournament, dbConn);
             return tournament;
         }
@@ -122,7 +127,11 @@ namespace TBG.Data.Classes
             var allTeams = TeamsTable.GetAll(dbConn);
             var allTeamMembers = TeamMembersTable.GetAll(dbConn);
             var allPersons = PersonsTable.GetAll(dbConn);
+            var allTournamentPrizes = TournamentPrizesTable.GetAll(dbConn);
+
             tournament.TournamentEntries = allTournamentEntries.Where(x => x.TournamentId == tournament.TournamentId).ToList();
+            tournament.TournamentPrizes = allTournamentPrizes.Where(x => x.TournamentId == tournament.TournamentId).ToList();
+
             foreach(var entry in tournament.TournamentEntries)
             {
                 var entryMembers = allTeamMembers.Where(x => x.TeamId == entry.TeamId).ToList();
