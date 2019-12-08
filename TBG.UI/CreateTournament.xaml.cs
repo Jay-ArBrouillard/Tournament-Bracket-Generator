@@ -199,7 +199,9 @@ namespace TBG.UI
             for (int i = 0; i < teamsInTournament.Count; i++)
             {
                 var team = teams.Where(x => x.TeamId == teamsInTournament[i].TeamId).First();
-                teamsInTournament[i].Seed = Math.Round(calculateWinPercentage(team.Wins, team.Losses), 3);
+                double seed = Math.Round(calculateWinPercentage(team.Wins, team.Losses), 3);
+                teamsInTournament[i].Seed = seed;
+                theTeams[i].Seed = seed;
             }
 
             participantsTreeView.Items.Refresh();
@@ -209,8 +211,9 @@ namespace TBG.UI
         {
             for (int i = 0; i < teamsInTournament.Count; i++)
             {
-                teamsInTournament[i].Seed = 0;
+                theTeams[i].Seed = 0;
             }
+
             participantsTreeView.Items.Refresh();
         }
 
