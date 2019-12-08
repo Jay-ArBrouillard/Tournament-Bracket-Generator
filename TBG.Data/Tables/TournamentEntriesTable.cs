@@ -93,7 +93,9 @@ namespace TBG.Data.Tables
                 TournamentEntryId = Int32.Parse(reader["tournament_entry_id"].ToString()),
                 TournamentId = Int32.Parse(reader["tournament_id"].ToString()),
                 TeamId = Int32.Parse(reader["team_id"].ToString()),
-                Seed = Double.Parse(reader["seed"].ToString())
+                Seed = Double.Parse(reader["seed"].ToString()),
+                Wins = Int32.Parse(reader["wins"].ToString()),
+                Losses = Int32.Parse(reader["losses"].ToString())
             };
         }
     }
