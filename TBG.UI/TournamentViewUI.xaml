@@ -120,6 +120,6 @@
         <Button x:Name="finalizeRoundBtn" Content="Advance Round" HorizontalAlignment="Left" Margin="80,118,0,0" VerticalAlignment="Top" Width="156" Height="39" FontSize="18" Grid.Column="1" Click="FinalizeRoundBtn_Click"/>
         <Label x:Name="lblFinalized" Content="" VerticalAlignment="Top" Grid.Column="1" Margin="80,43,88,0" Height="26"/>
 
-        <Button x:Name="resultsBtn" Content="View Results" Grid.Column="3" Margin="231,16,0,137" VerticalContentAlignment="Center" Click="ResultsBtn_Click"/>
+        <Button x:Name="resultsBtn" Content="View Results" Grid.Column="3" Margin="231,16,0,137" VerticalContentAlignment="Center" Click="ResultsBtn_Click" Visibility="Hidden"/>
     </Grid>
 </Window>

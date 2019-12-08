@@ -35,6 +35,14 @@ namespace TBG.UI
             //Set tournament Name
             tournamentNameLbl.Content = tournament.TournamentName;
 
+            //Results Button
+            var activeRound = tournament.Rounds.Where(x => x.RoundNum == tournament.ActiveRound).First();
+            var isActiveRoundValid = tournamentController.validateActiveRound(tournament);
+
+            if (!isActiveRoundValid)
+            {
+                resultsBtn.Visibility = Visibility.Visible;
+            }
 
             matchupGrid.IsEnabled = fullAccess;
             finalizeRoundBtn.IsEnabled = fullAccess;
@@ -78,33 +86,7 @@ namespace TBG.UI
             theTeam1.TeamMembers = team1TeamMembers;
             theTeam2.TeamMembers = team2TeamMembers;
 
-            teamOneDataGrid.Items.Clear();
-            foreach (IPerson p in theTeam1.TeamMembers)
-            {
-                TournamentViewDataGridItem dataGridItem = new TournamentViewDataGridItem()
-                {
-                    PlayerName = p.FirstName + " " + p.LastName,
-                    Wins = p.Wins,
-                    Losses = p.Losses,
-                    TeamId = teams[0].TheTeam.TeamId
-                };
-
-                teamOneDataGrid.Items.Add(dataGridItem);
-            }
-
-            teamTwoDataGrid.Items.Clear();
-            foreach (IPerson p in theTeam2.TeamMembers)
-            {
-                TournamentViewDataGridItem dataGridItem = new TournamentViewDataGridItem()
-                {
-                    PlayerName = p.FirstName + " " + p.LastName,
-                    Wins = p.Wins,
-                    Losses = p.Losses,
-                    TeamId = teams[1].TheTeam.TeamId
-                };
-
-                teamTwoDataGrid.Items.Add(dataGridItem);
-            }
+            populateMatchupDetails(tournament.Rounds[selectedRound].Matchups[selectedPairing]);
 
             firstTeamLabel.Content = theTeam1.TeamName;
             secondTeamLabel.Content = theTeam2.TeamName;
@@ -206,10 +188,43 @@ namespace TBG.UI
 
             source.saveTournamentEntry(matchup);
             source.saveMatchupScore(matchup);
+            source.savePersonStats(matchup);
 
+            populateMatchupDetails(matchup);
             populateMatchupListBox(roundDropDown.SelectedIndex);
 
             scoreRecordedLbl.Content = "Score recorded successfully";
+        }
+
+        private void populateMatchupDetails(IMatchup matchup)
+        {
+            teamOneDataGrid.Items.Clear();
+            foreach (IPerson p in matchup.MatchupEntries[0].TheTeam.Members)
+            {
+                TournamentViewDataGridItem dataGridItem = new TournamentViewDataGridItem()
+                {
+                    PlayerName = p.FirstName + " " + p.LastName,
+                    Wins = p.Wins,
+                    Losses = p.Losses,
+                    TeamId = matchup.MatchupEntries[0].TheTeam.TeamId
+                };
+
+                teamOneDataGrid.Items.Add(dataGridItem);
+            }
+
+            teamTwoDataGrid.Items.Clear();
+            foreach (IPerson p in matchup.MatchupEntries[1].TheTeam.Members)
+            {
+                TournamentViewDataGridItem dataGridItem = new TournamentViewDataGridItem()
+                {
+                    PlayerName = p.FirstName + " " + p.LastName,
+                    Wins = p.Wins,
+                    Losses = p.Losses,
+                    TeamId = matchup.MatchupEntries[1].TheTeam.TeamId
+                };
+
+                teamTwoDataGrid.Items.Add(dataGridItem);
+            }
         }
 
         private void UnplayedCheckbox_Checked(object sender, RoutedEventArgs e)
@@ -255,6 +270,7 @@ namespace TBG.UI
             else
             {
                 lblFinalized.Content = "Tournament is over";
+                resultsBtn.Visibility = Visibility.Visible;
             }
 
             

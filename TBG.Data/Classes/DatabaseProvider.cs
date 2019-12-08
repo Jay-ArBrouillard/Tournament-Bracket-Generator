@@ -265,6 +265,8 @@ namespace TBG.Data.Classes
         {
             return PersonsTable.Delete(entry, dbConn);
         }
+
+
         #endregion
 
         #region LOGIN(USER) METHODS 
@@ -336,6 +338,57 @@ namespace TBG.Data.Classes
 
             return matchup;
         }
+
+        public IMatchup savePersonStats(IMatchup matchup)
+        {
+            List<IPerson> people = PersonsTable.GetAll(dbConn);
+            if (people == null) { return null; }
+
+            for (int i = 0; i < matchup.MatchupEntries.Count; i++) 
+            {
+                if (i == 0)
+                {
+                    if (matchup.MatchupEntries[i].Score > matchup.MatchupEntries[i+1].Score)
+                    {
+                        foreach (IPerson person in matchup.MatchupEntries[i].TheTeam.Members)
+                        {
+                            person.Wins++;
+                            PersonsTable.Update(person, dbConn);
+                        }
+                    }
+                    else
+                    {
+                        foreach (IPerson person in matchup.MatchupEntries[i].TheTeam.Members)
+                        {
+                            person.Losses++;
+                            PersonsTable.Update(person, dbConn);
+                        }
+                    }
+                }
+                else
+                {
+                    if (matchup.MatchupEntries[i].Score > matchup.MatchupEntries[i - 1].Score)
+                    {
+                        foreach (IPerson person in matchup.MatchupEntries[i].TheTeam.Members)
+                        {
+                            person.Wins++;
+                            PersonsTable.Update(person, dbConn);
+                        }
+                    }
+                    else
+                    {
+                        foreach (IPerson person in matchup.MatchupEntries[i].TheTeam.Members)
+                        {
+                            person.Losses++;
+                            PersonsTable.Update(person, dbConn);
+                        }
+                    }
+                }
+
+            }
+
+            return matchup;
+        }
         #endregion
 
         #region TOURNMENT ENTRY METHODS
@@ -360,6 +413,7 @@ namespace TBG.Data.Classes
             results.Add(entry2);
             return results;
         }
+
         #endregion
     }
 }
