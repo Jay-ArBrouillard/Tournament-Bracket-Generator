@@ -19,5 +19,6 @@ namespace TBG.UI.Models
         public int CareerWins { get; set; }
         public int CareerLosses { get; set; }
         public double CareerWinLoss { get; set; }
+        public decimal Winnings { get; set; }
     }
 }

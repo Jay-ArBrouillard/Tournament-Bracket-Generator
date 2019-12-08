@@ -27,6 +27,6 @@ namespace TBG.Core.Interfaces
         bool ScoreMatchup(IMatchup matchup, int team1Score, int team2Score);
         ITournament reSeedTournament(ITournament tournament);
         ITournament advanceRound(ITournament tournament);
-        List<IResultDataRow> populateResultsGrid(ITournament tournament, List<IMatchup> matchups);
+        List<IResultDataRow> populateResultsGrid(ITournament tournament, List<IMatchup> matchups, List<IPrize> prizes);
     }
 }

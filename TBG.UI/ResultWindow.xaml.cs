@@ -22,6 +22,7 @@ namespace TBG.UI
     {
         private ITournament tournament;
         private ITournamentController tournamentController;
+        private IProvider source;
         private Boolean initalize = true;
 
         public ResultWindow(ITournament tournament)
@@ -29,7 +30,7 @@ namespace TBG.UI
             InitializeComponent();
             this.tournament = tournament;
             tournamentController = ApplicationController.getTournamentController();
-
+            source = ApplicationController.getProvider();
             foreach (var round in tournament.Rounds)
             {
                 roundSelectComboBox.Items.Add("Round " + round.RoundNum);
@@ -54,7 +55,14 @@ namespace TBG.UI
 
         private void populateDataGrid(List<IMatchup> matchups)
         {
-            List<IResultDataRow> resultDataRows = tournamentController.populateResultsGrid(tournament, matchups);
+            List<IPrize> allPrizes = source.getAllPrizes();
+            foreach (IPrize prize in allPrizes)
+            {
+                decimal convertPercent = prize.PrizePercent > 1 ? prize.PrizePercent / 100 : prize.PrizePercent;
+                prize.PrizeAmount = Math.Round((decimal)tournament.TotalPrizePool * convertPercent, 2);
+            }
+
+            List<IResultDataRow> resultDataRows = tournamentController.populateResultsGrid(tournament, matchups, allPrizes);
             resultDataRows.ForEach(x => resultDataGrid.Items.Add(x));
         }
 

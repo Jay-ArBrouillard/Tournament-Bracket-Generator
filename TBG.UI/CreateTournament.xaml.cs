@@ -160,6 +160,8 @@ namespace TBG.UI
 
             //Update PrizePool
             SetEntryFee_Click(sender, e);
+
+            setPrizeAmounts();
         }
 
         private void Update_Place_Values()
