@@ -20,7 +20,7 @@ namespace TBG.UI
         public List<ITeam> teams;   //All existing teams
         public List<ITournamentEntry> teamsInTournament;    //Selected teams. Implements ITournamentEntry
         public List<IPrize> prizes; //All existing prizes
-        public List<ITournamentPrize> prizesInTournament;  //Selected prizes
+        public List<IPrize> prizesInTournament;  //Selected prizes
         public double prizePool;
         private IUser user;
         private ITournament tournament;
@@ -41,7 +41,7 @@ namespace TBG.UI
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            prizesInTournament = new List<ITournamentPrize>();
+            prizesInTournament = new List<IPrize>();
             prizes = source.getAllPrizes();
             prizeComboBox.ItemsSource = prizes;
             prizePool = 0;
@@ -168,13 +168,13 @@ namespace TBG.UI
 
         private void DeletePrizeButton_Click(object sender, RoutedEventArgs e)
         {
-            List<ITournamentPrize> remove = new List<ITournamentPrize>();
+            List<IPrize> remove = new List<IPrize>();
             foreach (var prize in prizesListBox.SelectedItems)
             {
-                remove.Add((ITournamentPrize)prize);
+                remove.Add((IPrize)prize);
             }
 
-            foreach (ITournamentPrize p in remove)
+            foreach (IPrize p in remove)
             {
                 prizesInTournament.Remove(p);
             }
@@ -186,9 +186,12 @@ namespace TBG.UI
         {
             object selectedItem = ((ComboBox)sender).SelectedItem;
             IPrize selectedPrize = (IPrize)selectedItem;
-            prizesInTournament.Add(new TournamentPrize()
+            prizesInTournament.Add(new Prize()
             {
                 PrizeId = selectedPrize.PrizeId,
+                PrizeName = selectedPrize.PrizeName,
+                PrizeAmount = selectedPrize.PrizeAmount,
+                PrizePercent = selectedPrize.PrizePercent
             });
             prizesListBox.ItemsSource = prizesInTournament;
             prizesListBox.Items.Refresh();
