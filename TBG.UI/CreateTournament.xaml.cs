@@ -180,13 +180,15 @@ namespace TBG.UI
             Update_Place_Values();
 
             //Remove prizes for places > new count
-            foreach (var prize in prizesInTournament)
+            foreach (var prize in prizesInTournament.ToList())
             {
                 if (prize.PlaceNumber > teamsInTournament.Count)
                 {
                     prizesInTournament.Remove(prize);
                 }
             }
+
+            prizesListBox.Items.Refresh();
         }
 
         private void DeletePrizeButton_Click(object sender, RoutedEventArgs e)
