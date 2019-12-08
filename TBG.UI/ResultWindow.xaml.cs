@@ -48,7 +48,7 @@ namespace TBG.UI
 
             placings.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));*/
             ReseedTournament();
-            tournament.TournamentEntries.OrderByDescending(x => x.Seed).ToList();
+            tournament.TournamentEntries = tournament.TournamentEntries.OrderByDescending(x => x.Seed).ToList();
         }
 
         private void populateDataGrid(List<IRound> rounds)
@@ -85,7 +85,8 @@ namespace TBG.UI
                     {
                         item.Placing = placeValue;
                     }*/
-                    item.Placing = matchup.MatchupEntries.Seed //Here
+                    var te = tournament.TournamentEntries.Find(x => x.TeamId == thisTeam.TeamId);
+                    item.Placing = tournament.TournamentEntries.IndexOf(te);
                     item.Wins = matchup.MatchupEntries[i].TheTeam.Wins;
                     item.Losses = matchup.MatchupEntries[i].TheTeam.Losses;
                     item.WinLoss = Math.Round(calculateWinPercentage(item.Wins, item.Losses), 3);
@@ -143,7 +144,7 @@ namespace TBG.UI
                     else { losses++; }
                 }
                 if (losses == 0) { entry.Seed = 1; }
-                else { entry.Seed = wins / (wins + losses); }
+                else { entry.Seed = (double)wins / (wins + losses); }
             }
         }
 
