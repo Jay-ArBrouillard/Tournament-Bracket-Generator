@@ -248,7 +248,7 @@ namespace TBG.UI
             var validTournamentTypeId = tournamentController.validateTournamentType(TournamentType);
             var validParticipantCount = tournamentController.validateParticipantCount(numParticipants, TournamentType);
             var validTotalPrizePool = tournamentController.validateTotalPrizePool(prizePool, numParticipants, validEntryFee);
-            //Validate prizes
+            var validatedPrizes = tournamentController.validatePrizes(prizesInTournament);
             //Add prize structure to create tournament call
 
             if (!validTournamentName)
@@ -282,6 +282,12 @@ namespace TBG.UI
                 return;
             }
 
+            if (validatedPrizes.Count == 0)
+            {
+                errorMessages.Text = "Prizes are not valid";
+                return;
+            }
+
             errorMessages.Text = "";
             entryFeeTextBox.BorderBrush = new SolidColorBrush(Colors.DarkGray);
 
@@ -291,7 +297,8 @@ namespace TBG.UI
                 validEntryFee, 
                 validTotalPrizePool, 
                 teamsInTournament,
-                tournament.Teams);
+                tournament.Teams,
+                validatedPrizes);
 
             newTournament.Teams.AddRange(tournament.Teams);
 

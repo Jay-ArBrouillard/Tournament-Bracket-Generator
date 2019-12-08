@@ -54,6 +54,7 @@
     <Compile Include="Models\Prize.cs" />
     <Compile Include="Controllers\PrizeController.cs" />
     <Compile Include="Models\ResultDataRow.cs" />
+    <Compile Include="Models\TournamentPrize.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\Round.cs" />

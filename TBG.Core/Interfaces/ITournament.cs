@@ -13,7 +13,7 @@ namespace TBG.Core.Interfaces
         int ActiveRound { get; set; }
         List<ITeam> Teams { get; set; }
         List<ITournamentEntry> TournamentEntries { get; set; }
-        List<IPrize> TournamentPrizes { get; set; }
+        List<ITournamentPrize> TournamentPrizes { get; set; }
         List<IRound> Rounds { get; set; }
     }
 }

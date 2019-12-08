@@ -18,7 +18,8 @@ namespace TBG.Business.Controllers
             double entryFee, 
             double totalPrizePool,
             List<ITournamentEntry> participants,
-            List<ITeam> teams
+            List<ITeam> teams,
+            List<ITournamentPrize> prizesInTournament
         )
         {
             var tournament = TournamentTypeHelper.GetNewTournament(tournamentType);
@@ -28,6 +29,7 @@ namespace TBG.Business.Controllers
             tournament.UserId = userId;
             tournament.TournamentEntries = participants;
             tournament.Teams = teams;
+            tournament.TournamentPrizes = prizesInTournament;
 
             return tournament.BuildTournament();
         }
@@ -72,6 +74,21 @@ namespace TBG.Business.Controllers
                 return -1;
             }
             return poolDouble;
+        }
+
+        public List<ITournamentPrize> validatePrizes(List<IPrize> prizes)
+        {
+            var result = new List<ITournamentPrize>();
+            foreach(var prize in prizes)
+            {
+                result.Add(new TournamentPrize()
+                {
+                    PrizeId = prize.PrizeId,
+                    PlaceId = prize.PlaceNumber
+                });
+            }
+
+            return result;
         }
 
         public ITournament rebuildTournament(ITournament savedTournament)

@@ -46,6 +46,8 @@ namespace TBG.Data.Classes
 
             entry.TournamentEntries.ForEach(x => x.TournamentId = tournament.TournamentId);
             entry.TournamentEntries.ForEach(x => TournamentEntryTable.Create(x, dbConn));
+            entry.TournamentPrizes.ForEach(x => x.TournamentId = tournament.TournamentId);
+            entry.TournamentPrizes.ForEach(x => TournamentPrizesTable.Create(x, dbConn));
 
             entry.Rounds.ForEach(x => x.TournamentId = tournament.TournamentId);
 
