@@ -320,12 +320,26 @@ namespace TBG.UI
         {
             object selectedItem = prizeComboBox.SelectedItem;
             IPrize selectedPrize = (IPrize)selectedItem;
+
+            var selectedPlace = placeComboBox.SelectedItem;
+            int selectedPlaceNumber = (int)selectedPlace;
+            //validate that prize doesn't already exist
+            if (prizesInTournament.Any(x => x.PlaceNumber == selectedPlaceNumber))
+            {
+                errorMessages.Text = "There is already a prize for the selected place.";
+                return;
+            } else
+            {
+                errorMessages.Text = "";
+            }
+
             prizesInTournament.Add(new Prize()
             {
                 PrizeId = selectedPrize.PrizeId,
                 PrizeName = selectedPrize.PrizeName,
                 PrizeAmount = selectedPrize.PrizeAmount,
-                PrizePercent = selectedPrize.PrizePercent
+                PrizePercent = selectedPrize.PrizePercent,
+                PlaceNumber = selectedPlaceNumber
             });
             prizesListBox.ItemsSource = prizesInTournament;
             prizesListBox.Items.Refresh();
