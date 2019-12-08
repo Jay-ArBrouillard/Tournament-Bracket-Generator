@@ -36,7 +36,7 @@ namespace TBG.UI
         }
 
         private void calculatePlacing()
-        {
+        {/*
             placings = new List<KeyValuePair<int, int>>();
             foreach (var matchups in tournament.Rounds[0].Matchups)
             {
@@ -46,7 +46,9 @@ namespace TBG.UI
                 }
             }
 
-            placings.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));
+            placings.Sort((pair1, pair2) => pair1.Value.CompareTo(pair2.Value));*/
+            ReseedTournament();
+            tournament.TournamentEntries.OrderByDescending(x => x.Seed).ToList();
         }
 
         private void populateDataGrid(List<IRound> rounds)
@@ -78,11 +80,12 @@ namespace TBG.UI
                     ITeam thisTeam = tournament.Teams.Find(x => x.TeamId == matchup.MatchupEntries[i].TheTeam.TeamId);
                     item.Players = playerBuilder.ToString();
                     item.TeamName = thisTeam.TeamName;
-                    int placeValue = placings.Find(x => x.Key == thisTeam.TeamId).Value;
+                    /*int placeValue = placings.Find(x => x.Key == thisTeam.TeamId).Value;
                     if (placeValue != 0)
                     {
                         item.Placing = placeValue;
-                    }
+                    }*/
+                    item.Placing = matchup.MatchupEntries.Seed //Here
                     item.Wins = matchup.MatchupEntries[i].TheTeam.Wins;
                     item.Losses = matchup.MatchupEntries[i].TheTeam.Losses;
                     item.WinLoss = Math.Round(calculateWinPercentage(item.Wins, item.Losses), 3);
@@ -122,6 +125,28 @@ namespace TBG.UI
                 populateDataGrid(tournament.Rounds[selectedRound].Matchups);
             }
         }
+
+        private void ReseedTournament()
+        {
+            var matchups = tournament.Rounds.SelectMany(x => x.Matchups).ToList();
+            foreach (var entry in tournament.TournamentEntries)
+            {
+                var wins = 0;
+                var losses = 0;
+                var entryMatchupEntries = matchups.SelectMany(y => y.MatchupEntries).Where(z => z.TheTeam.TeamId == entry.TeamId);
+                foreach (var matchupEntry in entryMatchupEntries)
+                {
+                    var matchup = matchups.Where(x => x.MatchupId == matchupEntry.MatchupId).First();
+                    var entryScore = matchup.MatchupEntries.Where(x => x.TheTeam.TeamId == entry.TeamId).First().Score;
+                    var opponentScore = matchup.MatchupEntries.Where(x => x.TheTeam.TeamId != entry.TeamId).First().Score;
+                    if (entryScore > opponentScore) { wins++; }
+                    else { losses++; }
+                }
+                if (losses == 0) { entry.Seed = 1; }
+                else { entry.Seed = wins / (wins + losses); }
+            }
+        }
+
 
     }
 }
