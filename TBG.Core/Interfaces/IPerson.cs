@@ -9,5 +9,7 @@
         string Phone { get; set; }
         int Wins { get; set; }
         int Losses { get; set; }
+
+        double Ratio { get; set; }
     }
 }

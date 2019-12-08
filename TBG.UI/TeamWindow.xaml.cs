@@ -40,6 +40,7 @@ namespace TBG.UI
             teamController = ApplicationController.getTeamController();
             personList = source.getPeople();
             personList.Sort((x,y) =>x.FirstName.CompareTo(y.FirstName));
+            personList.ForEach(x => x.Ratio = Math.Round(x.Ratio, 3));
             selectedPersons = new List<IPerson>();
             selectionListBox.ItemsSource = personList;
             this.user = user;
@@ -121,6 +122,7 @@ namespace TBG.UI
             if (!validWinLoss)
             {
                 SetDisplayColors(new SolidColorBrush(Colors.Red));
+                errorMessages.Text = "Wins and Losses must be integers";
                 return;
             }
 
@@ -128,20 +130,30 @@ namespace TBG.UI
             IPerson existingPerson = source.getPersonByUniqueIdentifiers(firstName, lastName, email);
             bool validatePerson = personController.validatePerson(newPerson, existingPerson);
 
+            if (existingPerson != null)
+            {
+                SetDisplayColors(new SolidColorBrush(Colors.Red));
+                errorMessages.Text = firstName + " " + lastName + " with email " + email + " already Exists";
+                return;
+            }
+
             if (!validatePerson)
             {
                 SetDisplayColors(new SolidColorBrush(Colors.Red));
+                errorMessages.Text = "Names, Email, and Phone cannot be empty.\nEmail (ex: email@gmail.com) and \nPhone (ex: 123-456-7890) must be of correct format.";
                 return;
             }
 
             if (source.createPerson(newPerson) == null)
             {
                 SetDisplayColors(new SolidColorBrush(Colors.Red));
+                errorMessages.Text = "Error creating person";
                 return;
             }
             else
             {
                 SetDisplayColors(new SolidColorBrush(Colors.Green));
+                errorMessages.Text = "";
 
                 //Update views on TeamWindow
                 personList.Add(newPerson);
@@ -171,45 +183,26 @@ namespace TBG.UI
             ITeam existingTeam = source.getTeam(teamName);
             bool validate = teamController.validateTeam(newTeam, existingTeam);
 
+            if (displayListBox.Items.Count == 0)
+            {
+                errorMessages.Text = "Team must have atleast 1 player on it";
+                return;
+            }
+
             if (validate)
             {
+                errorMessages.Text = "";
                 ITeam createdTeam = source.createTeam(newTeam);
                 CreateTournament createTournament = new CreateTournament(user);
                 createTournament.Show();
                 this.Close();
             }
-
-        }
-
-        public List<ITournamentEntry> convertToTeam(List<ITeam> list)
-        {
-            List<ITournamentEntry> result = new List<ITournamentEntry>();
-
-            foreach (ITeam team in list)
+            else
             {
-                ObservableCollection<IPerson> teamMembers = new ObservableCollection<IPerson>();
-                int teamId = team.TeamId;
-                foreach (ITeamMember teamMember in source.getTeamMembersByTeamId(teamId))
-                {
-                    IPerson person = source.getPerson(teamMember.PersonId);
-                    teamMembers.Add(new Person()
-                    {
-                        PersonId = person.PersonId,
-                        FirstName = person.FirstName,
-                        LastName = person.LastName
-                    });
-                }
-
-                result.Add(new TournamentEntry()
-                {
-                    TeamId = teamId,
-                    Members = teamMembers
-                });
+                errorMessages.Text = "Team already exists";
             }
 
-            return result;
         }
-
 
     }
 

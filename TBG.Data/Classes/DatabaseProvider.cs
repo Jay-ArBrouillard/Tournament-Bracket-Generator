@@ -269,7 +269,18 @@ namespace TBG.Data.Classes
 
         public List<IPerson> getPeople()
         {
-            return PersonsTable.GetAll(dbConn);
+            List<IPerson> people = PersonsTable.GetAll(dbConn);
+            if (people == null) { return null; }
+
+            foreach (IPerson person in people)
+            {
+                int wins = person.Wins;
+                int losses = person.Losses;
+
+                person.Ratio = wins + losses == 0 ? 0 : (double)wins / (wins + losses);
+            }
+
+            return people;
         }
 
         public IPerson deletePerson(IPerson entry)

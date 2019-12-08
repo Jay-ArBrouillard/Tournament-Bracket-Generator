@@ -16,7 +16,7 @@ namespace TBG.UI.Classes
         public string Phone { get; set; }
         public int Wins { get; set; }
         public int Losses { get; set; }
-        public string Ratio { get; set; }
+        public double Ratio { get; set; }
 
         public Person()
         {
@@ -33,11 +33,18 @@ namespace TBG.UI.Classes
             this.Losses = Losses;
             if (Wins == 0 || Losses == 0)
             {
-                Ratio = "0";
+                Ratio = 0.0;
             }
             else
             {
-                Ratio = ((decimal)Wins / (decimal)Losses).ToString("0.##").Trim();
+                if (Wins + Losses == 0)
+                {
+                    Ratio = 0;
+                }
+                else
+                {
+                    Ratio = (double)Wins / (Wins + Losses);
+                }
             }
         }
 
