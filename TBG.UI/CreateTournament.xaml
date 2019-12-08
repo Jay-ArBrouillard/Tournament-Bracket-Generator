@@ -164,7 +164,8 @@
             <TextBlock Text="Select Prizes"
                    FontSize="18">
             </TextBlock>
-            <Button Content="Create New Prize" Click="Create_New_Prize_Click" Margin="10,0,0,0" Height="20" Width="100"/>
+            <Button Content="New Prize" Click="Create_New_Prize_Click" Margin="10,0,0,0" Height="20" Width="60"/>
+            <Button Content="Add Selection" Click="Add_Prize_Click" Margin="10,0,0,0" Height="20" Width="80"/>
         </StackPanel>
 
         <!-- Error Messages -->

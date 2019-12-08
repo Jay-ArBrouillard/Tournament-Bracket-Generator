@@ -184,17 +184,7 @@ namespace TBG.UI
 
         private void PrizeComboBox_Selected(object sender, RoutedEventArgs e)
         {
-            object selectedItem = ((ComboBox)sender).SelectedItem;
-            IPrize selectedPrize = (IPrize)selectedItem;
-            prizesInTournament.Add(new Prize()
-            {
-                PrizeId = selectedPrize.PrizeId,
-                PrizeName = selectedPrize.PrizeName,
-                PrizeAmount = selectedPrize.PrizeAmount,
-                PrizePercent = selectedPrize.PrizePercent
-            });
-            prizesListBox.ItemsSource = prizesInTournament;
-            prizesListBox.Items.Refresh();
+            
         }
 
         private void SeedToggle_Checked(object sender, RoutedEventArgs e)
@@ -233,6 +223,8 @@ namespace TBG.UI
             var validTournamentTypeId = tournamentController.validateTournamentType(TournamentType);
             var validParticipantCount = tournamentController.validateParticipantCount(numParticipants, TournamentType);
             var validTotalPrizePool = tournamentController.validateTotalPrizePool(prizePool, numParticipants, validEntryFee);
+            //Validate prizes
+            //Add prize structure to create tournament call
 
             if (!validTournamentName)
             {
@@ -299,6 +291,21 @@ namespace TBG.UI
             }
 
             return (double) wins /  (wins + losses);
+        }
+
+        private void Add_Prize_Click(object sender, RoutedEventArgs e)
+        {
+            object selectedItem = prizeComboBox.SelectedItem;
+            IPrize selectedPrize = (IPrize)selectedItem;
+            prizesInTournament.Add(new Prize()
+            {
+                PrizeId = selectedPrize.PrizeId,
+                PrizeName = selectedPrize.PrizeName,
+                PrizeAmount = selectedPrize.PrizeAmount,
+                PrizePercent = selectedPrize.PrizePercent
+            });
+            prizesListBox.ItemsSource = prizesInTournament;
+            prizesListBox.Items.Refresh();
         }
     }
 }
