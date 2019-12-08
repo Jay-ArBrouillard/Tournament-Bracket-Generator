@@ -352,6 +352,12 @@ namespace TBG.UI
             object selectedItem = prizeDataGrid.SelectedItem;
             IPrize selectedPrize = (IPrize)selectedItem;
 
+            if (placeComboBox.SelectedItem == null)
+            {
+                errorMessages.Text = "Must select a place";
+                return;
+            }
+
             var selectedPlace = placeComboBox.SelectedItem;
             int selectedPlaceNumber = (int)selectedPlace;
 
