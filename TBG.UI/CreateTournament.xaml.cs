@@ -25,6 +25,7 @@ namespace TBG.UI
         private IUser user;
         private ITournament tournament;
         private List<ParticipantTree> theTeams = new List<ParticipantTree>();
+        private HashSet<int> personIdsInTournament = new HashSet<int>();
 
         public CreateTournament(IUser user)
         {
@@ -43,7 +44,7 @@ namespace TBG.UI
         {
             prizesInTournament = new List<IPrize>();
             prizes = source.getAllPrizes();
-            prizeComboBox.ItemsSource = prizes;
+            prizes.ForEach(x => prizeDataGrid.Items.Add(x));
             prizePool = 0;
             SeedToggle_Unchecked(sender, e);
             Update_Place_Values();
@@ -66,11 +67,23 @@ namespace TBG.UI
                 }
                 totalPrizePool.Text = prizePool.ToString();
                 entryFeeTextBox.BorderBrush = new SolidColorBrush(Colors.Green);
+                setPrizeAmounts();
             }
             else
             {
                 entryFeeTextBox.BorderBrush = new SolidColorBrush(Colors.Red);
             }
+        }
+
+        private void setPrizeAmounts()
+        {
+            foreach (IPrize prize in prizes)
+            {
+                decimal convertPercent = prize.PrizePercent > 1 ? prize.PrizePercent / 100 : prize.PrizePercent;
+                prize.PrizeAmount = Math.Round(Int32.Parse(totalPrizePool.Text) * convertPercent, 2);
+            }
+
+            prizeDataGrid.Items.Refresh();
         }
 
         public List<ITournamentEntry> convertToEntries(List<ITeam> list)
@@ -101,11 +114,16 @@ namespace TBG.UI
             List<ITeam> selectedTeams = new List<ITeam>();
             foreach (ITeam team in selectionListBox.SelectedItems)
             {
-                bool isDuplicate = teamsInTournament.Where(t => t.TeamId == team.TeamId).Any();
-
-                if (!isDuplicate)
+                bool isDuplicateTeam = teamsInTournament.Where(t => t.TeamId == team.TeamId).Any();
+                bool hasDuplicatePlayer = team.TeamMembers.Where(t => personIdsInTournament.Contains(t.PersonId)).Any();
+                if (!isDuplicateTeam && !hasDuplicatePlayer)
                 {
                     selectedTeams.Add(team);
+                    errorMessages.Text = "";
+                }
+                else if (hasDuplicatePlayer)
+                {
+                    errorMessages.Text = "One of players you tried adding is already in tournament";
                 }
             }
             tournament.Teams.AddRange(selectedTeams);
@@ -113,7 +131,7 @@ namespace TBG.UI
             var converted = convertToEntries(selectedTeams);
             teamsInTournament.AddRange(converted);
 
-            foreach(var team in converted)
+            foreach (var team in converted)
             {
                 var newTeam = new ParticipantTree()
                 {
@@ -122,13 +140,14 @@ namespace TBG.UI
                     TeamName = selectedTeams.Find(x => x.TeamId == team.TeamId).TeamName
                 };
 
-                foreach(var member in team.Members)
+                foreach (var member in team.Members)
                 {
                     newTeam.Members.Add(new Person()
                     {
                         FirstName = member.FirstName,
                         LastName = member.LastName
                     });
+                    personIdsInTournament.Add(member.PersonId);
                 }
 
                 theTeams.Add(newTeam);
@@ -176,6 +195,8 @@ namespace TBG.UI
 
                 //Update PrizePool
                 SetEntryFee_Click(sender, e);
+                //Update PrizeAmounts
+                setPrizeAmounts();
             }
             Update_Place_Values();
 
@@ -203,7 +224,6 @@ namespace TBG.UI
             {
                 prizesInTournament.Remove(p);
             }
-
             prizesListBox.Items.Refresh();
         }
 
@@ -327,7 +347,7 @@ namespace TBG.UI
 
         private void Add_Prize_Click(object sender, RoutedEventArgs e)
         {
-            object selectedItem = prizeComboBox.SelectedItem;
+            object selectedItem = prizeDataGrid.SelectedItem;
             IPrize selectedPrize = (IPrize)selectedItem;
 
             var selectedPlace = placeComboBox.SelectedItem;
