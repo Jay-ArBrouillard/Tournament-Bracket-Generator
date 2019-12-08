@@ -265,6 +265,8 @@ namespace TBG.Data.Classes
         {
             return PersonsTable.Delete(entry, dbConn);
         }
+
+
         #endregion
 
         #region LOGIN(USER) METHODS 
@@ -335,6 +337,81 @@ namespace TBG.Data.Classes
             }
 
             return matchup;
+        }
+
+        public IMatchup savePersonStats(IMatchup matchup)
+        {
+            List<IPerson> people = PersonsTable.GetAll(dbConn);
+            if (people == null) { return null; }
+
+            for (int i = 0; i < matchup.MatchupEntries.Count; i++) 
+            {
+                if (i == 0)
+                {
+                    if (matchup.MatchupEntries[i].Score > matchup.MatchupEntries[i+1].Score)
+                    {
+                        foreach (IPerson person in matchup.MatchupEntries[i].TheTeam.Members)
+                        {
+                            person.Wins++;
+                            PersonsTable.Update(person, dbConn);
+                        }
+                    }
+                    else
+                    {
+                        foreach (IPerson person in matchup.MatchupEntries[i].TheTeam.Members)
+                        {
+                            person.Losses++;
+                            PersonsTable.Update(person, dbConn);
+                        }
+                    }
+                }
+                else
+                {
+                    if (matchup.MatchupEntries[i].Score > matchup.MatchupEntries[i - 1].Score)
+                    {
+                        foreach (IPerson person in matchup.MatchupEntries[i].TheTeam.Members)
+                        {
+                            person.Wins++;
+                            PersonsTable.Update(person, dbConn);
+                        }
+                    }
+                    else
+                    {
+                        foreach (IPerson person in matchup.MatchupEntries[i].TheTeam.Members)
+                        {
+                            person.Losses++;
+                            PersonsTable.Update(person, dbConn);
+                        }
+                    }
+                }
+
+            }
+
+            return matchup;
+        }
+        #endregion
+
+        #region TOURNMENT ENTRY METHODS
+        public List<ITournamentEntry> saveTournamentEntry(IMatchup matchup)
+        {
+            ITournamentEntry entry1 = TournamentEntryTable.Get(matchup.MatchupEntries[0].TournamentEntryId, dbConn);
+            ITournamentEntry entry2 = TournamentEntryTable.Get(matchup.MatchupEntries[1].TournamentEntryId, dbConn);
+
+            if (entry1 == null || entry2 == null) { return null; }
+
+            entry1.Wins = matchup.MatchupEntries[0].TheTeam.Wins;
+            entry1.Losses = matchup.MatchupEntries[0].TheTeam.Losses;
+            entry2.Wins = matchup.MatchupEntries[1].TheTeam.Wins;
+            entry2.Losses = matchup.MatchupEntries[1].TheTeam.Losses;
+
+            List<ITournamentEntry> results = new List<ITournamentEntry>();
+
+            if (TournamentEntryTable.Update(entry1, dbConn) == null) { return null; }
+            if (TournamentEntryTable.Update(entry2, dbConn) == null) { return null; }
+
+            results.Add(entry1);
+            results.Add(entry2);
+            return results;
         }
 
         #endregion

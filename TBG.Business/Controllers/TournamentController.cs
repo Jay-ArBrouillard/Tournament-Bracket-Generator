@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using TBG.Business.Helpers;
 using TBG.Business.Models;
@@ -97,6 +98,17 @@ namespace TBG.Business.Controllers
             matchup.MatchupEntries[0].Score = team1Score;
             matchup.MatchupEntries[1].Score = team2Score;
             matchup.Completed = true;
+            //Keep track of wins and losses only in this tournament
+            if (matchup.MatchupEntries[0].Score > matchup.MatchupEntries[1].Score)
+            {
+                matchup.MatchupEntries[0].TheTeam.Wins++;
+                matchup.MatchupEntries[1].TheTeam.Losses++;
+            }
+            else
+            {
+                matchup.MatchupEntries[0].TheTeam.Losses++;
+                matchup.MatchupEntries[1].TheTeam.Wins++;
+            }
             return true;
         }
 
@@ -142,6 +154,79 @@ namespace TBG.Business.Controllers
             {
                 return false;
             }
+        }
+
+        public List<IResultDataRow> populateResultsGrid(ITournament tournament, List<IMatchup> matchups)
+        {
+            List<IResultDataRow> dataRows = new List<IResultDataRow>();
+
+            foreach (var matchup in matchups)
+            {
+                for (int i = 0; i < matchup.MatchupEntries.Count; i++) //var matchupEntry in matchup.MatchupEntries)
+                {
+                    IResultDataRow row = new ResultDataRow();
+                    StringBuilder playerBuilder = new StringBuilder();
+                    int numTeamMembers = matchup.MatchupEntries[i].TheTeam.Members.Count;
+                    for (int j = 0; j < numTeamMembers; j++) //var player in matchup.TheTeam.Members)
+                    {
+                        IPerson player = matchup.MatchupEntries[i].TheTeam.Members[j];
+                        playerBuilder.Append(player.FirstName).Append(" ").Append(player.LastName);
+                        if (j != numTeamMembers - 1)
+                        {
+                            playerBuilder.Append(" + ");
+                        }
+                    }
+                    ITeam thisTeam = tournament.Teams.Find(x => x.TeamId == matchup.MatchupEntries[i].TheTeam.TeamId);
+                    row.Players = playerBuilder.ToString();
+                    row.TeamName = thisTeam.TeamName;
+                    var te = tournament.TournamentEntries.Find(x => x.TeamId == thisTeam.TeamId);
+                    row.Placing = tournament.TournamentEntries.IndexOf(te) + 1;
+                    row.Wins = matchup.MatchupEntries[i].TheTeam.Wins;
+                    row.Losses = matchup.MatchupEntries[i].TheTeam.Losses;
+                    row.WinLoss = Math.Round(calculateWinPercentage(row.Wins, row.Losses), 3);
+                    row.CareerWins = thisTeam.Wins;
+                    row.CareerLosses = thisTeam.Losses;
+                    row.CareerWinLoss = Math.Round(calculateWinPercentage(row.CareerWins, row.CareerLosses), 3);
+
+                    dataRows.Add(row);
+                }
+            }
+
+            return dataRows;
+        }
+
+        private double calculateWinPercentage(int wins, int losses)
+        {
+            if (wins + losses == 0)
+            {
+                return 1;
+            }
+
+            return (double)wins / (wins + losses);
+        }
+
+        public ITournament reSeedTournament(ITournament tournament)
+        {
+            var matchups = tournament.Rounds.SelectMany(x => x.Matchups).ToList();
+            foreach (var entry in tournament.TournamentEntries)
+            {
+                var wins = 0;
+                var losses = 0;
+                var entryMatchupEntries = matchups.SelectMany(y => y.MatchupEntries).Where(z => z.TheTeam.TeamId == entry.TeamId);
+                foreach (var matchupEntry in entryMatchupEntries)
+                {
+                    var matchup = matchups.Where(x => x.MatchupId == matchupEntry.MatchupId).First();
+                    var entryScore = matchup.MatchupEntries.Where(x => x.TheTeam.TeamId == entry.TeamId).First().Score;
+                    var opponentScore = matchup.MatchupEntries.Where(x => x.TheTeam.TeamId != entry.TeamId).First().Score;
+                    if (entryScore > opponentScore) { wins++; }
+                    else { losses++; }
+                }
+                if (losses == 0) { entry.Seed = 1; }
+                else { entry.Seed = calculateWinPercentage(wins, losses); }
+
+            }
+
+            return tournament;
         }
     }
 }

@@ -23,6 +23,8 @@ namespace TBG.Core.Interfaces
         );
         ITournament rebuildTournament(ITournament savedTournament);
         bool ScoreMatchup(IMatchup matchup, int team1Score, int team2Score);
+        ITournament reSeedTournament(ITournament tournament);
         ITournament advanceRound(ITournament tournament);
+        List<IResultDataRow> populateResultsGrid(ITournament tournament, List<IMatchup> matchups);
     }
 }

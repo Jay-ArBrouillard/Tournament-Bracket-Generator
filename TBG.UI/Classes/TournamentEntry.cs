@@ -15,8 +15,9 @@ namespace TBG.UI.Classes
         public int TeamId { get; set; }
         public double Seed { get; set; }
         public ObservableCollection<IPerson> Members { get; set; }
-        //Need for XAML
         public string TeamName { get; set; }
+        public int Wins { get; set; }
+        public int Losses { get; set; }
 
         public TournamentEntry()
         {

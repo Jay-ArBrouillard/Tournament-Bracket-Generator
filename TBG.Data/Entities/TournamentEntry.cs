@@ -10,5 +10,7 @@ namespace TBG.Data.Entities
         public int TeamId { get; set; }
         public double Seed { get; set; }
         public ObservableCollection<IPerson> Members { get; set; } = new ObservableCollection<IPerson>();
+        public int Wins { get; set; }
+        public int Losses { get; set; }
     }
 }

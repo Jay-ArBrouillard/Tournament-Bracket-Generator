@@ -54,6 +54,23 @@ namespace TBG.Data.Tables
             return result;
         }
 
+        public static ITournamentEntry Update(ITournamentEntry entity, MySqlConnection dbConn)
+        {
+            string query = "UPDATE TournamentEntries SET wins = @win, losses = @losses WHERE tournament_entry_id = @id";
+            Dictionary<string, string> param = new Dictionary<string, string>();
+            param.Add("@win", entity.Wins.ToString());
+            param.Add("@losses", entity.Losses.ToString());
+            param.Add("@id", entity.TournamentEntryId.ToString());
+
+            var result = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
+            if (result != 0)
+            {
+                return entity;
+            }
+
+            return null;
+        }
+
         public static ITournamentEntry Delete(ITournamentEntry entity, MySqlConnection dbConn)
         {
             string query = "DELETE FROM TournamentEntries WHERE tournament_entry_id = @id";
@@ -76,7 +93,9 @@ namespace TBG.Data.Tables
                 TournamentEntryId = Int32.Parse(reader["tournament_entry_id"].ToString()),
                 TournamentId = Int32.Parse(reader["tournament_id"].ToString()),
                 TeamId = Int32.Parse(reader["team_id"].ToString()),
-                Seed = Double.Parse(reader["seed"].ToString())
+                Seed = Double.Parse(reader["seed"].ToString()),
+                Wins = Int32.Parse(reader["wins"].ToString()),
+                Losses = Int32.Parse(reader["losses"].ToString())
             };
         }
     }
