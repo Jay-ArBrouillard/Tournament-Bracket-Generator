@@ -51,7 +51,7 @@ namespace TBG.UI
         {
             tournamentList.Items.Clear();
             allTournaments = source.getAllTournaments();
-            if (!user.Admin)
+            if (user != null && !user.Admin)
             {
                 allTournaments = allTournaments.Where(x => x.UserId == user.UserId).ToList();
             }
@@ -204,5 +204,9 @@ namespace TBG.UI
             return false;
         }
 
+        private void TournamentList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }

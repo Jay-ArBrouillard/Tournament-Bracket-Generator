@@ -9,14 +9,6 @@ namespace TBG.UI.Classes
 {
     public class Prize : IPrize
     {
-
-        public Prize(string PrizeName, decimal PrizePercent = 0, decimal PrizeAmount = 0)
-        {
-            this.PrizeName = PrizeName;
-            this.PrizeAmount = PrizeAmount;
-            this.PrizePercent = PrizePercent;
-        }
-
         public int PrizeId { get; set; }
         public string PrizeName { get; set; }
         public decimal PrizeAmount { get; set; }

@@ -41,13 +41,9 @@ namespace TBG.UI
                 //Creates a new prize with valid information
                 IPrize newPrize = source.createPrize(prize);
                 readPrizes();
-                List<ITournamentPrize> prizesInTournment = tournament.prizesInTournament;
+                List<IPrize> prizesInTournment = tournament.prizesInTournament;
                 List<IPrize> allPrizes = tournament.prizes;
                 allPrizes.Add(newPrize);
-                prizesInTournment.Add(new TournamentPrize()
-                {
-                    
-                });
                 tournament.prizeComboBox.ItemsSource = allPrizes;
                 tournament.prizesListBox.ItemsSource = prizesInTournment;
                 tournament.prizeComboBox.Items.Refresh();
