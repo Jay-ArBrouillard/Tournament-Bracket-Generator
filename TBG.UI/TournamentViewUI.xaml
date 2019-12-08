@@ -81,7 +81,7 @@
                 <RowDefinition />
                 <RowDefinition />
                 <RowDefinition />
-                
+
             </Grid.RowDefinitions>
 
             <Label x:Name="firstTeamLabel" Content="Team 1" HorizontalAlignment="Center"  VerticalAlignment="Center" FontSize="24" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" />
@@ -119,5 +119,7 @@
         <CheckBox x:Name="unplayedCheckbox" Content="Display Unplayed Only" Grid.Column="1" HorizontalAlignment="Left" Margin="137,169,0,0" VerticalAlignment="Top" Checked="UnplayedCheckbox_Checked" Unchecked="UnplayedCheckbox_Unchecked" RenderTransformOrigin="1.779,2.333"/>
         <Button x:Name="finalizeRoundBtn" Content="Advance Round" HorizontalAlignment="Left" Margin="80,118,0,0" VerticalAlignment="Top" Width="156" Height="39" FontSize="18" Grid.Column="1" Click="FinalizeRoundBtn_Click"/>
         <Label x:Name="lblFinalized" Content="" VerticalAlignment="Top" Grid.Column="1" Margin="80,43,88,0" Height="26"/>
+
+        <Button x:Name="resultsBtn" Content="View Results" Grid.Column="3" Margin="231,16,0,137" VerticalContentAlignment="Center" Click="ResultsBtn_Click"/>
     </Grid>
 </Window>

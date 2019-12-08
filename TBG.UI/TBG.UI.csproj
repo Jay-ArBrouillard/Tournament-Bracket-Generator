@@ -75,12 +75,16 @@
     <Compile Include="Classes\Tournament.cs" />
     <Compile Include="Classes\TournamentEntry.cs" />
     <Compile Include="Classes\TournamentPrize.cs" />
+    <Compile Include="Models\ResultItem.cs" />
     <Compile Include="Models\ParticipantTree.cs" />
     <Compile Include="Models\TeamMember.cs" />
     <Compile Include="Models\TournamentViewDataGridItem.cs" />
     <Compile Include="Models\TournamentViewListBoxItem.cs" />
     <Compile Include="PrizeUI.xaml.cs">
       <DependentUpon>PrizeUI.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ResultWindow.xaml.cs">
+      <DependentUpon>ResultWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="TeamWindow.xaml.cs">
       <DependentUpon>TeamWindow.xaml</DependentUpon>
@@ -113,6 +117,10 @@
     <Page Include="PrizeUI.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="ResultWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="TeamWindow.xaml">
       <SubType>Designer</SubType>

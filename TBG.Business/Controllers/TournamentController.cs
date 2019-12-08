@@ -97,6 +97,17 @@ namespace TBG.Business.Controllers
             matchup.MatchupEntries[0].Score = team1Score;
             matchup.MatchupEntries[1].Score = team2Score;
             matchup.Completed = true;
+            //Keep track of wins and losses only in this tournament
+            if (matchup.MatchupEntries[0].Score > matchup.MatchupEntries[1].Score)
+            {
+                matchup.MatchupEntries[0].TheTeam.Wins++;
+                matchup.MatchupEntries[1].TheTeam.Losses++;
+            }
+            else
+            {
+                matchup.MatchupEntries[0].TheTeam.Losses++;
+                matchup.MatchupEntries[1].TheTeam.Wins++;
+            }
             return true;
         }
 

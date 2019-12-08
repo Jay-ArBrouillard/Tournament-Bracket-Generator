@@ -204,6 +204,7 @@ namespace TBG.UI
 
             if (!scoreValid) { return; } //Error Message?
 
+            source.saveTournamentEntry(matchup);
             source.saveMatchupScore(matchup);
 
             populateMatchupListBox(roundDropDown.SelectedIndex);
@@ -257,6 +258,11 @@ namespace TBG.UI
             }
 
             
+        }
+        private void ResultsBtn_Click(object sender, RoutedEventArgs e)
+        {
+            ResultWindow resultWindow = new ResultWindow(tournament);
+            resultWindow.Show();
         }
     }
 }

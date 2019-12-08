@@ -27,5 +27,6 @@ namespace TBG.Core.Interfaces
         IUser updateUser(IUser entity);
         ITournament getTournament(int id);
         List<ITeam> getTeamsFromTournamentId(int tournamentId);
+        List<ITournamentEntry> saveTournamentEntry(IMatchup matchup);
     }
 }

@@ -10,5 +10,7 @@ namespace TBG.Business.Models
         public int TeamId { get; set; }
         public double Seed { get; set; }
         public ObservableCollection<IPerson> Members { get; set; }
+        public int Wins { get; set; }
+        public int Losses { get; set; }
     }
 }

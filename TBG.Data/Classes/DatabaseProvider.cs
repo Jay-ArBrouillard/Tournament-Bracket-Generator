@@ -336,7 +336,30 @@ namespace TBG.Data.Classes
 
             return matchup;
         }
+        #endregion
 
+        #region TOURNMENT ENTRY METHODS
+        public List<ITournamentEntry> saveTournamentEntry(IMatchup matchup)
+        {
+            ITournamentEntry entry1 = TournamentEntryTable.Get(matchup.MatchupEntries[0].TournamentEntryId, dbConn);
+            ITournamentEntry entry2 = TournamentEntryTable.Get(matchup.MatchupEntries[1].TournamentEntryId, dbConn);
+
+            if (entry1 == null || entry2 == null) { return null; }
+
+            entry1.Wins = matchup.MatchupEntries[0].TheTeam.Wins;
+            entry1.Losses = matchup.MatchupEntries[0].TheTeam.Losses;
+            entry2.Wins = matchup.MatchupEntries[1].TheTeam.Wins;
+            entry2.Losses = matchup.MatchupEntries[1].TheTeam.Losses;
+
+            List<ITournamentEntry> results = new List<ITournamentEntry>();
+
+            if (TournamentEntryTable.Update(entry1, dbConn) == null) { return null; }
+            if (TournamentEntryTable.Update(entry2, dbConn) == null) { return null; }
+
+            results.Add(entry1);
+            results.Add(entry2);
+            return results;
+        }
         #endregion
     }
 }
