@@ -67,7 +67,6 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock>
-                                <Run Text="{Binding PrizeId}"/>
                                 <Run Text="{Binding PrizeName}"/>
                                 <Run Text="{Binding PrizeAmount}"/>
                                 <Run Text="{Binding PrizePercent}"/>
