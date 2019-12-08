@@ -23,5 +23,10 @@ namespace TBG.Business.Models
         /// Represents the prize amount as a percent of a larger prize pool ex: 1% of 1 million
         /// </summary>
         public decimal PrizePercent { get; set; }
+
+        /// <summary>
+        /// Represents the place number
+        /// </summary>
+        public int PlaceNumber { get; set; }
     }
 }

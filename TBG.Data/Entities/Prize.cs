@@ -8,5 +8,6 @@ namespace TBG.Data.Entities
         public string PrizeName { get; set; }
         public decimal PrizeAmount { get; set; }
         public decimal PrizePercent { get; set; }
+        public int PlaceNumber { get; set; }
     }
 }

@@ -46,6 +46,7 @@ namespace TBG.UI
             prizeComboBox.ItemsSource = prizes;
             prizePool = 0;
             SeedToggle_Unchecked(sender, e);
+            Update_Place_Values();
         }
 
         private void SetEntryFee_Click(object sender, RoutedEventArgs e)
@@ -135,8 +136,20 @@ namespace TBG.UI
             participantsTreeView.ItemsSource = theTeams;
             participantsTreeView.Items.Refresh();
 
+            //Update place values
+            Update_Place_Values();
+
             //Update PrizePool
             SetEntryFee_Click(sender, e);
+        }
+
+        private void Update_Place_Values()
+        {
+            placeComboBox.Items.Clear();
+            for (int i = 1; i <= teamsInTournament.Count; i++)
+            {
+                placeComboBox.Items.Add(i);
+            }
         }
 
         private void Create_New_Team_Click(object sender, RoutedEventArgs e)
@@ -163,6 +176,16 @@ namespace TBG.UI
 
                 //Update PrizePool
                 SetEntryFee_Click(sender, e);
+            }
+            Update_Place_Values();
+
+            //Remove prizes for places > new count
+            foreach (var prize in prizesInTournament)
+            {
+                if (prize.PlaceNumber > teamsInTournament.Count)
+                {
+                    prizesInTournament.Remove(prize);
+                }
             }
         }
 
