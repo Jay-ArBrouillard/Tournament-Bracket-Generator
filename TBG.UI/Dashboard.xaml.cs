@@ -44,6 +44,8 @@ namespace TBG.UI
             if (user == null)   
             {
                 createTournamentButton.Visibility = Visibility.Hidden;
+                deleteTournament.Visibility = Visibility.Hidden;
+                
             }
         }
 
