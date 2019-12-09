@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TBG.Core.Interfaces
+﻿namespace TBG.Core.Interfaces
 {
     public interface IPrize
     {
@@ -12,5 +6,6 @@ namespace TBG.Core.Interfaces
         string PrizeName { get; set; }
         decimal PrizeAmount { get; set; }
         decimal PrizePercent { get; set; }
+        int PlaceNumber { get; set; }
     }
 }

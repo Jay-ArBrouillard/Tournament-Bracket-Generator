@@ -42,19 +42,30 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BusinessController.cs" />
-    <Compile Include="Dashboard.cs" />
-    <Compile Include="LoginController.cs" />
-    <Compile Include="Matchup.cs" />
-    <Compile Include="MatchupEntry.cs" />
-    <Compile Include="Person.cs" />
-    <Compile Include="PersonController.cs" />
-    <Compile Include="Prize.cs" />
-    <Compile Include="PrizeController.cs" />
+    <Compile Include="Controllers\DashboardController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
+    <Compile Include="Helpers\NotificationHelper.cs" />
+    <Compile Include="Helpers\TournamentBuilderHelper.cs" />
+    <Compile Include="Interfaces\ITournamentApplication.cs" />
+    <Compile Include="Models\Matchup.cs" />
+    <Compile Include="Models\MatchupEntry.cs" />
+    <Compile Include="Models\Person.cs" />
+    <Compile Include="Controllers\PersonController.cs" />
+    <Compile Include="Models\Prize.cs" />
+    <Compile Include="Controllers\PrizeController.cs" />
+    <Compile Include="Models\ResultDataRow.cs" />
+    <Compile Include="Models\TournamentPrize.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SingleEliminationTournament.cs" />
-    <Compile Include="Team.cs" />
-    <Compile Include="TeamController.cs" />
+    <Compile Include="Models\Round.cs" />
+    <Compile Include="Tournaments\SingleEliminationTournament.cs" />
+    <Compile Include="Models\Team.cs" />
+    <Compile Include="Controllers\TeamController.cs" />
+    <Compile Include="Controllers\TournamentController.cs" />
+    <Compile Include="Models\TournamentEntry.cs" />
+    <Compile Include="Helpers\TournamentTypeHelper.cs" />
+    <Compile Include="Controllers\TournamentViewController.cs" />
+    <Compile Include="Tournaments\SwissTournament.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TBG.Core\TBG.Core.csproj">

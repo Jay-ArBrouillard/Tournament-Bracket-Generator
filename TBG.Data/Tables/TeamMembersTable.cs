@@ -1,9 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TBG.Core.Interfaces;
 using TBG.Data.Classes;
 using TBG.Data.Entities;
@@ -19,9 +15,9 @@ namespace TBG.Data.Tables
             param.Add("@team", entity.TeamId.ToString());
             param.Add("@person", entity.PersonId.ToString());
 
-            var results = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
-            if (results > 0) { return entity; }
-            return null;
+            var resultsPK = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
+            entity.PersonTeamId = resultsPK;
+            return entity;
         }
 
         public static ITeamMember Get(int Id, MySqlConnection dbConn)
@@ -39,6 +35,23 @@ namespace TBG.Data.Tables
                 }
             }
             return null;
+        }
+
+        public static List<ITeamMember> GetTeamMembersByTeamId(int Id, MySqlConnection dbConn)
+        {
+            List<ITeamMember> results = new List<ITeamMember>();
+            string query = "SELECT * FROM TeamMembers WHERE team_id = @Id";
+            Dictionary<string, string> param = new Dictionary<string, string>();
+            param.Add("@Id", Id.ToString());
+
+            using (var reader = DatabaseHelper.GetReader(query, dbConn, param))
+            {
+                while (reader.Read())
+                {
+                    results.Add(ConvertReader(reader));
+                }
+            }
+            return results;
         }
 
         public static List<ITeamMember> GetAll(MySqlConnection dbConn)

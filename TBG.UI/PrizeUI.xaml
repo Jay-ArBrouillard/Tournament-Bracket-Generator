@@ -42,7 +42,7 @@
             <TextBox x:Name="placeNameTxtBox" 
                      HorizontalAlignment="Left" 
                      Height="37" TextWrapping="Wrap" 
-                     Text="Champion, runner-up, etc..." 
+                     Text="" 
                      VerticalAlignment="Top" 
                      Width="211" 
                      Margin="0,0,5,20"
@@ -51,7 +51,7 @@
                      HorizontalAlignment="Left" 
                      Height="37" 
                      TextWrapping="Wrap" 
-                     Text="ex) .25, .5, .33, etc..." 
+                     Text="" 
                      VerticalAlignment="Top" 
                      Width="211" 
                      FontSize="16"/>
@@ -67,7 +67,6 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock>
-                                <Run Text="{Binding PrizeId}"/>
                                 <Run Text="{Binding PrizeName}"/>
                                 <Run Text="{Binding PrizeAmount}"/>
                                 <Run Text="{Binding PrizePercent}"/>

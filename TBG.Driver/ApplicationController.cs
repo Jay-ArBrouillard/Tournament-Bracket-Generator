@@ -1,4 +1,4 @@
-﻿using TBG.Business;
+﻿using TBG.Business.Controllers;
 using TBG.Core.Interfaces;
 using TBG.Data.Classes;
 
@@ -6,17 +6,12 @@ namespace TBG.Driver
 {
     public static class ApplicationController
     {
-        public static IProvider GetProvider()
+        public static IProvider getProvider()
         {
             return new DatabaseProvider();
         }
 
-        public static IController GetController()
-        {
-            return new BusinessController();
-        }
-
-        public static ILoginController GetLoginController()
+        public static ILoginController getLoginController()
         {
             return new LoginController();
         }
@@ -31,9 +26,19 @@ namespace TBG.Driver
             return new TeamController();
         }
 
-        public static IPrizeController GetPrizeController()
+        public static IPrizeController getPrizeController()
         {
             return new PrizeController();
+        }
+
+        public static ITournamentController getTournamentController()
+        {
+            return new TournamentController();
+        }
+
+        public static ITournamentViewer getTournamentViewer()
+        {
+            return new TournamentViewerControl();
         }
     }
 }

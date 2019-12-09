@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace TBG.Core.Interfaces
+﻿namespace TBG.Core.Interfaces
 {
     public interface ILoginController
     {
-        bool validateRegister(IUser thisUser, IUser thatUser);
-        bool validateLogin(IUser thisUser, IUser thatUser);
+        IUser validateRegister(string username, string password, IUser thatUser);
+        IUser validateLogin(string username, string password, IUser thatUser);
+        IUser setLoginTime(IUser thisUser);
     }
 }

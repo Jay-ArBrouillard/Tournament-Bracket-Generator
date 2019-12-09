@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TBG.Core.Interfaces;
 using TBG.Driver;
+using TBG.UI.Classes;
 using TBG.UI.Models;
 
 namespace TBG.UI
@@ -24,13 +25,22 @@ namespace TBG.UI
     public partial class MainWindow : Window
     {
         private IProvider source;
-        private ILoginController business;
+        private ILoginController loginController;
+
         public MainWindow()
         {
             InitializeComponent();
-            source = ApplicationController.GetProvider();
-            business = ApplicationController.GetLoginController();
+            source = ApplicationController.getProvider();
+
+            if (!source.sourceActive)
+            {
+                MessageBox.Show("Error Connecting to Data", "TBG", MessageBoxButton.OK, MessageBoxImage.Error);
+                Application.Current.Shutdown();
+            }
+
+            loginController = ApplicationController.getLoginController();
         }
+
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
@@ -48,21 +58,19 @@ namespace TBG.UI
         {
             string user = userNameTextBox.Text;
             string pass = passwordTextBox.Password;
-            User thisUser = new User(user, pass);
+
             var userExisting = source.getUser(user);
-            bool validate = business.validateLogin(thisUser, userExisting);
+            var validatedUser = loginController.validateLogin(user, pass, userExisting);
 
-            if (validate)
+            if (validatedUser != null)
             {
-                //Update last login time them in
-                source.updateLoginTime(thisUser);
-
+                source.updateUser(validatedUser);
                 //Visuals
                 displayMessage.Text = String.Empty;
                 SetDisplayColors(new SolidColorBrush(Colors.Green));
                 
                 //Start Application 
-                Dashboard dB = new Dashboard();
+                Dashboard dB = new Dashboard(validatedUser);
                 dB.Show();
                 this.Close();
             }
@@ -82,15 +90,22 @@ namespace TBG.UI
         {
             string user = userNameTextBox.Text;
             string pass = passwordTextBox.Password;
-            User thisUser = new User(user, pass);
-            var userExisting = source.getUser(user);
-            bool validate = business.validateRegister(thisUser, userExisting);
 
-            if (validate)
+            if (String.IsNullOrEmpty(user) || String.IsNullOrEmpty(pass))
+            {
+                SetDisplayColors(new SolidColorBrush(Colors.Red));
+                displayMessage.Text = "Username and Password\ncan't be empty";
+                return;
+            }
+
+            var userExisting = source.getUser(user);
+            var validatedUser = loginController.validateRegister(user, pass, userExisting);
+
+            if (validatedUser != null)
             {
                 SetDisplayColors(new SolidColorBrush(Colors.Green));
 
-                if (source.createUser(thisUser) != null)
+                if (source.createUser(validatedUser) != null)
                 {
                     displayMessage.Text = "Created new user " + user;
                 }
@@ -124,7 +139,7 @@ namespace TBG.UI
         private void GuestLogin_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             //Start Application but with read only permission
-            Dashboard dB = new Dashboard();
+            Dashboard dB = new Dashboard(null);
             dB.Show();
             this.Close();
         }

@@ -7,7 +7,5 @@ CREATE TABLE TournamentPrizes (
     FOREIGN KEY (tournament_id)
         REFERENCES Tournaments (tournament_id),
     FOREIGN KEY (prize_id)
-        REFERENCES Prizes (prize_id),
-    FOREIGN KEY (place_id)
-        REFERENCES Places (place_id)
+        REFERENCES Prizes (prize_id)
 );

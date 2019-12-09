@@ -1,9 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TBG.Core.Interfaces;
 using TBG.Data.Classes;
 using TBG.Data.Entities;
@@ -22,11 +19,10 @@ namespace TBG.Data.Tables
             param.Add("@phone", entity.Phone.ToString());
             param.Add("@wins", entity.Wins.ToString());
             param.Add("@losses", entity.Losses.ToString());
-            param.Add("@id", entity.PersonId.ToString());
 
-            var results = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
-            if (results > 0) { return entity; }
-            return null;
+            var resultsPK = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
+            entity.PersonId = resultsPK;
+            return entity;
         }
 
         public static IPerson Get(int Id, MySqlConnection dbConn)
@@ -46,7 +42,28 @@ namespace TBG.Data.Tables
             return null;
         }
 
-         public static List<IPerson> GetAll(MySqlConnection dbConn)
+        public static IPerson getPersonByUniqueIdentifiers(string firstName, string lastName, string email, MySqlConnection dbConn)
+        {
+            string query = "SELECT * FROM Persons WHERE first_name = @First AND  last_name = @Last AND email = @Email";
+            Dictionary<string, string> param = new Dictionary<string, string>();
+            if (firstName == null || lastName == null || email == null) { return null; }
+
+            param.Add("@First", firstName.ToString());
+            param.Add("@Last", lastName.ToString());
+            param.Add("@Email", email.ToString());
+
+            using (var reader = DatabaseHelper.GetReader(query, dbConn, param))
+            {
+                if (reader.HasRows)
+                {
+                    reader.Read();
+                    return ConvertReader(reader);
+                }
+            }
+            return null;
+        }
+
+        public static List<IPerson> GetAll(MySqlConnection dbConn)
         {
             List<IPerson> results = new List<IPerson>();
 

@@ -5,7 +5,15 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TBG.UI"
         mc:Ignorable="d"
-        Title="Team" Height="550" Width="700">
+        Loaded="Window_Loaded"
+        Title="Team" Height="700" Width="800">
+    <Window.Resources>
+        <Style x:Key="gridViewStyle" TargetType="{x:Type GridViewColumnHeader}">
+            <Setter Property="Background" Value="LightBlue"/>
+        </Style>
+    </Window.Resources>
+    
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20" />
@@ -34,14 +42,14 @@
 
         <!-- Title -->
         <TextBlock Grid.Row="1" 
-                   Grid.Column="2" 
-                   Grid.ColumnSpan="3" 
+                   Grid.Column="1" 
+                   Grid.ColumnSpan="4" 
                    Text="Create Team"
-                   TextAlignment="Left"
+                   TextAlignment="Center"
                    Margin="50,0,0,0"
                    FontSize="22">
         </TextBlock>
-        
+
         <!-- Team Name -->
         <TextBlock Grid.Row="2" 
                    Grid.Column="1"
@@ -52,9 +60,9 @@
         <TextBox x:Name="teamNameTextBox"
                  Grid.Row="3"
                  Grid.Column="1"
-                 Text="Example Team Name"
                  Width="200"
                  BorderThickness="2"
+                 HorizontalAlignment="Left"
                  Margin="0,0,10,0">
         </TextBox>
 
@@ -75,27 +83,23 @@
         </TextBlock>
 
         <!-- Search Text Box-->
+        <TextBox x:Name="searchBox" Grid.Row="5" Grid.Column="1" VerticalAlignment="Top" BorderThickness="2" TextChanged="SearchBox_TextChanged" Padding="2"/>
+        <Image Grid.Row="5" Grid.Column="1" Source="Assets\search.png" Width="20" Height="20" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="90,0,0,0"/>
 
-        <TextBox x:Name="searchBox" Grid.Row="5" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Left" Width="210" BorderThickness="2" TextChanged="SearchBox_TextChanged">
-        </TextBox>
+        <!-- Select From Existing Players-->
+        <ListView x:Name="selectionListBox" SelectionMode="Multiple" Grid.Row="6" Grid.Column="1" Grid.RowSpan="2" Margin="0,-25,0,0" Height="250">
+            <ListView.View>
+                <GridView ColumnHeaderContainerStyle="{StaticResource gridViewStyle}" AllowsColumnReorder="True">
+                    <GridViewColumn Header="FirstName" Width="60" DisplayMemberBinding="{Binding FirstName}" />
+                    <GridViewColumn Header="LastName" Width="80" DisplayMemberBinding="{Binding LastName}" />
+                    <GridViewColumn Header="Wins" Width="50" DisplayMemberBinding="{Binding Wins}" />
+                    <GridViewColumn Header="Losses" Width="50" DisplayMemberBinding="{Binding Losses}" />
+                    <GridViewColumn Header="Win/Loss" Width="80" DisplayMemberBinding="{Binding Ratio}" />
+                </GridView>
+            </ListView.View>
+        </ListView>
 
-        <Image Grid.Row="5" Grid.Column="1" Source="Assets\search.png" Width="20" Height="20" VerticalAlignment="Top" HorizontalAlignment="Right"/>
-
-        <ScrollViewer Grid.Row="6" Grid.Column="1" Grid.RowSpan="2" Margin="0,-25,0,0">
-            <ListBox x:Name="selectionListBox" SelectionMode="Multiple" >
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock>
-                                <Run Text="{Binding FirstName}"/>
-                                <Run Text="{Binding LastName}"/>
-                                <Run Text="{Binding Ratio}"/>
-                        </TextBlock>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </ScrollViewer>
-                  
-        <ScrollViewer x:Name="scrollViewer" Grid.Row="5" Grid.Column="4" Grid.RowSpan="5"  VerticalAlignment="Top" Width="250" Height="300" Margin="30,0,0,0">
+        <ScrollViewer x:Name="scrollViewer" Grid.Row="5" Grid.Column="4" Grid.RowSpan="5" VerticalAlignment="Top" Width="250" Height="300" Margin="30,0,0,0">
             <ListBox x:Name="displayListBox" SelectionMode="Multiple">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -121,7 +125,7 @@
             <TextBlock Text="Remove All Players" TextWrapping="Wrap"/>
         </Button>
 
-        <StackPanel Orientation="Vertical" Grid.Row="9" Grid.Column="1" VerticalAlignment="Top">
+        <StackPanel Orientation="Vertical" Grid.Row="9" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Left">
             <TextBlock Text="Add New Member" FontSize="18" TextDecorations="Underline"  HorizontalAlignment="Center" Margin="0,0,0,10"></TextBlock>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -133,6 +137,7 @@
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />
                     <RowDefinition Height="auto" />
+                    <RowDefinition Height="auto" />
                     <RowDefinition Height="*" />
                     <RowDefinition Height="20" />
                 </Grid.RowDefinitions>
@@ -141,20 +146,28 @@
                 <TextBlock Grid.Row="1" Grid.Column="0"  Text="Last Name" HorizontalAlignment="Center"></TextBlock>
                 <TextBlock Grid.Row="2" Grid.Column="0"  Text="Email" HorizontalAlignment="Center"></TextBlock>
                 <TextBlock Grid.Row="3" Grid.Column="0"  Text="Phone Number" HorizontalAlignment="Center"></TextBlock>
+                <TextBlock Grid.Row="4" Grid.Column="0"  Text="Wins" HorizontalAlignment="Center"></TextBlock>
+                <TextBlock Grid.Row="5" Grid.Column="0"  Text="Losses" HorizontalAlignment="Center"></TextBlock>
 
                 <TextBox x:Name="firstNameText" Grid.Row="0" Grid.Column="1"></TextBox>
                 <TextBox x:Name="lastNameText" Grid.Row="1" Grid.Column="1"></TextBox>
                 <TextBox x:Name="emailText" Grid.Row="2" Grid.Column="1"></TextBox>
                 <TextBox x:Name="phoneNumberText" Grid.Row="3" Grid.Column="1"></TextBox>
+                <TextBox x:Name="winsText" Grid.Row="4" Grid.Column="1">0</TextBox>
+                <TextBox x:Name="lossesText" Grid.Row="5" Grid.Column="1">0</TextBox>
 
-                <Button x:Name="addPerson" Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Margin="0,10,0,0" Click="AddPerson_Click" >
+                <Button x:Name="addPerson" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Margin="20,0,0,0" Click="AddPerson_Click" >
                     <TextBlock Text="Add New Member"/>
                 </Button>
             </Grid>
         </StackPanel>
 
-        <Button x:Name="createTeam" Grid.Row="10" Grid.Column="3" Grid.ColumnSpan="2"  Margin="50,-50,50,20" Click="CreateTeam_Click" >
+        <Button x:Name="createTeam" Grid.Row="10" Grid.Column="3" Grid.ColumnSpan="2"  Margin="50,-50,50,20" Click="CreateTeam_Click">
             <TextBlock Text="Create Team"/>
         </Button>
+        
+        <!-- Error messages -->
+        <TextBlock x:Name="errorMessages" Grid.Row="10" Grid.Column="1" Grid.ColumnSpan="3" Foreground="Red"/>
+
     </Grid>
 </Window>

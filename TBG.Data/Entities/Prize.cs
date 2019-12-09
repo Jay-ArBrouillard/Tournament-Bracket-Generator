@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TBG.Core.Interfaces;
+﻿using TBG.Core.Interfaces;
 
 namespace TBG.Data.Entities
 {
@@ -13,5 +8,6 @@ namespace TBG.Data.Entities
         public string PrizeName { get; set; }
         public decimal PrizeAmount { get; set; }
         public decimal PrizePercent { get; set; }
+        public int PlaceNumber { get; set; }
     }
 }

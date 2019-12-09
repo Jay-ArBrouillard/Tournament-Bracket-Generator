@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using TBG.Core.Interfaces;
 
 namespace TBG.Data.Entities
@@ -11,7 +7,7 @@ namespace TBG.Data.Entities
     {
         public int TeamId { get; set; }
         public string TeamName { get; set; }
-        public List<IPerson> TeamMembers { get; set; }
+        public List<IPerson> TeamMembers { get; set; } = new List<IPerson>();
         public int Wins { get; set; }
         public int Losses { get; set; }
 

@@ -1,0 +1,222 @@
+﻿<Window x:Class="TBG.UI.CreateTournament"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TBG.UI"
+        xmlns:self="clr-namespace:TBG.UI.Classes"
+        xmlns:tree="clr-namespace:TBG.UI.Models"
+        mc:Ignorable="d"
+        Loaded="Window_Loaded"
+        Title="Tournament" Height="800" Width="850">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="20" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="20" />
+        </Grid.RowDefinitions>
+
+        <!-- Title -->
+        <TextBlock Grid.Row="1"
+                   Grid.Column="2"
+                   Text="Create Tournament"
+                   FontSize="22">
+        </TextBlock>
+
+        <!-- Tournament Name -->
+        <StackPanel Grid.Row="2" Grid.Column="1"  Orientation="Vertical">
+            <TextBlock Text="Tournament Name"
+                   FontSize="18">
+            </TextBlock>
+            <TextBox x:Name="tournamentNameTextBox" BorderThickness="2">
+            </TextBox>
+        </StackPanel>
+
+        <!-- Tree View Display Teams / Players-->
+        <StackPanel Orientation="Vertical" Grid.Row="2" Grid.Column="2"  Margin="20,0,0,0" Grid.RowSpan="4" VerticalAlignment="Top">
+            <TextBlock Text="Teams / Players" FontSize="18"/>
+            <StackPanel Orientation="Horizontal">
+                <TreeView Name="participantsTreeView" Width="250" Height="350">
+                    <TreeView.Resources>
+                        <HierarchicalDataTemplate DataType="{x:Type tree:ParticipantTree}" ItemsSource="{Binding Members}">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="Assets/group.png" Width="15" Height="15" Margin="3"/>
+                                <TextBlock x:Name="teamName" Text="{Binding TeamName}" VerticalAlignment="Center"/>
+                                <TextBlock Text=" [Count: " Foreground="Blue" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding Members.Count}" Foreground="Blue" VerticalAlignment="Center"/>
+                                <TextBlock Text="] " Foreground="Blue" VerticalAlignment="Center"/>
+                                <TextBlock Text="[Seed: " Foreground="Purple" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding Seed}" Foreground="Purple" VerticalAlignment="Center"/>
+                                <TextBlock Text="]" Foreground="Purple" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </HierarchicalDataTemplate>
+                        <DataTemplate DataType="{x:Type self:Person}">
+                            <StackPanel Orientation="Horizontal">
+                                <Image Source="Assets/person.png" Width="15" Height="15" Margin="3"/>
+                                <TextBlock Text="{Binding FirstName}" Foreground="Green" VerticalAlignment="Center"/>
+                                <TextBlock Text=" " />
+                                <TextBlock Text="{Binding LastName}" Foreground="Green" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </TreeView.Resources>
+                </TreeView>
+            </StackPanel>
+            <!-- Delete Team / Player Button -->
+            <Button Content="Delete Selected Team / Player" Click="DeleteTeamButton_Click" Margin="0,0,0,10"></Button>
+        </StackPanel>
+
+        <!-- Display Prizes-->
+        <StackPanel Grid.Row="2" Grid.Column="3" Margin="20,0,0,0" Grid.RowSpan="4">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Prizes: Total Prize Pool = " FontSize="18"/>
+                <TextBlock Text="$" FontSize="18" Foreground="Green"/>
+                <TextBlock x:Name="totalPrizePool" Text="0" FontSize="18"/>
+            </StackPanel>
+            <ListBox x:Name="prizesListBox" SelectionMode="Multiple" Width="250" Height="350">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <Image Source="Assets/trophy.png"/>
+                            <TextBlock Text="{Binding PrizeName}" VerticalAlignment="Center"/>
+                            <TextBlock Text=": " VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding PrizeAmount}" Foreground="Green" VerticalAlignment="Center"/>
+                            <TextBlock Text="$ " Foreground="Green" VerticalAlignment="Center"/>
+                            <TextBlock Text="{Binding PrizePercent}" Foreground="Red" VerticalAlignment="Center"/>
+                            <TextBlock Text="%" Foreground="Red" VerticalAlignment="Center"/>
+                            <TextBlock Text=" of Prize Pool" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Button x:Name="deletePrizeButton" Click="DeletePrizeButton_Click" Content="Delete Selected Prize"/>
+        </StackPanel>
+
+
+        <!-- Entry Fee -->
+        <StackPanel Grid.Row="3" Grid.Column="1"  Orientation="Vertical" Margin="0,10,0,0">
+            <StackPanel Orientation="Horizontal" >
+                <TextBlock Text="Entry Fee" FontSize="18" HorizontalAlignment="Left"/>
+                <Button x:Name="setEntryFee" Content="Set Fee" Width="50" Margin="10,0,0,0" Click="SetEntryFee_Click"/>
+                <ToggleButton x:Name="SeedToggle" Content="Enable Seeding" Width="100" Margin="10,0,0,0" Checked="SeedToggle_Checked" Unchecked="SeedToggle_Unchecked"/>
+            </StackPanel>
+
+            <TextBox x:Name="entryFeeTextBox" Text="0" BorderThickness="2" Margin="0,5,0,0"/>
+        </StackPanel>
+
+        <!-- Tournament Type -->
+        <StackPanel Grid.Row="4" Grid.Column="1"  Orientation="Vertical" Margin="0,10,0,0">
+            <TextBlock Text="Tournament Type"
+                   FontSize="18">
+            </TextBlock>
+
+            <ComboBox x:Name="tournamentTypesComboBox" SelectedIndex="0">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding TournamentTypeName}"/>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </StackPanel>
+
+        <!-- Select Team -->
+        <StackPanel Grid.Row="5" Grid.Column="1"  Orientation="Vertical" Margin="0,10,0,0">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Select Teams"
+                   FontSize="18">
+                </TextBlock>
+                <Button Content="Create New Team" Click="Create_New_Team_Click" Margin="10,0,0,0"></Button>
+            </StackPanel>
+
+            <!-- Select From Existing Teams-->
+            <ListView x:Name="selectionListBox" SelectionMode="Multiple" Grid.Row="6" Grid.Column="1" Grid.RowSpan="2" Margin="0,5,0,0" Height="150">
+                <ListView.View>
+                    <GridView AllowsColumnReorder="True">
+                        <GridViewColumn Header="Name" Width="100" DisplayMemberBinding="{Binding TeamName}" />
+                        <GridViewColumn Header="Wins" Width="50" DisplayMemberBinding="{Binding Wins}" />
+                        <GridViewColumn Header="Losses" Width="50" DisplayMemberBinding="{Binding Losses}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+            <!-- Confirm selection button -->
+            <Button x:Name="confirmSelection" VerticalAlignment="Top" Click="AddSelectedTeam_Click">
+                <TextBlock Text="Add Selected Teams"/>
+            </Button>
+        </StackPanel>
+
+        <!-- Select Prizes -->
+        <StackPanel Grid.Row="6" Grid.Column="1"  Height="20" Orientation="Horizontal" Margin="0,20,0,0" VerticalAlignment="Top">
+            <TextBlock Text="Select Prizes"
+                   FontSize="18">
+            </TextBlock>
+            <Button Content="New Prize" Click="Create_New_Prize_Click" Margin="10,0,0,0" Height="20" Width="60"/>
+            <Button Content="Add Selection" Click="Add_Prize_Click" Margin="10,0,0,0" Height="20" Width="80"/>
+        </StackPanel>
+
+        <!-- Error Messages -->
+        <TextBlock x:Name="errorMessages" Grid.Row="7" Grid.Column="2" Grid.ColumnSpan="2" Foreground="Red" HorizontalAlignment="Right" VerticalAlignment="Center"></TextBlock>
+
+        <!-- Data grid -->
+        <DataGrid x:Name="prizeDataGrid" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="0,5,0,0" Width="470" Height="250" HorizontalAlignment="Left">
+            <!-- Style Column Headers -->
+            <DataGrid.Resources>
+                <Style TargetType="{x:Type DataGrid}">
+                    <Setter Property="Background" Value="#FFF" />
+                    <Setter Property="AlternationCount" Value="2" />
+                    <Setter Property="FontSize" Value="15"/>
+                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                </Style>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <Style.Triggers>
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                            <Setter Property="Background" Value="#CCC"></Setter>
+                        </Trigger>
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                            <Setter Property="Background" Value="#EEE"></Setter>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="{x:Static SystemColors.HighlightBrush}"></Setter>
+                            <Setter Property="Foreground" Value="{x:Static SystemColors.HighlightTextBrush}"></Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.Resources>
+
+            <!-- Column Header Text & Bindings -->
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Prize Name" Binding="{Binding PrizeName}" Width="150" />
+                <DataGridTextColumn Header=" Prize Amount" Binding="{Binding PrizeAmount}" Width="150" SortDirection="Ascending"/>
+                <DataGridTextColumn Header=" Prize Percent" Binding="{Binding PrizePercent}" Width="*" SortDirection="Ascending"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="6" Grid.Column="2"  Height="20" Orientation="Horizontal" Margin="10,20,0,0" VerticalAlignment="Top">
+            <TextBlock Text="Select Place"
+                   FontSize="18">
+            </TextBlock>
+        <ComboBox x:Name="placeComboBox" Width="100" HorizontalAlignment="left" Grid.Row="7" Grid.Column="2" Margin="10,0,0,0" SelectionChanged="PrizeComboBox_Selected"/>
+        </StackPanel>
+
+
+        <!-- Create Tournament Button -->
+        <Button x:Name="createTournamentButton" Grid.Row="8" Grid.Column="3" Content="Create Tournment" Grid.ColumnSpan="2" HorizontalAlignment="Center" Width="150" Height="30" Click="Create_Tournament_Click" />
+
+    </Grid>
+</Window>

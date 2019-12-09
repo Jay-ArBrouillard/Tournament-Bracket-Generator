@@ -1,9 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace TBG.Data.Classes
 {
@@ -31,7 +28,7 @@ namespace TBG.Data.Classes
             return GetNonQueryCount(query, dbConn, new Dictionary<string, string>());
         }
 
-        public static int GetNonQueryCount(string query, MySqlConnection dbConn, Dictionary<string,string> parameters)
+        public static int GetNonQueryCount(string query, MySqlConnection dbConn, Dictionary<string, string> parameters)
         {
             using (MySqlCommand cmd = new MySqlCommand(query, dbConn))
             {
@@ -39,7 +36,15 @@ namespace TBG.Data.Classes
                 {
                     cmd.Parameters.AddWithValue(entry.Key, entry.Value);
                 }
-                return cmd.ExecuteNonQuery();
+                var results = cmd.ExecuteNonQuery();
+
+                // If has last inserted id, add a parameter to hold it.
+                if (cmd.LastInsertedId > 0)
+                {
+                    return Convert.ToInt32(cmd.LastInsertedId);
+                }
+
+                return -1;
             }
         }
 

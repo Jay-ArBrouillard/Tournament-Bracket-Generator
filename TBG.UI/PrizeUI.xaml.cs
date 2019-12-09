@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows;
 using TBG.Core.Interfaces;
 using TBG.Driver;
+using TBG.UI.Classes;
 using TBG.UI.Models;
 
 namespace TBG.UI
@@ -16,28 +17,37 @@ namespace TBG.UI
     public partial class PrizeUI : Window
     {
 
-        IPrizeController controller;
-        IProvider source;
-        List<IPrize> allPrizes;
+        private IPrizeController prizeController;
+        private IProvider source;
+        private List<IPrize> allPrizes;
+        private CreateTournament tournament;
 
-        public PrizeUI()
+        public PrizeUI(CreateTournament tournament)
         {
             InitializeComponent();
-            controller = ApplicationController.GetPrizeController();
-            source = ApplicationController.GetProvider();
-
+            prizeController = ApplicationController.getPrizeController();
+            source = ApplicationController.getProvider();
+            allPrizes = new List<IPrize>();
             readPrizes();
+            this.tournament = tournament;
         }
 
         private void createPrizeBtn_Click(object sender, RoutedEventArgs e)
         {
-            IPrize prize = controller.ValidatePrize(placeNameTxtBox.Text,  prizeAmtTxtBox.Text);
+            IPrize prize = prizeController.ValidatePrize(placeNameTxtBox.Text, prizeAmtTxtBox.Text);
 
             if (prize != null)
             {
                 //Creates a new prize with valid information
-                source.createPrize(prize);
+                IPrize newPrize = source.createPrize(prize);
                 readPrizes();
+                List<IPrize> prizesInTournment = tournament.prizesInTournament;
+                List<IPrize> allPrizes = tournament.prizes;
+                allPrizes.Add(newPrize);/*
+                tournament.prizeComboBox.ItemsSource = allPrizes;
+                tournament.prizesListBox.ItemsSource = prizesInTournment;
+                tournament.prizeComboBox.Items.Refresh();
+                tournament.prizesListBox.Items.Refresh();*/
                 errorMsgLbl.Visibility = Visibility.Hidden;
             }
             else
@@ -48,7 +58,7 @@ namespace TBG.UI
 
         private void readPrizes()
         {
-            allPrizes = source.GetAllPrizes();
+            allPrizes = source.getAllPrizes();
             prizeDisplayListBox.ItemsSource = allPrizes;
         }
 

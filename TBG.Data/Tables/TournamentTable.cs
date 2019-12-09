@@ -11,22 +11,23 @@ namespace TBG.Data.Tables
     {
         public static ITournament Create(ITournament entity, MySqlConnection dbConn)
         {
-            string query = "INSERT INTO Tournament (user_id, tournament_name, entry_fee, total_prize_pool, tournament_type_id) VALUES (@user, @name, @fee, @pool, @type)";
+            string query = "INSERT INTO Tournaments (user_id, tournament_name, entry_fee, total_prize_pool, tournament_type_id, active_round) VALUES (@user, @name, @fee, @pool, @type, @active)";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@user", entity.UserId.ToString());
             param.Add("@name", entity.TournamentName);
             param.Add("@fee", entity.EntryFee.ToString());
             param.Add("@pool", entity.TotalPrizePool.ToString());
             param.Add("@type", entity.TournamentTypeId.ToString());
+            param.Add("@active", entity.ActiveRound.ToString());
 
-            var results = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
-            if (results > 0) { return entity; }
-            return null;
+            var resultsPK = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
+            entity.TournamentId = resultsPK;
+            return entity;
         }
 
         public static ITournament Get(int Id, MySqlConnection dbConn)
         {
-            string query = "SELECT * FROM `Tournaments` WHERE `tournament_id` = @Id";
+            string query = "SELECT * FROM Tournaments WHERE tournament_id = @Id";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@Id", Id.ToString());
 
@@ -34,6 +35,7 @@ namespace TBG.Data.Tables
             {
                 if (reader.HasRows)
                 {
+                    reader.Read();
                     return ConvertReader(reader);
                 }
             }
@@ -57,7 +59,8 @@ namespace TBG.Data.Tables
 
         public static ITournament Update(ITournament entity, MySqlConnection dbConn)
         {
-            string query = "UPDATE Tournaments SET user_id = @user, tournament_name = @name, entry_fee = @fee, total_prize_pool = @pool, tournament_type_id = @type  WHERE tournament_id = @id";
+            string query = "UPDATE Tournaments SET user_id = @user, tournament_name = @name, entry_fee = @fee, total_prize_pool = @pool, " +
+                "tournament_type_id = @type, active_round = @active WHERE tournament_id = @id";
             Dictionary<string, string> param = new Dictionary<string, string>();
             param.Add("@user", entity.UserId.ToString());
             param.Add("@name", entity.TournamentName.ToString());
@@ -65,6 +68,7 @@ namespace TBG.Data.Tables
             param.Add("@pool", entity.TotalPrizePool.ToString());
             param.Add("@type", entity.TournamentTypeId.ToString());
             param.Add("@id", entity.TournamentId.ToString());
+            param.Add("@active", entity.ActiveRound.ToString());
 
             var result = DatabaseHelper.GetNonQueryCount(query, dbConn, param);
             if (result != 0)
@@ -95,11 +99,12 @@ namespace TBG.Data.Tables
             return new Tournament()
             {
                 TournamentId = Int32.Parse(reader["tournament_id"].ToString()),
-                UserId = Int32.Parse(reader["tournament_id"].ToString()),
+                UserId = Int32.Parse(reader["user_id"].ToString()),
                 TournamentName = reader["tournament_name"].ToString(),
-                EntryFee = Decimal.Parse(reader["entry_fee"].ToString()),
+                EntryFee = Double.Parse(reader["entry_fee"].ToString()),
                 TotalPrizePool = Double.Parse(reader["total_prize_pool"].ToString()),
-                TournamentTypeId = Int32.Parse(reader["tournament_type_id"].ToString())
+                TournamentTypeId = Int32.Parse(reader["tournament_type_id"].ToString()),
+                ActiveRound = Int32.Parse(reader["active_round"].ToString())
             };
         }
     }

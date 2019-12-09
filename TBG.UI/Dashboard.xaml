@@ -41,22 +41,38 @@
         <Label Content="Tournament Database" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="5" FontSize="24" FontFamily="Champagne &amp; Limousines"/>
         <StackPanel Orientation="Horizontal">
             <StackPanel Width="250" HorizontalAlignment="left" Margin="0,40,0,0">
-                <TextBox x:Name="nameSearch" Background="#F3F3F3" HorizontalAlignment="Left" Width="200" Margin="30,25,0,0" FontFamily="Champagne &amp; Limousines" FontSize="18"/>
-                <Label Content="Filter By Tournament Type" Margin="30,25,0,0" FontSize="18" FontFamily="Champagne &amp; Limousines"></Label>
-                <ComboBox x:Name="typeFilter" Width="200" HorizontalAlignment="left" Margin="30,0,0,0" Background="#D0D7DE" SelectedIndex="0">
-                    <ListBoxItem>Select One...</ListBoxItem>
+                <Label Content="Filter By Name" Margin="30,10,0,0" FontSize="16" FontFamily="Champagne &amp; Limousines"/>
+                <TextBox x:Name="nameSearch" Background="#F3F3F3" HorizontalAlignment="Left" Width="200" Margin="30,0,0,0" FontFamily="Champagne &amp; Limousines" FontSize="18" TextChanged="NameSearch_TextChanged"/>
+                <Label Content="Filter By Tournament Type" Margin="30,10,0,0" FontSize="16" FontFamily="Champagne &amp; Limousines"/>
+                <ComboBox x:Name="typeFilter" Width="200" HorizontalAlignment="left" Margin="30,0,0,0" Background="#D0D7DE" SelectionChanged="TypeFilter_SelectionChanged" SelectedIndex="0">
+                    <ListBoxItem Content="Select One..."/>
                 </ComboBox>
-                <TextBox x:Name="playerFilter" Background="#F3F3F3" HorizontalAlignment="Left" Width="200" Margin="30,25,0,0" FontFamily="Champagne &amp; Limousines" FontSize="18"/>
-                <TextBox x:Name="prizeFilter" Background="#F3F3F3" HorizontalAlignment="Left" Width="200" Margin="30,25,0,0" FontFamily="Champagne &amp; Limousines" FontSize="18"/>
-                <Button x:Name="createTournament" Width="150" Height="30" Margin="0,50,0,0" FontFamily="Champagne &amp; Limousines" Click="CreateTournament_Click">
+                <Label Content="Filter By Team Name" Margin="30,10,0,0" FontSize="16" FontFamily="Champagne &amp; Limousines"/>
+                <TextBox x:Name="playerFilter" Background="#F3F3F3" HorizontalAlignment="Left" Width="200" Margin="30,0,0,0" FontFamily="Champagne &amp; Limousines" FontSize="18" TextChanged="PlayerFilter_TextChanged"/>
+                <Label Content="Filter By Prize Amount" Margin="30,10,0,0" FontSize="16" FontFamily="Champagne &amp; Limousines"/>
+                <TextBox x:Name="prizeFilter" Background="#F3F3F3" HorizontalAlignment="Left" Width="200" Margin="30,0,0,0" FontFamily="Champagne &amp; Limousines" FontSize="18" TextChanged="PrizeFilter_TextChanged" />
+                <Button x:Name="createTournamentButton" Width="150" Height="30" Margin="0,30,0,0" FontFamily="Champagne &amp; Limousines" Click="CreateTournament_Click">
                     <TextBlock Text="Create New Tournament"/>
                 </Button>
             </StackPanel>
             <StackPanel Width="500" Margin="50,0,0,0">
-                <ListBox x:Name="tournamentList" Height="250" Width="400" Background="#FFFFFF" Margin="0,60,0,0" HorizontalAlignment="Center"/>
-                <Button Width="200" HorizontalAlignment="center" VerticalAlignment="Bottom" Margin="0,10,0,0" Content="Select Tournament" Click="Load_Tournament"/>
+                <ListBox x:Name="tournamentList" Height="250" Width="400" Background="#FFFFFF" Margin="0,60,0,0" HorizontalAlignment="Center">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" Width="326">
+                                <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="center">
+                    <Button Width="150" HorizontalAlignment="center" VerticalAlignment="Bottom" Margin="0,10,50,0" Content="Select Tournament" Click="Load_Tournament"/>
+                    <Button x:Name="deleteTournament" Width="150" HorizontalAlignment="center" VerticalAlignment="Bottom" Margin="0,10,0,0" Content="Delete Tournament" Click="Delete_Tournament"/>
+                </StackPanel>
             </StackPanel>
         </StackPanel>
+
+        <TextBlock x:Name="messageBox" HorizontalAlignment="Left" Margin="393,369,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Height="28" Width="307"/>
 
     </Grid>
 </Window>
