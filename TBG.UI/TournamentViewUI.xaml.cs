@@ -197,7 +197,6 @@ namespace TBG.UI
             source.saveTeamScore(matchup);
 
             populateMatchupDetails(matchup);
-            
             populateMatchupListBox(roundDropDown.SelectedIndex);
 
             scoreRecordedLbl.Content = "Score recorded successfully";

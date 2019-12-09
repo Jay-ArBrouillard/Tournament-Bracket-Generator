@@ -420,17 +420,17 @@ namespace TBG.Data.Classes
 
             if (matchup.MatchupEntries[0].Score > matchup.MatchupEntries[1].Score)
             {
-                firstTeam.Wins = matchup.MatchupEntries[0].TheTeam.Wins++;
-                secondTeam.Losses = matchup.MatchupEntries[1].TheTeam.Losses++;
+                firstTeam.Wins++;
+                secondTeam.Losses++;
             }
             else
             {
-                firstTeam.Wins = matchup.MatchupEntries[1].TheTeam.Wins++;
-                secondTeam.Losses = matchup.MatchupEntries[0].TheTeam.Losses++;
+                firstTeam.Losses++;
+                secondTeam.Wins++;
             }
 
-            TeamsTable.Update(firstTeam, dbConn);
-            TeamsTable.Update(secondTeam, dbConn);
+            ITeam team1 = TeamsTable.Update(firstTeam, dbConn);
+            ITeam team2 = TeamsTable.Update(secondTeam, dbConn);
 
             return matchup;
         }
