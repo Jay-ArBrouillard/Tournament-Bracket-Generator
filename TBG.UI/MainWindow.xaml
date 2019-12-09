@@ -81,7 +81,9 @@
                             HorizontalContentAlignment="Left"
                             Opacity="0.5"
                             Height="25"
-                            Margin="63,0,0,0"/>
+                            Margin="63,0,0,0"
+                            GotFocus="UserNameTextBox_GotFocus"
+                            LostFocus="UserNameTextBox_LostFocus"/>
                     <iconPacks:PackIconMaterial x:Name="loginIcon" 
                                                 Kind="Account"
                                                 VerticalAlignment="Center"
@@ -103,7 +105,9 @@
                                  Opacity="0.5" 
                                  Height="25"
                                  Margin="63,0,0,0"
-                                 BorderThickness="0"/>
+                                 BorderThickness="0"
+                                 GotFocus="PasswordTextBox_GotFocus"
+                                 LostFocus="PasswordTextBox_LostFocus"/>
                     <iconPacks:PackIconMaterial x:Name="passwordIcon" 
                                                 Kind="TextboxPassword" 
                                                 VerticalAlignment="Center" 
