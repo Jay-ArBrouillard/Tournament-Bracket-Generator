@@ -18,7 +18,8 @@ namespace TBG.Business.Controllers
             double entryFee, 
             double totalPrizePool,
             List<ITournamentEntry> participants,
-            List<ITeam> teams
+            List<ITeam> teams,
+            List<ITournamentPrize> prizesInTournament
         )
         {
             var tournament = TournamentTypeHelper.GetNewTournament(tournamentType);
@@ -28,6 +29,7 @@ namespace TBG.Business.Controllers
             tournament.UserId = userId;
             tournament.TournamentEntries = participants;
             tournament.Teams = teams;
+            tournament.TournamentPrizes = prizesInTournament;
 
             return tournament.BuildTournament();
         }
@@ -72,6 +74,21 @@ namespace TBG.Business.Controllers
                 return -1;
             }
             return poolDouble;
+        }
+
+        public List<ITournamentPrize> validatePrizes(List<IPrize> prizes)
+        {
+            var result = new List<ITournamentPrize>();
+            foreach(var prize in prizes)
+            {
+                result.Add(new TournamentPrize()
+                {
+                    PrizeId = prize.PrizeId,
+                    PlaceId = prize.PlaceNumber
+                });
+            }
+
+            return result;
         }
 
         public ITournament rebuildTournament(ITournament savedTournament)
@@ -156,7 +173,7 @@ namespace TBG.Business.Controllers
             }
         }
 
-        public List<IResultDataRow> populateResultsGrid(ITournament tournament, List<IMatchup> matchups)
+        public List<IResultDataRow> populateResultsGrid(ITournament tournament, List<IMatchup> matchups, List<IPrize> prizes)
         {
             List<IResultDataRow> dataRows = new List<IResultDataRow>();
 
@@ -184,9 +201,11 @@ namespace TBG.Business.Controllers
                     row.Wins = matchup.MatchupEntries[i].TheTeam.Wins;
                     row.Losses = matchup.MatchupEntries[i].TheTeam.Losses;
                     row.WinLoss = Math.Round(calculateWinPercentage(row.Wins, row.Losses), 3);
-                    row.CareerWins = thisTeam.Wins;
-                    row.CareerLosses = thisTeam.Losses;
+                    row.CareerWins = thisTeam.Wins + matchup.MatchupEntries[i].TheTeam.Wins;
+                    row.CareerLosses = thisTeam.Losses + matchup.MatchupEntries[i].TheTeam.Losses;
                     row.CareerWinLoss = Math.Round(calculateWinPercentage(row.CareerWins, row.CareerLosses), 3);
+                    var prize = tournament.TournamentPrizes.Find(y => y.PlaceId == row.Placing);
+                    row.Winnings = prize != null ? prizes.Find(x => x.PrizeId == prize.PrizeId).PrizeAmount : 0;
 
                     dataRows.Add(row);
                 }
@@ -199,7 +218,7 @@ namespace TBG.Business.Controllers
         {
             if (wins + losses == 0)
             {
-                return 1;
+                return 0;
             }
 
             return (double)wins / (wins + losses);

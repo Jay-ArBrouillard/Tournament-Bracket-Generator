@@ -120,6 +120,7 @@ namespace TBG.UI
 
         private void populateMatchupListBox(int selectedIndex)
         {
+            var matchupIndex = matchupsListBox.SelectedIndex;
             matchupsListBox.SelectedItem = null;
             matchupsListBox.Items.Clear();
             var selectedRound = tournament.Rounds[selectedIndex];
@@ -143,6 +144,10 @@ namespace TBG.UI
                     };
                     matchupsListBox.Items.Add(matchupsItem);
                 }
+            }
+            if (matchupIndex != -1)
+            {
+                matchupsListBox.SelectedIndex = matchupIndex;
             }
         }
 
@@ -189,6 +194,7 @@ namespace TBG.UI
             source.saveTournamentEntry(matchup);
             source.saveMatchupScore(matchup);
             source.savePersonStats(matchup);
+            source.saveTeamScore(matchup);
 
             populateMatchupDetails(matchup);
             populateMatchupListBox(roundDropDown.SelectedIndex);

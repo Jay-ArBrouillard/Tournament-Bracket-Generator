@@ -46,6 +46,8 @@ namespace TBG.Data.Classes
 
             entry.TournamentEntries.ForEach(x => x.TournamentId = tournament.TournamentId);
             entry.TournamentEntries.ForEach(x => TournamentEntryTable.Create(x, dbConn));
+            entry.TournamentPrizes.ForEach(x => x.TournamentId = tournament.TournamentId);
+            entry.TournamentPrizes.ForEach(x => TournamentPrizesTable.Create(x, dbConn));
 
             entry.Rounds.ForEach(x => x.TournamentId = tournament.TournamentId);
 
@@ -106,6 +108,11 @@ namespace TBG.Data.Classes
                 TournamentEntryTable.Delete(tournamentEntry, dbConn);
             }
 
+            foreach(var tournamentPrize in tournament.TournamentPrizes)
+            {
+                TournamentPrizesTable.Delete(tournamentPrize, dbConn);
+            }
+
             TournamentTable.Delete(tournament, dbConn);
             return tournament;
         }
@@ -120,7 +127,11 @@ namespace TBG.Data.Classes
             var allTeams = TeamsTable.GetAll(dbConn);
             var allTeamMembers = TeamMembersTable.GetAll(dbConn);
             var allPersons = PersonsTable.GetAll(dbConn);
+            var allTournamentPrizes = TournamentPrizesTable.GetAll(dbConn);
+
             tournament.TournamentEntries = allTournamentEntries.Where(x => x.TournamentId == tournament.TournamentId).ToList();
+            tournament.TournamentPrizes = allTournamentPrizes.Where(x => x.TournamentId == tournament.TournamentId).ToList();
+
             foreach(var entry in tournament.TournamentEntries)
             {
                 var entryMembers = allTeamMembers.Where(x => x.TeamId == entry.TeamId).ToList();
@@ -258,7 +269,18 @@ namespace TBG.Data.Classes
 
         public List<IPerson> getPeople()
         {
-            return PersonsTable.GetAll(dbConn);
+            List<IPerson> people = PersonsTable.GetAll(dbConn);
+            if (people == null) { return null; }
+
+            foreach (IPerson person in people)
+            {
+                int wins = person.Wins;
+                int losses = person.Losses;
+
+                person.Ratio = wins + losses == 0 ? 0 : (double)wins / (wins + losses);
+            }
+
+            return people;
         }
 
         public IPerson deletePerson(IPerson entry)
@@ -389,6 +411,29 @@ namespace TBG.Data.Classes
 
             return matchup;
         }
+
+        public IMatchup saveTeamScore(IMatchup matchup)
+        {
+            List<ITeam> allTeams = TeamsTable.GetAll(dbConn);
+            ITeam firstTeam = allTeams.Find(x => x.TeamId == matchup.MatchupEntries[0].TheTeam.TeamId);
+            ITeam secondTeam = allTeams.Find(x => x.TeamId == matchup.MatchupEntries[1].TheTeam.TeamId);
+
+            if (matchup.MatchupEntries[0].Score > matchup.MatchupEntries[1].Score)
+            {
+                firstTeam.Wins++;
+                secondTeam.Losses++;
+            }
+            else
+            {
+                firstTeam.Losses++;
+                secondTeam.Wins++;
+            }
+
+            ITeam team1 = TeamsTable.Update(firstTeam, dbConn);
+            ITeam team2 = TeamsTable.Update(secondTeam, dbConn);
+
+            return matchup;
+        }
         #endregion
 
         #region TOURNMENT ENTRY METHODS
@@ -413,7 +458,6 @@ namespace TBG.Data.Classes
             results.Add(entry2);
             return results;
         }
-
         #endregion
     }
 }

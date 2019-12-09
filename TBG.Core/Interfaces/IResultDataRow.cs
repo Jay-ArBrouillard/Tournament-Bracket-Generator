@@ -14,5 +14,6 @@ namespace TBG.Core.Interfaces
         int CareerWins { get; set; }
         int CareerLosses { get; set; }
         double CareerWinLoss { get; set; }
+        decimal Winnings { get; set; }
     }
 }

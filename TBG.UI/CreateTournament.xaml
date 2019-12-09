@@ -8,7 +8,7 @@
         xmlns:tree="clr-namespace:TBG.UI.Models"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
-        Title="Tournament" Height="550" Width="850">
+        Title="Tournament" Height="800" Width="850">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="20" />
@@ -20,6 +20,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="20" />
+            <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
@@ -51,7 +52,7 @@
         <StackPanel Orientation="Vertical" Grid.Row="2" Grid.Column="2"  Margin="20,0,0,0" Grid.RowSpan="4" VerticalAlignment="Top">
             <TextBlock Text="Teams / Players" FontSize="18"/>
             <StackPanel Orientation="Horizontal">
-                <TreeView Name="participantsTreeView" Width="250" Height="200">
+                <TreeView Name="participantsTreeView" Width="250" Height="350">
                     <TreeView.Resources>
                         <HierarchicalDataTemplate DataType="{x:Type tree:ParticipantTree}" ItemsSource="{Binding Members}">
                             <StackPanel Orientation="Horizontal">
@@ -87,7 +88,7 @@
                 <TextBlock Text="$" FontSize="18" Foreground="Green"/>
                 <TextBlock x:Name="totalPrizePool" Text="0" FontSize="18"/>
             </StackPanel>
-            <ListBox x:Name="prizesListBox" SelectionMode="Multiple" Width="250" Height="200">
+            <ListBox x:Name="prizesListBox" SelectionMode="Multiple" Width="250" Height="350">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
@@ -164,31 +165,58 @@
             <TextBlock Text="Select Prizes"
                    FontSize="18">
             </TextBlock>
-            <Button Content="Create New Prize" Click="Create_New_Prize_Click" Margin="10,0,0,0" Height="20" Width="100"/>
+            <Button Content="New Prize" Click="Create_New_Prize_Click" Margin="10,0,0,0" Height="20" Width="60"/>
+            <Button Content="Add Selection" Click="Add_Prize_Click" Margin="10,0,0,0" Height="20" Width="80"/>
         </StackPanel>
 
         <!-- Error Messages -->
-        <TextBlock x:Name="errorMessages" Grid.Row="6" Grid.Column="2" Grid.ColumnSpan="2" Foreground="Red" HorizontalAlignment="Right"></TextBlock>
+        <TextBlock x:Name="errorMessages" Grid.Row="7" Grid.Column="2" Grid.ColumnSpan="2" Foreground="Red" HorizontalAlignment="Right" VerticalAlignment="Center"></TextBlock>
 
-        <!-- Prizes ComboBox -->
-        <ComboBox x:Name="prizeComboBox" Grid.Row="7" Grid.Column="1" Margin="0,5,0,0" SelectionChanged="PrizeComboBox_Selected">
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding PrizeName}"/>
-                        <TextBlock Text=": " />
-                        <TextBlock Text="{Binding PrizeAmount}" Foreground="Green"/>
-                        <TextBlock Text="$" Foreground="Green" />
-                        <TextBlock Text=" [" Foreground="Red" />
-                        <TextBlock Text="{Binding PrizePercent}" Foreground="Red"/>
-                        <TextBlock Text="] " Foreground="Red"  />
-                    </StackPanel>
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
+        <!-- Data grid -->
+        <DataGrid x:Name="prizeDataGrid" Grid.Row="7" Grid.Column="1" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="0,5,0,0" Width="470" Height="250" HorizontalAlignment="Left">
+            <!-- Style Column Headers -->
+            <DataGrid.Resources>
+                <Style TargetType="{x:Type DataGrid}">
+                    <Setter Property="Background" Value="#FFF" />
+                    <Setter Property="AlternationCount" Value="2" />
+                    <Setter Property="FontSize" Value="15"/>
+                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                </Style>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <Style.Triggers>
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                            <Setter Property="Background" Value="#CCC"></Setter>
+                        </Trigger>
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="1">
+                            <Setter Property="Background" Value="#EEE"></Setter>
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="{x:Static SystemColors.HighlightBrush}"></Setter>
+                            <Setter Property="Foreground" Value="{x:Static SystemColors.HighlightTextBrush}"></Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.Resources>
+
+            <!-- Column Header Text & Bindings -->
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Prize Name" Binding="{Binding PrizeName}" Width="150" />
+                <DataGridTextColumn Header=" Prize Amount" Binding="{Binding PrizeAmount}" Width="150" SortDirection="Ascending"/>
+                <DataGridTextColumn Header=" Prize Percent" Binding="{Binding PrizePercent}" Width="*" SortDirection="Ascending"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="6" Grid.Column="2"  Height="20" Orientation="Horizontal" Margin="10,20,0,0" VerticalAlignment="Top">
+            <TextBlock Text="Select Place"
+                   FontSize="18">
+            </TextBlock>
+        <ComboBox x:Name="placeComboBox" Width="100" HorizontalAlignment="left" Grid.Row="7" Grid.Column="2" Margin="10,0,0,0" SelectionChanged="PrizeComboBox_Selected"/>
+        </StackPanel>
+
 
         <!-- Create Tournament Button -->
-        <Button x:Name="createTournamentButton" Grid.Row="7" Grid.Column="2" Content="Create Tournment" Grid.ColumnSpan="2" HorizontalAlignment="Center" Width="150" Click="Create_Tournament_Click" />
+        <Button x:Name="createTournamentButton" Grid.Row="8" Grid.Column="3" Content="Create Tournment" Grid.ColumnSpan="2" HorizontalAlignment="Center" Width="150" Height="30" Click="Create_Tournament_Click" />
 
     </Grid>
 </Window>

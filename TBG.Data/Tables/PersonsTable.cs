@@ -116,13 +116,6 @@ namespace TBG.Data.Tables
 
         private static IPerson ConvertReader(MySqlDataReader reader)
         {
-            int wins = int.Parse(reader["wins"].ToString());
-            int losses = int.Parse(reader["losses"].ToString());
-            double ratio = Math.Round((double)wins / (double)losses, 2);
-            if (double.IsNaN(ratio))
-            {
-                ratio = 0;
-            }
             return new Person()
             {
                 PersonId = int.Parse(reader["person_id"].ToString()),
@@ -130,9 +123,8 @@ namespace TBG.Data.Tables
                 LastName = reader["last_name"].ToString(),
                 Email = reader["email"].ToString(),
                 Phone = reader["phone"].ToString(),
-                Wins = wins,
-                Losses = losses,
-                Ratio = ratio
+                Wins = int.Parse(reader["wins"].ToString()),
+                Losses = int.Parse(reader["losses"].ToString())
             };
         }
     }

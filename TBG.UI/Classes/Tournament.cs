@@ -17,7 +17,7 @@ namespace TBG.UI.Classes
         public int TournamentTypeId { get; set; }
         public List<ITeam> Teams { get; set; } = new List<ITeam>();
         public List<ITournamentEntry> TournamentEntries { get; set; } = new List<ITournamentEntry>();
-        public List<IPrize> TournamentPrizes { get; set; } = new List<IPrize>();
+        public List<ITournamentPrize> TournamentPrizes { get; set; } = new List<ITournamentPrize>();
         public List<IRound> Rounds { get; set; } = new List<IRound>();
         public int ActiveRound { get; set; }
     }

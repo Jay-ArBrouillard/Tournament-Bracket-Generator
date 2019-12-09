@@ -67,6 +67,7 @@
                 <DataGridTextColumn Header=" Team" Binding="{Binding TeamName}" Width="100"/>
                 <DataGridTextColumn Header=" Players" Binding="{Binding Players}" Width="300"/>
                 <DataGridTextColumn Header=" Placing" Binding="{Binding Placing}" Width="100"/>
+                <DataGridTextColumn Header=" Winnings" Binding="{Binding Winnings}" Width="100"/>
                 <DataGridTextColumn Header=" Wins" Binding="{Binding Wins}" Width="80"/>
                 <DataGridTextColumn Header=" Losses" Binding="{Binding Losses}" Width="80"/>
                 <DataGridTextColumn Header=" Win/Loss" Binding="{Binding WinLoss}" Width="100"/>

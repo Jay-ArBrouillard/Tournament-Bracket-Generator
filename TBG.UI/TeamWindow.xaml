@@ -60,7 +60,6 @@
         <TextBox x:Name="teamNameTextBox"
                  Grid.Row="3"
                  Grid.Column="1"
-                 Text="Example Team Name"
                  Width="200"
                  BorderThickness="2"
                  HorizontalAlignment="Left"
@@ -100,7 +99,7 @@
             </ListView.View>
         </ListView>
 
-        <ScrollViewer x:Name="scrollViewer" Grid.Row="5" Grid.Column="4" Grid.RowSpan="5"  VerticalAlignment="Top" Width="250" Height="300" Margin="30,0,0,0">
+        <ScrollViewer x:Name="scrollViewer" Grid.Row="5" Grid.Column="4" Grid.RowSpan="5" VerticalAlignment="Top" Width="250" Height="300" Margin="30,0,0,0">
             <ListBox x:Name="displayListBox" SelectionMode="Multiple">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -154,8 +153,8 @@
                 <TextBox x:Name="lastNameText" Grid.Row="1" Grid.Column="1"></TextBox>
                 <TextBox x:Name="emailText" Grid.Row="2" Grid.Column="1"></TextBox>
                 <TextBox x:Name="phoneNumberText" Grid.Row="3" Grid.Column="1"></TextBox>
-                <TextBox x:Name="winsText" Grid.Row="4" Grid.Column="1"></TextBox>
-                <TextBox x:Name="lossesText" Grid.Row="5" Grid.Column="1"></TextBox>
+                <TextBox x:Name="winsText" Grid.Row="4" Grid.Column="1">0</TextBox>
+                <TextBox x:Name="lossesText" Grid.Row="5" Grid.Column="1">0</TextBox>
 
                 <Button x:Name="addPerson" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Margin="20,0,0,0" Click="AddPerson_Click" >
                     <TextBlock Text="Add New Member"/>
@@ -163,8 +162,12 @@
             </Grid>
         </StackPanel>
 
-        <Button x:Name="createTeam" Grid.Row="10" Grid.Column="3" Grid.ColumnSpan="2"  Margin="50,-50,50,20" Click="CreateTeam_Click" >
+        <Button x:Name="createTeam" Grid.Row="10" Grid.Column="3" Grid.ColumnSpan="2"  Margin="50,-50,50,20" Click="CreateTeam_Click">
             <TextBlock Text="Create Team"/>
         </Button>
+        
+        <!-- Error messages -->
+        <TextBlock x:Name="errorMessages" Grid.Row="10" Grid.Column="1" Grid.ColumnSpan="3" Foreground="Red"/>
+
     </Grid>
 </Window>

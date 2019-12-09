@@ -25,6 +25,7 @@ namespace TBG.UI
         private IUser user;
         private ITournament tournament;
         private List<ParticipantTree> theTeams = new List<ParticipantTree>();
+        private HashSet<int> personIdsInTournament = new HashSet<int>();
 
         public CreateTournament(IUser user)
         {
@@ -43,9 +44,10 @@ namespace TBG.UI
         {
             prizesInTournament = new List<IPrize>();
             prizes = source.getAllPrizes();
-            prizeComboBox.ItemsSource = prizes;
+            prizes.ForEach(x => prizeDataGrid.Items.Add(x));
             prizePool = 0;
             SeedToggle_Unchecked(sender, e);
+            Update_Place_Values();
         }
 
         private void SetEntryFee_Click(object sender, RoutedEventArgs e)
@@ -65,11 +67,23 @@ namespace TBG.UI
                 }
                 totalPrizePool.Text = prizePool.ToString();
                 entryFeeTextBox.BorderBrush = new SolidColorBrush(Colors.Green);
+                setPrizeAmounts();
             }
             else
             {
                 entryFeeTextBox.BorderBrush = new SolidColorBrush(Colors.Red);
             }
+        }
+
+        private void setPrizeAmounts()
+        {
+            foreach (IPrize prize in prizes)
+            {
+                decimal convertPercent = prize.PrizePercent > 1 ? prize.PrizePercent / 100 : prize.PrizePercent;
+                prize.PrizeAmount = Math.Round(Int32.Parse(totalPrizePool.Text) * convertPercent, 2);
+            }
+
+            prizeDataGrid.Items.Refresh();
         }
 
         public List<ITournamentEntry> convertToEntries(List<ITeam> list)
@@ -100,11 +114,16 @@ namespace TBG.UI
             List<ITeam> selectedTeams = new List<ITeam>();
             foreach (ITeam team in selectionListBox.SelectedItems)
             {
-                bool isDuplicate = teamsInTournament.Where(t => t.TeamId == team.TeamId).Any();
-
-                if (!isDuplicate)
+                bool isDuplicateTeam = teamsInTournament.Where(t => t.TeamId == team.TeamId).Any();
+                bool hasDuplicatePlayer = team.TeamMembers.Where(t => personIdsInTournament.Contains(t.PersonId)).Any();
+                if (!isDuplicateTeam && !hasDuplicatePlayer)
                 {
                     selectedTeams.Add(team);
+                    errorMessages.Text = "";
+                }
+                else if (hasDuplicatePlayer)
+                {
+                    errorMessages.Text = "One of players you tried adding is already in tournament";
                 }
             }
             tournament.Teams.AddRange(selectedTeams);
@@ -112,7 +131,7 @@ namespace TBG.UI
             var converted = convertToEntries(selectedTeams);
             teamsInTournament.AddRange(converted);
 
-            foreach(var team in converted)
+            foreach (var team in converted)
             {
                 var newTeam = new ParticipantTree()
                 {
@@ -121,13 +140,14 @@ namespace TBG.UI
                     TeamName = selectedTeams.Find(x => x.TeamId == team.TeamId).TeamName
                 };
 
-                foreach(var member in team.Members)
+                foreach (var member in team.Members)
                 {
                     newTeam.Members.Add(new Person()
                     {
                         FirstName = member.FirstName,
                         LastName = member.LastName
                     });
+                    personIdsInTournament.Add(member.PersonId);
                 }
 
                 theTeams.Add(newTeam);
@@ -135,8 +155,22 @@ namespace TBG.UI
             participantsTreeView.ItemsSource = theTeams;
             participantsTreeView.Items.Refresh();
 
+            //Update place values
+            Update_Place_Values();
+
             //Update PrizePool
             SetEntryFee_Click(sender, e);
+
+            setPrizeAmounts();
+        }
+
+        private void Update_Place_Values()
+        {
+            placeComboBox.Items.Clear();
+            for (int i = 1; i <= teamsInTournament.Count; i++)
+            {
+                placeComboBox.Items.Add(i);
+            }
         }
 
         private void Create_New_Team_Click(object sender, RoutedEventArgs e)
@@ -163,7 +197,21 @@ namespace TBG.UI
 
                 //Update PrizePool
                 SetEntryFee_Click(sender, e);
+                //Update PrizeAmounts
+                setPrizeAmounts();
             }
+            Update_Place_Values();
+
+            //Remove prizes for places > new count
+            foreach (var prize in prizesInTournament.ToList())
+            {
+                if (prize.PlaceNumber > teamsInTournament.Count)
+                {
+                    prizesInTournament.Remove(prize);
+                }
+            }
+
+            prizesListBox.Items.Refresh();
         }
 
         private void DeletePrizeButton_Click(object sender, RoutedEventArgs e)
@@ -178,23 +226,12 @@ namespace TBG.UI
             {
                 prizesInTournament.Remove(p);
             }
-
             prizesListBox.Items.Refresh();
         }
 
         private void PrizeComboBox_Selected(object sender, RoutedEventArgs e)
         {
-            object selectedItem = ((ComboBox)sender).SelectedItem;
-            IPrize selectedPrize = (IPrize)selectedItem;
-            prizesInTournament.Add(new Prize()
-            {
-                PrizeId = selectedPrize.PrizeId,
-                PrizeName = selectedPrize.PrizeName,
-                PrizeAmount = selectedPrize.PrizeAmount,
-                PrizePercent = selectedPrize.PrizePercent
-            });
-            prizesListBox.ItemsSource = prizesInTournament;
-            prizesListBox.Items.Refresh();
+            
         }
 
         private void SeedToggle_Checked(object sender, RoutedEventArgs e)
@@ -233,6 +270,8 @@ namespace TBG.UI
             var validTournamentTypeId = tournamentController.validateTournamentType(TournamentType);
             var validParticipantCount = tournamentController.validateParticipantCount(numParticipants, TournamentType);
             var validTotalPrizePool = tournamentController.validateTotalPrizePool(prizePool, numParticipants, validEntryFee);
+            var validatedPrizes = tournamentController.validatePrizes(prizesInTournament);
+            //Add prize structure to create tournament call
 
             if (!validTournamentName)
             {
@@ -265,6 +304,12 @@ namespace TBG.UI
                 return;
             }
 
+            if (validatedPrizes == null)
+            {
+                errorMessages.Text = "Prizes are not valid";
+                return;
+            }
+
             errorMessages.Text = "";
             entryFeeTextBox.BorderBrush = new SolidColorBrush(Colors.DarkGray);
 
@@ -274,7 +319,8 @@ namespace TBG.UI
                 validEntryFee, 
                 validTotalPrizePool, 
                 teamsInTournament,
-                tournament.Teams);
+                tournament.Teams,
+                validatedPrizes);
 
             newTournament.Teams.AddRange(tournament.Teams);
 
@@ -299,6 +345,48 @@ namespace TBG.UI
             }
 
             return (double) wins /  (wins + losses);
+        }
+
+        private void Add_Prize_Click(object sender, RoutedEventArgs e)
+        {
+            object selectedItem = prizeDataGrid.SelectedItem;
+            IPrize selectedPrize = (IPrize)selectedItem;
+
+            if (placeComboBox.SelectedItem == null)
+            {
+                errorMessages.Text = "Must select a place";
+                return;
+            }
+
+            var selectedPlace = placeComboBox.SelectedItem;
+            int selectedPlaceNumber = (int)selectedPlace;
+
+            decimal percentTotal = prizesInTournament.Sum(x => x.PrizePercent);
+
+            //validate that prize doesn't already exist
+            errorMessages.Text = "";
+            if (prizesInTournament.Any(x => x.PlaceNumber == selectedPlaceNumber))
+            {
+                errorMessages.Text = "There is already a prize for the selected place.";
+                return;
+            }
+
+            if (percentTotal + selectedPrize.PrizePercent > 1)
+            {
+                errorMessages.Text = "Total prize percent exceeds 100%";
+                return;
+            }
+
+            prizesInTournament.Add(new Prize()
+            {
+                PrizeId = selectedPrize.PrizeId,
+                PrizeName = selectedPrize.PrizeName,
+                PrizeAmount = selectedPrize.PrizeAmount,
+                PrizePercent = selectedPrize.PrizePercent,
+                PlaceNumber = selectedPlaceNumber
+            });
+            prizesListBox.ItemsSource = prizesInTournament;
+            prizesListBox.Items.Refresh();
         }
     }
 }

@@ -6,5 +6,6 @@
         string PrizeName { get; set; }
         decimal PrizeAmount { get; set; }
         decimal PrizePercent { get; set; }
+        int PlaceNumber { get; set; }
     }
 }

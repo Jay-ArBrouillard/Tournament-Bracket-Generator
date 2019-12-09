@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="" Height="662.111" Width="807.441" ResizeMode="NoResize"
+        Title="" Height="665" Width="807.441" ResizeMode="NoResize"
         WindowStyle="ToolWindow">
     <Window.Resources>
         <DataTemplate x:Key="templateListBoxItem">
@@ -31,32 +31,35 @@
         </Style>
     </Window.Resources>
 
-    <Grid>
+    <Grid Margin="0,0,0,-88">
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="38*"/>
-            <ColumnDefinition Width="324*"/>
-            <ColumnDefinition Width="84*"/>
-            <ColumnDefinition Width="325*"/>
-            <ColumnDefinition Width="30*"/>
+            <ColumnDefinition/>
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
+            <ColumnDefinition />
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="100*"/>
-            <RowDefinition Height="98*"/>
-            <RowDefinition Height="20*"/>
-            <RowDefinition Height="113*"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="170"/>
+            <RowDefinition Height="250"/>
         </Grid.RowDefinitions>
-        <Rectangle Height="659" VerticalAlignment="Top" Grid.RowSpan="4" Grid.ColumnSpan="5" Margin="0,0,0,-25">
+        <Rectangle Height="724" VerticalAlignment="Top" Grid.RowSpan="5" Grid.ColumnSpan="5" Margin="0,0,0,-90">
             <Rectangle.Fill>
                 <SolidColorBrush Color="#E5E4E9"></SolidColorBrush>
             </Rectangle.Fill>
         </Rectangle>
-        <Label x:Name="tournamentNameLbl" Content="Tournament:" Margin="151,10,185,0" VerticalAlignment="Top" Width="397" HorizontalContentAlignment="Center" HorizontalAlignment="Center" FontSize="24" Grid.ColumnSpan="3" Grid.Column="1"/>
-        <Label Content="Round: " HorizontalAlignment="Left" VerticalAlignment="Top" Width="81" FontSize="20" Margin="37,74,0,0" Grid.ColumnSpan="2"/>
-        <Label x:Name="errorMsgLbl" Content="There was an error with your entries. Please check and try again." HorizontalAlignment="Left" Margin="37,131,0,0" VerticalAlignment="Top" Width="348" Foreground="#FFF70000" Height="32" Visibility="Hidden" Grid.ColumnSpan="3" Grid.Row="1"/>
-        <ComboBox x:Name="roundDropDown" HorizontalAlignment="Left" Margin="80,74,0,0" VerticalAlignment="Top" Width="156" Height="39" Grid.Column="1" SelectionChanged="RoundDropDown_SelectionChanged" FontSize="16"/>
-        <Label Content="Matchups:" HorizontalAlignment="Left" Margin="37,152,0,0" VerticalAlignment="Top" Width="133" FontSize="22" Grid.ColumnSpan="2"/>
-        <StackPanel HorizontalAlignment="Left" Height="200" Margin="37,200,0,0" VerticalAlignment="Top" Width="325" Grid.RowSpan="3" Grid.ColumnSpan="2">
-            <ListBox x:Name="matchupsListBox" HorizontalAlignment="Left" Height="216" VerticalAlignment="Top" Width="326" Margin="0,0,-1,0" SelectionMode="Single" SelectionChanged="MatchupsListBox_SelectionChanged">
+        <Label x:Name="tournamentNameLbl" Content="Tournament" Margin="0" VerticalAlignment="Top" HorizontalContentAlignment="Center" HorizontalAlignment="Center" FontSize="24" Grid.ColumnSpan="5" Grid.Column="0" Grid.Row="0"/>
+        <Label Content="Round: " HorizontalAlignment="right" VerticalAlignment="center" Width="81" FontSize="20" Margin="0" Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="1"/>
+        <ComboBox x:Name="roundDropDown" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Width="100" Height="39" Grid.Column="1" Grid.Row="1" SelectionChanged="RoundDropDown_SelectionChanged" FontSize="16"/>
+        <Button x:Name="finalizeRoundBtn" Content="Next Round" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Top" Width="100" Height="39" FontSize="18" Grid.Column="1" Grid.Row="2" Click="FinalizeRoundBtn_Click"/>
+
+        <Label Content="Matchups:" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Center" Width="133" FontSize="22" Grid.Column="2" Grid.Row="1"/>
+        <CheckBox x:Name="unplayedCheckbox" Content="Display Unplayed Only" Grid.Column="3" Grid.Row="1" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Center" Checked="UnplayedCheckbox_Checked" Unchecked="UnplayedCheckbox_Unchecked" RenderTransformOrigin="1.779,2.333"/>
+        <StackPanel HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Grid.RowSpan="2" Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="3">
+            <ListBox x:Name="matchupsListBox" HorizontalAlignment="Left" Height="216" VerticalAlignment="Top" Width="450" Margin="0,0,-1,0" SelectionMode="Single" SelectionChanged="MatchupsListBox_SelectionChanged">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" Width="326">
@@ -69,7 +72,12 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </StackPanel>
-        <Grid x:Name="matchupGrid" Grid.Row="3" Grid.ColumnSpan="5" Visibility="Hidden">
+
+        <TextBlock TextWrapping="WrapWithOverflow" x:Name="errorMsgLbl" HorizontalAlignment="Center" Margin="0" VerticalAlignment="Center" Foreground="#FFF70000" Visibility="Hidden" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="3">
+            There was an error with your entries. Please check and try again.
+        </TextBlock>
+
+        <Grid x:Name="matchupGrid" Grid.Row="4" Grid.ColumnSpan="5" Visibility="Hidden" Margin="0,0,0,-90">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
@@ -78,10 +86,9 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
+                <RowDefinition Height="50" />
+                <RowDefinition Height="50"/>
                 <RowDefinition />
-                <RowDefinition />
-                <RowDefinition />
-
             </Grid.RowDefinitions>
 
             <Label x:Name="firstTeamLabel" Content="Team 1" HorizontalAlignment="Center"  VerticalAlignment="Center" FontSize="24" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" />
@@ -94,32 +101,26 @@
 
             <Label x:Name="versusLabel" Content="vs." HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="16" Grid.Row="0" Grid.Column="2"/>
             <Button x:Name="finalScoreBtn" Content="Record Score" HorizontalAlignment="Center" Grid.Row="1" VerticalAlignment="Center" Width="143" Height="39" FontSize="18" Grid.Column="2" Click="FinalScoreBtn_Click"/>
-            <Label x:Name="scoreRecordedLbl" Content="" Grid.Column="2" HorizontalAlignment="Center" Grid.Row="2" VerticalAlignment="Center" Foreground="#FF013BFF"/>
+            <Label x:Name="scoreRecordedLbl" Content="" Grid.Column="2" HorizontalAlignment="Center" Grid.Row="2" VerticalAlignment="top" Foreground="#FF013BFF"/>
 
             <Label x:Name="teamOneInvalidScoreLbl" Content="" Grid.Column="0" HorizontalAlignment="Center" Grid.Row="2" VerticalAlignment="Top" Foreground="#FFFB0101" Grid.ColumnSpan="2"/>
             <Label x:Name="teamTwoInvalidScoreLbl" Content="" Grid.Column="3" HorizontalAlignment="Center" Grid.Row="2" VerticalAlignment="Top" Foreground="#FFFB0101" Grid.ColumnSpan="2"/>
+            <DataGrid x:Name="teamOneDataGrid" ItemsSource="{Binding}" AutoGenerateColumns="False" HorizontalAlignment="Center" Height="129" VerticalAlignment="Top" Width="300" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" Margin="0,0,0,0" Grid.RowSpan="1">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Width="182" Binding="{Binding PlayerName}"/>
+                    <DataGridTextColumn Header="Wins" Width="55" Binding="{Binding Wins}"/>
+                    <DataGridTextColumn Header="Losses" Width="*" Binding="{Binding Losses}"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <DataGrid x:Name="teamTwoDataGrid" ItemsSource="{Binding}" AutoGenerateColumns="False" HorizontalAlignment="Center" Height="129" VerticalAlignment="Top" Width="300" Grid.Column="3" Grid.ColumnSpan="2" Margin="0,0,0,0" Grid.Row="2" Grid.RowSpan="1">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Name" Width="182" Binding="{Binding PlayerName}"/>
+                    <DataGridTextColumn Header="Wins" Width="55" Binding="{Binding Wins}"/>
+                    <DataGridTextColumn Header="Losses" Width="*" Binding="{Binding Losses}"/>
+                </DataGrid.Columns>
+            </DataGrid>
         </Grid>
-
-        <Label Content="Matchup Details" HorizontalAlignment="Left" Margin="76,93,0,0" VerticalAlignment="Top" FontSize="22" Grid.Column="3"/>
-
-        <DataGrid x:Name="teamTwoDataGrid" ItemsSource="{Binding}" AutoGenerateColumns="False" HorizontalAlignment="Left" Height="123" VerticalAlignment="Top" Width="325" Grid.Column="3" Margin="0,103,0,0" Grid.Row="1" Grid.RowSpan="2">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Name" Width="182" Binding="{Binding PlayerName}"/>
-                <DataGridTextColumn Header="Wins" Binding="{Binding Wins}"/>
-                <DataGridTextColumn Header="Losses" Binding="{Binding Losses}"/>
-            </DataGrid.Columns>
-        </DataGrid>
-        <DataGrid x:Name="teamOneDataGrid" ItemsSource="{Binding}" AutoGenerateColumns="False" HorizontalAlignment="Left" Height="129" VerticalAlignment="Top" Width="325" Grid.Column="3" Margin="0,137,0,0" Grid.RowSpan="2">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="Name" Width="182" Binding="{Binding PlayerName}"/>
-                <DataGridTextColumn Header="Wins" Binding="{Binding Wins}"/>
-                <DataGridTextColumn Header="Losses" Binding="{Binding Losses}"/>
-            </DataGrid.Columns>
-        </DataGrid>
-        <CheckBox x:Name="unplayedCheckbox" Content="Display Unplayed Only" Grid.Column="1" HorizontalAlignment="Left" Margin="137,169,0,0" VerticalAlignment="Top" Checked="UnplayedCheckbox_Checked" Unchecked="UnplayedCheckbox_Unchecked" RenderTransformOrigin="1.779,2.333"/>
-        <Button x:Name="finalizeRoundBtn" Content="Advance Round" HorizontalAlignment="Left" Margin="80,118,0,0" VerticalAlignment="Top" Width="156" Height="39" FontSize="18" Grid.Column="1" Click="FinalizeRoundBtn_Click"/>
-        <Label x:Name="lblFinalized" Content="" VerticalAlignment="Top" Grid.Column="1" Margin="80,43,88,0" Height="26"/>
-
-        <Button x:Name="resultsBtn" Content="View Results" Grid.Column="3" Margin="231,16,0,137" VerticalContentAlignment="Center" Click="ResultsBtn_Click" Visibility="Hidden"/>
+        <Label x:Name="lblFinalized" Content="" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="0" Margin="10,0,0,0" Height="26"/>
+        <Button x:Name="resultsBtn" Content="View Results" Grid.Column="4" Margin="0" VerticalContentAlignment="Center" Click="ResultsBtn_Click" Visibility="Visible" Width="80" Height="30"/>
     </Grid>
 </Window>
