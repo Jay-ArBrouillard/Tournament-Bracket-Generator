@@ -121,6 +121,6 @@
             </DataGrid>
         </Grid>
         <Label x:Name="lblFinalized" Content="" VerticalAlignment="Bottom" Grid.Column="1" Grid.Row="0" Margin="10,0,0,0" Height="26"/>
-        <Button x:Name="resultsBtn" Content="View Results" Grid.Column="4" Margin="0" VerticalContentAlignment="Center" Click="ResultsBtn_Click" Visibility="Hidden"/>
+        <Button x:Name="resultsBtn" Content="View Results" Grid.Column="4" Margin="0" VerticalContentAlignment="Center" Click="ResultsBtn_Click" Visibility="Visible" Width="80" Height="30"/>
     </Grid>
 </Window>
