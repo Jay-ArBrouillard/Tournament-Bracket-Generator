@@ -201,8 +201,8 @@ namespace TBG.Business.Controllers
                     row.Wins = matchup.MatchupEntries[i].TheTeam.Wins;
                     row.Losses = matchup.MatchupEntries[i].TheTeam.Losses;
                     row.WinLoss = Math.Round(calculateWinPercentage(row.Wins, row.Losses), 3);
-                    row.CareerWins = thisTeam.Wins;
-                    row.CareerLosses = thisTeam.Losses;
+                    row.CareerWins = thisTeam.Wins + matchup.MatchupEntries[i].TheTeam.Wins;
+                    row.CareerLosses = thisTeam.Losses + matchup.MatchupEntries[i].TheTeam.Losses;
                     row.CareerWinLoss = Math.Round(calculateWinPercentage(row.CareerWins, row.CareerLosses), 3);
                     var prize = tournament.TournamentPrizes.Find(y => y.PlaceId == row.Placing);
                     row.Winnings = prize != null ? prizes.Find(x => x.PrizeId == prize.PrizeId).PrizeAmount : 0;
