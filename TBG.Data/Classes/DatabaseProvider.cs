@@ -411,6 +411,29 @@ namespace TBG.Data.Classes
 
             return matchup;
         }
+
+        public IMatchup saveTeamScore(IMatchup matchup)
+        {
+            List<ITeam> allTeams = TeamsTable.GetAll(dbConn);
+            ITeam firstTeam = allTeams.Find(x => x.TeamId == matchup.MatchupEntries[0].TheTeam.TeamId);
+            ITeam secondTeam = allTeams.Find(x => x.TeamId == matchup.MatchupEntries[1].TheTeam.TeamId);
+
+            if (matchup.MatchupEntries[0].Score > matchup.MatchupEntries[1].Score)
+            {
+                firstTeam.Wins = matchup.MatchupEntries[0].TheTeam.Wins++;
+                secondTeam.Losses = matchup.MatchupEntries[1].TheTeam.Losses++;
+            }
+            else
+            {
+                firstTeam.Wins = matchup.MatchupEntries[1].TheTeam.Wins++;
+                secondTeam.Losses = matchup.MatchupEntries[0].TheTeam.Losses++;
+            }
+
+            TeamsTable.Update(firstTeam, dbConn);
+            TeamsTable.Update(secondTeam, dbConn);
+
+            return matchup;
+        }
         #endregion
 
         #region TOURNMENT ENTRY METHODS
@@ -435,7 +458,6 @@ namespace TBG.Data.Classes
             results.Add(entry2);
             return results;
         }
-
         #endregion
     }
 }

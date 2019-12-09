@@ -194,6 +194,7 @@ namespace TBG.UI
             source.saveTournamentEntry(matchup);
             source.saveMatchupScore(matchup);
             source.savePersonStats(matchup);
+            source.saveTeamScore(matchup);
 
             populateMatchupDetails(matchup);
             
