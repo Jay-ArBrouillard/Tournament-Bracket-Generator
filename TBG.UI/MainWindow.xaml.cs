@@ -143,5 +143,37 @@ namespace TBG.UI
             dB.Show();
             this.Close();
         }
+        
+        private void UserNameTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (userNameTextBox.Text.Equals("Username"))
+            {
+                userNameTextBox.Text = "";
+            }
+        }
+
+        private void UserNameTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(userNameTextBox.Text))
+            {
+                userNameTextBox.Text = "Username";
+            }
+        }
+
+        private void PasswordTextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            if (passwordTextBox.Password.Equals("Password"))
+            {
+                passwordTextBox.Password = "";
+            }
+        }
+
+        private void PasswordTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(passwordTextBox.Password))
+            {
+                passwordTextBox.Password = "Password";
+            }
+        }
     }
 }
